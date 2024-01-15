@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Contratos
                         <!--   Boton Nuevo    -->
-                        <button type="button" v-if="rolId!=9 && listado == 1" @click="mostrarDetalle()" class="btn btn-secondary">
+                        <button type="button" v-if="(rolId!=9 && rolId!=13) && listado == 1" @click="mostrarDetalle()" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -26,18 +26,18 @@
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
                                                 <option value="ini_obras.clave">Clave</option>
-                                                <option value="contratistas.nombre">Contratista</option>
+                                                <option v-if="rolId!=13" value="contratistas.nombre">Contratista</option>
                                                 <option value="ini_obras.f_ini">Fecha de inicio</option>
                                                 <option value="ini_obras.f_fin">Fecha de termino</option>
                                                 <option value="ini_obras.fraccionamiento_id">Proyecto</option>
                                             </select>
-                                            <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1,buscar,criterio)" v-model="buscar" >
+                                            <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1)" v-model="buscar" >
                                                 <option value="">Seleccione</option>
                                                 <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                             </select>
-                                            <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                            <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                            <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
+                                            <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control">
+                                            <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1)" class="form-control" placeholder="Texto a buscar">
                                         </div>
                                     </div>
                                 </div>
@@ -48,76 +48,74 @@
                                                 <option value="">Empresa constructora</option>
                                                 <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                             </select>
-                                            <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                             <a class="btn btn-success" v-bind:href="'/iniobra/excelAvisos?buscar=' + buscar + '&criterio=' + criterio" >
                                                 <i class="icon-pencil"></i>&nbsp;Excel
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                                <TableComponent :cabecera="[
-                                    'Opciones','Clave','Contratista','Fraccionamiento','Superficie total','Importe total',
-                                    'Fecha de inicio ','Fecha de termino',''
-                                ]">
-                                    <template v-slot:tbody>
-                                        <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id" title="Ver detalle">
-                                            <td>
-                                                <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
-                                                    <i class="icon-trash"></i>
-                                                </button>
-                                                <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
-                                                    <i class="icon-pencil"></i>
-                                                </button>
-                                                <button title="Subir contrato" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
-                                                    <i class="icon-cloud-upload"></i>
-                                                </button>
-                                                <button title="Subir Adendum" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirAdendum',avisoObra)" class="btn btn-scarlet btn-sm">
-                                                    <i class="icon-cloud-upload"></i>
-                                                </button>
-                                                <a title="Descargar contrato" class="btn btn-default btn-sm" v-if="avisoObra.documento != '' && avisoObra.documento != null"  v-bind:href="'/downloadContratoObra/'+avisoObra.documento">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                <a title="Descargar adendum" class="btn btn-default btn-sm" v-if="avisoObra.adendum != '' && avisoObra.adendum != null"  v-bind:href="'/downloadAdendum/'+avisoObra.adendum">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a href="#" v-text="avisoObra.clave"></a>
-                                            </td>
-                                            <td class="td2" v-text="avisoObra.contratista"></td>
-                                            <td class="td2" v-text="avisoObra.proyecto"></td>
-                                            <td class="td2">{{$root.formatNumber(avisoObra.total_superficie)}} m&sup2;</td>
-                                            <td class="td2" v-text="'$'+$root.formatNumber(avisoObra.total_importe)"></td>
-                                            <td class="td2" v-text="avisoObra.f_ini"></td>
-                                            <td class="td2" v-text="avisoObra.f_fin"></td>
-                                            <td>
-                                                <a class="btn btn-success" v-bind:href="'/avisoObra/siroc?id='+ avisoObra.id">
-                                                    <i class="fa fa-file-text"></i>&nbsp; SIROC
-                                                </a>
-                                                <button title="Subir registro de obra" type="button" @click="abrirModal('subirArchivo2',avisoObra)" class="btn btn-default btn-sm">
-                                                    <i class="icon-cloud-upload"></i>
-                                                </button>
-                                                <a title="Descargar registro de obra" class="btn btn-default btn-sm" v-if="avisoObra.registro_obra != '' && avisoObra.registro_obra != null"  v-bind:href="'/downloadRegistroObra/'+avisoObra.registro_obra">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </TableComponent>
-                                <nav>
-                                    <!--Botones de paginacion -->
-                                    <ul class="pagination">
-                                        <li class="page-item" v-if="pagination.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                        </li>
-                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                        </li>
-                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+
+                                <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                        @click="b_status = 0, listarAvisos(1)"
+                                        v-bind:class="{ 'text-primary active': b_status === 0}"
+                                        role="tab">En Proceso</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                        @click="b_status = 1, listarAvisos(1)"
+                                        v-bind:class="{ 'text-primary active': b_status === 1}"
+                                        role="tab">Por Cerrar</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link"
+                                        @click="b_status = 2, listarAvisos(1)"
+                                        v-bind:class="{ 'text-primary active': b_status === 2}"
+                                        role="tab">Cerradas</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content" id="myTab1Content">
+                                    <!-- Listado por Solicitudes EN PROCESO -->
+                                    <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 0 }" v-if="b_status ===  0">
+                                        <TablePendiente
+                                            :usuario="usuario"
+                                            :rolId="rolId"
+                                            :arrayAvisoObra="arrayAvisoObra"
+                                            @sendPorCerrar="sendPorCerrar"
+                                            @abrirModal="abrirModal"
+                                            @print="print"
+                                            @actualizar="actualizarContrato"
+                                            @eliminar="eliminarContrato"
+                                            @ver="verAviso"
+                                        ></TablePendiente>
+                                    </div>
+                                    <!-- Listado por Solicitudes POR CERRAR -->
+                                    <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 1 }" v-if="b_status ===  1">
+                                        <TablePorCerrar
+                                            :usuario="usuario"
+                                            :rolId="rolId"
+                                            :arrayAvisoObra="arrayAvisoObra"
+                                            @abrirModal="abrirModal"
+                                            @print="print"
+                                            @ver="verAviso"
+                                        ></TablePorCerrar>
+                                    </div>
+                                    <!-- Listado por Solicitudes CERRADAS -->
+                                    <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 2 }" v-if="b_status ===  2">
+                                        <TableCerradas
+                                            :arrayAvisoObra="arrayAvisoObra"
+                                            @ver="verAviso"
+                                        ></TableCerradas>
+                                    </div>
+                                </div>
+                                <NavComponent
+                                    :current="pagination.current_page ? pagination.current_page : 1"
+                                    :last="pagination.last_page ? pagination.last_page : 1"
+                                    @changePage="listarAvisos"
+                                ></NavComponent>
                                 <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                             </div>
                         </template>
@@ -133,7 +131,7 @@
                         <AvisoObraReadComponent v-if="listado == 2"
                             :data="avisoObra"
                             @close="closeForm()"
-                            @print="modal=2"
+                            @print="print({tipo:'contrato',id:''})"
                         >
                         </AvisoObraReadComponent>
                     </template>
@@ -161,11 +159,19 @@
                     <div v-if="tipoAccion == 2">
                         <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
 
-                            <strong>Seleccionar archivo</strong>
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label" for="text-input">Registro de obra:</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="folio_siroc" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <input type="file" class="form-control" v-on:change="onImageChange2">
+                            </div>
 
-                            <input type="file" class="form-control" v-on:change="onImageChange2">
                             <br/>
-                            <button type="submit" class="btn btn-success">Cargar</button>
+                            <button v-if="folio_siroc != ''"
+                                type="submit" class="btn btn-success">Cargar</button>
                         </form>
                     </div>
                     <div v-if="tipoAccion == 3">
@@ -175,7 +181,20 @@
 
                             <input type="file" class="form-control" v-on:change="onImageChange">
                             <br/>
-                            <button type="submit" class="btn btn-success">Cargar</button>
+                            <button
+                                type="submit" class="btn btn-success">Cargar</button>
+                        </form>
+                    </div>
+
+                    <div v-if="tipoAccion == 4">
+                        <form  method="post" @submit="saveAcuseCierre" enctype="multipart/form-data">
+
+                            <strong>Seleccionar archivo</strong>
+
+                            <input type="file" class="form-control" v-on:change="onImageChange">
+                            <br/>
+                            <button
+                                type="submit" class="btn btn-success">Cargar</button>
                         </form>
                     </div>
                 </template>
@@ -183,39 +202,86 @@
             <!--Fin del modal-->
 
             <!-- Modal para imprimir contrato -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Seleccionar apoderado legal</h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <div>
-                                <select class="form-control" v-model="apoderado">
-                                    <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
-                                    <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
-                                    <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                             <a class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
-                                <i></i>Imprimir
-                            </a>
-                        </div>
+            <ModalComponent v-if="modal==2"
+                titulo="Seleccionar apoderado legal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <div>
+                        <select class="form-control" v-model="apoderado">
+                            <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                            <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                            <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
+                        </select>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
+                </template>
+                <template v-slot:buttons-footer>
+                    <a
+                        v-if="tipoAccion==0"
+                        class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
+                        <i></i>Imprimir Contrato
+                    </a>
+                    <a
+                        v-else
+                        class="btn btn-primary" v-bind:href="'/iniobra/adendum?id=' + avisoObra.id + '&apoderado=' + apoderado"  target="_blank">
+                        <i></i>Imprimir Adendum
+                    </a>
+                </template>
+            </ModalComponent>
             <!--Fin del modal-->
+
+            <!--Inicio del modal observaciones-->
+            <ModalComponent v-if="modal == 3"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <RowModal :label1="'Observacion'" :clsRow1="'col-md-6'" :clsRow2="'col-md-3'">
+                        <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                        <template v-slot:input2>
+                            <Button :btnClass="'btn-primary'" :icon="'icon-plus'" @click="storeObs(id)" title="Guardar observación"></Button>
+                        </template>
+                    </RowModal>
+
+                    <TableComponent :cabecera="['Usuario','Observación','Fecha']">
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.comentario" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
+
+            <ModalComponent v-if="modal==4"
+                @closeModal="cerrarModal"
+                :titulo="tituloModal"
+            >
+                <template v-slot:body>
+                    <RowModal label1="Fecha de Termino Real:" clsRow1="col-md-4">
+                        <input type="date" pattern="\d*" class="form-control" v-model="avisoObra.f_fin2">
+                    </RowModal>
+                    <RowModal label1="Importe de cierre:" clsRow1="col-md-4" clsRow2="col-md-3" label2="">
+                        <input type="text" pattern="\d*" class="form-control" v-model="avisoObra.total_original" v-on:keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
+                            <p class="form-control">{{ $root.formatNumber(avisoObra.total_original) }}</p>
+                        </template>
+                    </RowModal>
+                    <RowModal label1="Importe obra extra:" clsRow1="col-md-4" clsRow2="col-md-3" label2="">
+                        <input type="text" pattern="\d*" class="form-control" v-model="avisoObra.total_extra" v-on:keypress="$root.isNumber($event)">
+                        <template v-slot:input2>
+                            <p class="form-control">{{ $root.formatNumber(avisoObra.total_extra) }}</p>
+                        </template>
+                    </RowModal>
+                </template>
+                <template v-slot:buttons-footer>
+                    <Button icon="icon-check" @click="changeStatus(avisoObra.id,1)"></Button>
+                </template>
+            </ModalComponent>
+
+
 
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -268,14 +334,21 @@
 
 <script>
     import vSelect from 'vue-select';
+    import Button from '../Componentes/ButtonComponent.vue';
+    import RowModal from '../Componentes/ComponentesModal/RowModalComponent.vue'
     import LoadingComponent from '../Componentes/LoadingComponent.vue';
     import ModalComponent from '../Componentes/ModalComponent.vue';
     import TableComponent from '../Componentes/TableComponent.vue';
+    import NavComponent from '../Componentes/NavComponent.vue';
     import AvisoObraFormComponent from './components/AvisoObraFormComponent.vue'
     import AvisoObraReadComponent from './components/AvisoObraReadComponent.vue'
+    import TablePendiente from './components/TablePendientes.vue';
+    import TablePorCerrar from './components/TablePorCerrar.vue';
+    import TableCerradas from './components/TableCerradas.vue'
     export default {
         props:{
-            rolId:{type: String}
+            rolId:{type: String},
+            usuario:{type: String}
         },
         data(){
             return{
@@ -291,6 +364,8 @@
                     calle1: '',
                     calle2: '',
                     total_importe : 0,
+                    total_original: 0,
+                    total_extra: 0,
                     total_costo_directo: 0,
                     total_costo_indirecto: 0,
                     anticipo: 0,
@@ -303,12 +378,16 @@
                     descripcion_larga: '',
                     descripcion_corta: '',
                     total_construccion: 0,
-                    direccion_proy: ''
+                    direccion_proy: '',
                 },
+                id: '',
+                arrayObs:[],
                 proceso:false,
                 arrayAvisoObra : [],
                 modal : 0,
                 pdf:'',
+                folio_siroc:'',
+                acuseContratista:0,
                 listado:1,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -323,6 +402,7 @@
                 offset : 3,
                 criterio : 'ini_obras.clave',
                 buscar : '',
+                b_status: 0,
                 arrayProyectos : [],
                 empresas:[],
                 b_empresa:'',
@@ -337,7 +417,13 @@
             ModalComponent,
             TableComponent,
             AvisoObraFormComponent,
-            AvisoObraReadComponent
+            AvisoObraReadComponent,
+            TablePendiente,
+            TablePorCerrar,
+            TableCerradas,
+            NavComponent,
+            Button,
+            RowModal
         },
         computed:{
             isActived: function(){
@@ -366,6 +452,17 @@
         },
 
         methods : {
+            print(opciones){
+                const {tipo, id } = {...opciones}
+                this.modal = 2;
+                if(tipo == 'contrato')
+                    this.tipoAccion = 0;
+                else{
+                    this.avisoObra.id = id;
+                    this.tipoAccion = 1;
+                }
+
+            },
             onImageChange(e){
                 console.log(e.target.files[0]);
                 this.pdf = e.target.files[0];
@@ -405,6 +502,7 @@
                 let formData = new FormData();
 
                 formData.append('pdf', this.pdf);
+                formData.append('folio_siroc', this.folio_siroc)
                 axios.post('/formSubmitRegistroObra/'+this.id, formData)
                 .then(function (response) {
 
@@ -421,6 +519,60 @@
                 .catch(function (error) {
                     currentObj.output = error;
                 });
+            },
+            sendPorCerrar(contrato){
+                if(contrato.f_fin != contrato.f_fin2 && contrato.adendum == null){
+                    swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Es necesario cargar el Adendum',
+                    })
+                    return;
+                }
+
+                this.abrirModal({accion:'porCerrar',data: contrato})
+
+                // this.changeStatus(contrato.id, 1)
+            },
+            changeStatus(id,status){
+                let me = this;
+                swal({
+                    title: 'Esta seguro de cambiar el status de este contrato?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar!',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: false,
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.showLoading()
+                        axios.put('/iniobra/changeStatus',{
+                            'id': id,
+                            'status': status,
+                            'f_fin2': me.avisoObra.f_fin2,
+                            'total_original': me.avisoObra.total_original ? me.avisoObra.total_original : 0,
+                            'total_extra': me.avisoObra.total_extra ? me.avisoObra.total_extra : 0,
+                            }).then(function (response){
+                            Swal.enableLoading()
+                            swal(
+                                'Cambio de status!',
+                                'Cambios realizados con éxito.',
+                                'success'
+                            )
+                            me.listarAvisos(1)
+                            me.cerrarModal()
+                        }).catch(function (error){
+                            Swal.enableLoading()
+                        });
+
+                    } else if (result.dismiss === swal.DismissReason.cancel
+                        )me.listarAvisos(1);
+                })
             },
             saveAdendum(e) {
                 e.preventDefault();
@@ -446,11 +598,40 @@
                     currentObj.output = error;
                 });
             },
+            saveAcuseCierre(e) {
+                e.preventDefault();
+                let currentObj = this;
+
+                let formData = new FormData();
+
+                formData.append('pdf', this.pdf);
+                formData.append('id', this.id);
+                formData.append('contratista', this.acuseContratista);
+                axios.post('/saveAcuseCierre', formData)
+                .then(function (response) {
+
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+
+                })
+                .catch(function (error) {
+                    currentObj.output = error;
+                });
+            },
             /**Metodo para mostrar los registros */
-            listarAvisos(page, buscar, criterio){
+            listarAvisos(page){
                 let me = this;
                 me.loadingModule = true;
-                var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&empresa=' + me.b_empresa;
+                var url = '/iniobra?page=' + page + '&buscar=' + me.buscar +
+                    '&criterio=' + me.criterio + '&empresa=' + me.b_empresa +
+                    '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
@@ -486,17 +667,10 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
-                let me = this;
-                //Actualiza la pagina actual
-                me.pagination.current_page = page;
-                //Envia la petición para visualizar la data de esta pagina
-                me.listarAvisos(page,buscar,criterio);
-            },
             closeForm(){
                 this.listado = 1;
                 this.limpiarDatos();
-                this.listarAvisos(1,'','ini_obras.clave');
+                this.listarAvisos(1);
             },
             limpiarBusqueda(){
                 let me=this;
@@ -517,6 +691,8 @@
                     total_importe : 0,
                     total_costo_directo: 0,
                     total_costo_indirecto: 0,
+                    total_extra: 0,
+                    total_original: 0,
                     anticipo: 0,
                     total_anticipo: 0,
                     lotesContrato: [],
@@ -527,7 +703,8 @@
                     descripcion_larga: '',
                     descripcion_corta: '',
                     total_construccion: 0,
-                    direccion_proy: ''
+                    direccion_proy: '',
+                    folio_siroc:'',
                 }
             },
             eliminarContrato(data =[]){
@@ -551,12 +728,34 @@
                         'Contrato borrada correctamente.',
                         'success'
                         )
-                         me.listarAvisos(1,'','ini_obras.clave');
+                         me.listarAvisos(1);
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
+            },
+            storeObs(id){
+            let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/obra/storeObs',{
+                    'aviso_id': id,
+                    'comentario' : me.comentario
+                }).then(function (response){
+                    me.listarAvisos(me.pagination.current_page); //se enlistan nuevamente los registros
+                    me.comentario = '';
+                    me.arrayObs.push(response.data)
+                    //me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Observación creada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                });
             },
             mostrarDetalle(){
                 this.tipoForm='create';
@@ -610,8 +809,11 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.pdf='';
+                this.listarAvisos(1);
             },
-            abrirModal(accion,data =[]){
+            abrirModal(opciones){
+                console.log(opciones)
+                const {accion, data} = {...opciones}
                 switch(accion){
                     case 'subirArchivo':
                     {
@@ -629,6 +831,7 @@
                         this.tituloModal='Subir registro de obra';
                         this.id=data['id'];
                         this.pdf=data['documento'];
+                        this.folio_siroc = '';
                         break;
                     }
                     case 'subirAdendum':
@@ -638,6 +841,42 @@
                         this.tituloModal='Subir adendum';
                         this.id=data['id'];
                         this.pdf=data['adendum'];
+                        break;
+                    }
+                    case 'subirAcuse':
+                    {
+                        this.modal =1;
+                        this.tipoAccion = 4;
+                        this.tituloModal='Subir acuse de cierre';
+                        this.id=data['id'];
+                        this.acuseContratista = 0;
+                        this.pdf='';
+                        break;
+                    }
+                    case 'subirAcuseContratista':{
+                        this.modal =1;
+                        this.tipoAccion = 4;
+                        this.tituloModal='Subir acuse de cierre';
+                        this.id=data['id'];
+                        this.pdf='';
+                        this.acuseContratista = 1;
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal = 3;
+                        this.tituloModal = 'Observaciones';
+                        this.arrayObs = data['obs'];
+                        this.id=data['id'];
+                        this.comentario = '';
+                        break;
+                    }
+                    case 'porCerrar':{
+                        this.modal =4;
+                        this.tipoAccion = 4;
+                        this.tituloModal='Enviar a por cerrar';
+                        this.avisoObra.id=data['id'];
+                        this.avisoObra.total_original = data['total_original'];
+                        this.avisoObra.total_extra = 0;
                         break;
                     }
                 }
@@ -690,7 +929,7 @@
 
         },
         mounted() {
-            this.listarAvisos(1,this.buscar,this.criterio);
+            this.listarAvisos(1);
             this.selectProyectos();
             this.getEmpresa();
 
@@ -708,17 +947,5 @@
         position: fixed !important;
         background-color: #3c29297a !important;
     }
-    .table2 {
-        margin: auto;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
-    .td2, .th2 {
-        border: solid rgb(200, 200, 200) 1px;
-        padding: .5rem;
-    }
+
 </style>

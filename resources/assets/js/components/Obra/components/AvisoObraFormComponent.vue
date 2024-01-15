@@ -159,7 +159,7 @@
             <div class="col-md-12">
                 <TableComponent :cabecera="[
                     'Opciones','Descripcion','Lote','Manzana','M&sup2;','Costo Directo',
-                    'Costo Indirecto','Obra extra','Importe','Termino'
+                    'Costo Indirecto','Obra extra','Importe','Termino','Obs'
                 ]">
                     <template v-slot:tbody>
                         <template v-if="data.lotesContrato.length">
@@ -194,10 +194,14 @@
                                     <input v-model="detalle.obra_extra" type="text" class="form-control">
                                 </td>
                                 <td>
-                                    {{'$' +$root.formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
+
+                                    {{'$' +$root.formatNumber(calculateIva(detalle.costo_directo, detalle.costo_indirecto)) }}
                                 </td>
                                 <td>
                                     <input type="date" v-model="detalle.fin_obra" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" v-model="detalle.observacion" class="form-control">
                                 </td>
                             </tr>
 
@@ -337,7 +341,7 @@
                 lote:'',
                 sublote:'',
                 manzana:'',
-                construccion:'',
+                construccion: 0,
                 costo_directo:0,
                 costo_indirecto:0,
                 descripcion: '',
@@ -369,6 +373,9 @@
                 var resultado_importe_total =0.0;
                 for(var i=0;i<this.data.lotesContrato.length;i++){
                     resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.data.lotesContrato[i].costo_directo) + parseFloat(this.data.lotesContrato[i].costo_indirecto)
+                    if(this.data.iva == 1){
+                        resultado_importe_total = resultado_importe_total*1.16;
+                    }
                 }
                 return Math.round(resultado_importe_total*100)/100;
             },
@@ -389,6 +396,14 @@
         },
 
         methods : {
+            calculateIva(monto1, monto2){
+                let total = 0
+                total = parseFloat(monto1) + parseFloat(monto2);
+                if( this.data.iva == 1)
+                    return (total)*1.16;
+                return total
+
+            },
             getEmpresa(){
                 let me = this;
                 me.empresas=[];
@@ -490,7 +505,9 @@
                 });
             },
             encuentra(id,emp_constructora){
+                console.log(id)
                 let sw=0;
+                if(id != 0)
                 for(var i=0;i<this.data.lotesContrato.length;i++)
                 {
                     if(this.data.lotesContrato[i].lote_id == id )
@@ -527,6 +544,8 @@
                             descripcion: me.descripcion,
                             importe: me.importe,
                             modelo:me.modelo,
+                            observacion: '',
+                            fin_obra: '',
                             costo_directo: parseFloat(me.costo_directo),
                             costo_indirecto: parseFloat(me.costo_indirecto),
                             obra_extra:0,
@@ -680,7 +699,7 @@
                     'direccion_proy':this.data.direccion_proy
                 }).then(function (response){
                     me.proceso=false;
-                    this.$emit('close')
+                    me.$emit('close')
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',

@@ -38,6 +38,8 @@ class CreateSolicEquipamientosTable extends Migration
             $table->string('comp_pago_1',95)->nullable();
             $table->string('comp_pago_2',95)->nullable();
 
+            $table->string('render',191)->nullable();
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes');

@@ -97,7 +97,14 @@
                                             <td v-if="equipamientos.sublote == null" class="td2" v-text="equipamientos.num_lote"></td>
                                             <td v-else class="td2" v-text="equipamientos.num_lote + ' ' + equipamientos.sublote"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
-                                            <td class="td2" v-text="equipamientos.equipamiento"></td>
+                                            <td class="td2">
+                                                {{ equipamientos.equipamiento }}
+                                                <a v-if="equipamientos.render"
+                                                    class="btn btn-success" title="Descargar Render"
+                                                    :href="equipamientos.render" target="_blank">
+                                                    <i class="fa fa-cloud-download"></i>
+                                                </a>
+                                            </td>
                                             <template>
                                                 <td v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td v-else class="td2" v-text="'Sin fecha'"></td>

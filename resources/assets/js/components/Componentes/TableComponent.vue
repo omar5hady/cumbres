@@ -1,6 +1,6 @@
 <template>
     <div class="table-responsive">
-        <table class="table2 table-bordered table-striped table-sm">
+        <table :class=" `${type} table-bordered table-striped table-sm`">
             <thead>
                 <template v-if="cabecera">
                     <tr>
@@ -22,6 +22,11 @@ export default {
         cabecera:{
             type: Array,
             required: false
+        },
+        type:{
+            type: String,
+            required:false,
+            default: 'table2'
         }
     }
 };

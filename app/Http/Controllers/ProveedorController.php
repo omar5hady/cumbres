@@ -220,35 +220,43 @@ class ProveedorController extends Controller
 
     public function selectProveedor(Request $request){
         $proveedor = Proveedor::select('id','proveedor');
-        $usuarios = User::join('personal','users.id','=','personal.id')
-            ->select('users.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
-            ->where('users.condicion','=',1)
-            ->where('users.rol_id','!=',10)
-            ->whereNotIn('users.usuario',['yasmin_ventas', 'ALEJANDROT','descartado', 'oficina', 'e_preciado', 'may_jaz']);
-        $clientes = Cliente::join('personal','clientes.id','=','personal.id')
-                ->select('clientes.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
-                ->where('clientes.clasificacion','!=',7);
+        if($request->constancia){
+            $proveedor = $proveedor->where('const_fisc','!=',NULL);
+            $proveedor = $proveedor->take(150)->get();
 
-        if($request->proveedor != ''){
-            $proveedor = $proveedor->where('proveedor','like','%'.$request->proveedor.'%')
-            ->limit(10);
-
-            $usuarios = $usuarios->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->proveedor . '%')
-            ->limit(10);
-
-            $clientes = $clientes->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"),'like','%'.$request->proveedor.'%')
-            ->limit(10);
+            return ['proveedor' => $proveedor];
         }
+        else{
+            $usuarios = User::join('personal','users.id','=','personal.id')
+                ->select('users.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
+                ->where('users.condicion','=',1)
+                ->where('users.rol_id','!=',10)
+                ->whereNotIn('users.usuario',['yasmin_ventas', 'ALEJANDROT','descartado', 'oficina', 'e_preciado', 'may_jaz']);
+            $clientes = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->select('clientes.id', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS proveedor"))
+                    ->where('clientes.clasificacion','!=',7);
 
-        $proveedor = $proveedor->get();
-        $usuarios = $usuarios->get();
-        $clientes = $clientes->get();
+            if($request->proveedor != ''){
+                $proveedor = $proveedor->where('proveedor','like','%'.$request->proveedor.'%')
+                ->limit(10);
+
+                $usuarios = $usuarios->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->proveedor . '%')
+                ->limit(10);
+
+                $clientes = $clientes->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"),'like','%'.$request->proveedor.'%')
+                ->limit(10);
+            }
+
+            $proveedor = $proveedor->take(50)->get();
+            $usuarios = $usuarios->get();
+            $clientes = $clientes->get();
 
 
-        return [
-                    'proveedor' => $proveedor,
-                    'usuarios' => $usuarios,
-                    'clientes' => $clientes,
-                ];
+            return [
+                        'proveedor' => $proveedor,
+                        'usuarios' => $usuarios,
+                        'clientes' => $clientes,
+                    ];
+        }
     }
 }

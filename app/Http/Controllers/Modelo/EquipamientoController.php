@@ -195,6 +195,7 @@ class EquipamientoController extends Controller
             $cotizacion->tanque_estacionario = $equipamiento['tanque_estacionario'];
             $cotizacion->cocina = $equipamiento['cocina'];
             $cotizacion->usuario = Auth::user()->id;
+            $cotizacion->observacion = $cliente['observacion'];
             $cotizacion->save();
             DB::commit();
 
@@ -299,6 +300,7 @@ class EquipamientoController extends Controller
                 DB::raw("CONCAT(creator.nombre,' ',creator.apellidos) AS creator"),
                 'l.num_lote', 'l.sublote', 'l.manzana', 'l.terreno', 'l.construccion',
                 'l.emp_constructora','l.emp_terreno', 'users.usuario',
+                'e.tipo_proyecto as tipo',
                 'm.nombre as modelo', 'f.nombre as proyecto', 'e.num_etapa as etapa'
             );
 
@@ -316,6 +318,8 @@ class EquipamientoController extends Controller
         $fecha = new Carbon($cotizacion->created_at);
         $cotizacion->f_created = $fecha->formatLocalized('%d de %B del %Y %H:%m');
         $cotizacion->modelo = strtoupper($cotizacion->modelo);
+        $cotizacion->proyecto = strtoupper($cotizacion->proyecto);
+        $cotizacion->etapa = strtoupper($cotizacion->etapa);
         $array = [
                 array('titulo' => 'Cocina Tradicional', 'monto' => $cotizacion->cocina_tradicional),
                 array('titulo' => 'Cocina (Casa Muestra)', 'monto' => $cotizacion->cocina),
@@ -344,18 +348,21 @@ class EquipamientoController extends Controller
         +$cotizacion->espejos
         +$cotizacion->tanque_estacionario;
 
+        $fecha = new Carbon($cotizacion->created_at);
+
         $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
         ->select('promociones.nombre')
         ->where('lotes_promocion.lote_id','=',$cotizacion->lote_id)
-        ->where('promociones.v_ini','<=',$cotizacion->created_at)
-        ->where('promociones.v_fin','>=',$cotizacion->created_at)->get();
+        ->where('promociones.v_ini','<=',$fecha->format('Y-m-d'))
+        ->where('promociones.v_fin','>=',$fecha->format('Y-m-d'))
+        ->get();
 
         if(sizeof($promocion))
             $cotizacion->promocion = $promocion[0]->nombre;
         else
             $cotizacion->promocion = '';
 
-        // return $cotizacion;
+         //return $cotizacion;
 
         $pdf = \PDF::loadview('pdf.cotizador.cotizacionEquipamiento',['cotizacion' => $cotizacion]);
         return $pdf->stream('Cotizacion.pdf');

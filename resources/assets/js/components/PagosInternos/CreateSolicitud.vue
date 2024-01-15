@@ -6,7 +6,8 @@
                 <strong><a style="color:#FFFFFF;" href="/">Home</a></strong>
             </li>
         </ol>
-        <div class="container-fluid">
+        <LoadingComponent v-if="loading"></LoadingComponent>
+        <div class="container-fluid" v-else>
             <!-- Ejemplo de tabla Listado -->
             <div class="card scroll-box">
                 <div class="card-header">
@@ -176,6 +177,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === 5 }" v-if="b_status ===  5">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -190,6 +192,7 @@
                                                     :icon="'icon-eye'" @click="vistaFormulario('ver', solic)"
                                                 ></Button>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -220,6 +223,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status === '' }" v-if="b_status ===  ''">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -242,6 +246,7 @@
                                                         :icon="'icon-trash'" @click="deleteSolic(solic.id)"
                                                 ></Button>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -288,6 +293,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==0 }" v-if="b_vbgerente == 0">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -315,6 +321,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -353,6 +360,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==1 }" v-if="b_vbgerente == 1">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -374,6 +382,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -419,6 +428,7 @@
                             <div class="tab-pane fade"  v-bind:class="{ 'active show': b_status===1 }" v-if="b_status === 1">
                                 <TableComponent :cabecera="[
                                     '',
+                                    'Folio',
                                     'Proveedor',
                                     'Solicitante',
                                     'Fecha solic',
@@ -439,6 +449,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -501,6 +512,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==0 }" v-if="b_vbgerente == 0">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -528,6 +540,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -586,6 +599,7 @@
                                     <div class="tab-pane fade"  v-bind:class="{ 'active show': b_vbgerente==1 }" v-if="b_vbgerente == 1">
                                         <TableComponent :cabecera="[
                                             '',
+                                            'Folio',
                                             'Proveedor',
                                             'Solicitante',
                                             'Fecha solic',
@@ -607,6 +621,7 @@
                                                             <i class="fa fa-file-pdf-o"></i>
                                                         </a>
                                                     </td>
+                                                    <td>{{ solic.id }}</td>
                                                     <td class="td2">
                                                         <template v-if="solic.const_fisc">
                                                             <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -678,6 +693,7 @@
                                         <tr>
                                             <th></th>
                                             <th></th>
+                                            <th>Folio</th>
                                             <th>Proveedor</th>
                                             <th>Solicitante</th>
                                             <th>Fecha solic</th>
@@ -711,6 +727,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -768,6 +785,7 @@
                                         <tr>
                                             <th></th>
                                             <th></th>
+                                            <th>Folio</th>
                                             <th>Proveedor</th>
                                             <th>Solicitante</th>
                                             <th>Fecha solic</th>
@@ -802,6 +820,7 @@
                                                     <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                             </td>
+                                            <td>{{ solic.id }}</td>
                                             <td class="td2">
                                                 <template v-if="solic.const_fisc">
                                                     <a :href="solic.const_fisc" target="_blank" title="Ver constancia fiscal" class="btn btn-primary">{{solic.proveedor}}</a>
@@ -826,7 +845,7 @@
                                                 </template>
                                             </td>
                                             <td class="td2">
-                                                <Button v-if="solic.fecha_pago && !solic.comprobante_pago"
+                                                <Button v-if="!solic.comprobante_pago"
                                                     :btnClass="'btn-info'" :size="'btn-sm'" :title="'Cargar comprobante de Pago'"
                                                     @click="abrirModal('comprobante', solic)" :icon="'fa fa-upload'"
                                                 ></Button>
@@ -1903,13 +1922,15 @@ import Button from "../Componentes/ButtonComponent.vue";
 import Nav from "../Componentes/NavComponent.vue";
 import RowModal from "../Componentes/ComponentesModal/RowModalComponent.vue";
 import vSelect from 'vue-select';
+import LoadingComponent from '../Componentes/LoadingComponent.vue'
 
 export default {
     components: {
         ModalComponent,
         TableComponent,
         Button, RowModal,Nav,
-        vSelect
+        vSelect,
+        LoadingComponent
     },
     props: {
         encargado:{type: String},
@@ -1982,6 +2003,7 @@ export default {
             loading : false,
             id : '',
             comentario : '',
+            loading: true,
 
             modal: 0,
             tituloModal: "",
@@ -2458,37 +2480,42 @@ export default {
             })
         },
         formSubmitFile(e) {
-            e.preventDefault();
-            let currentObj = this;
-            this.cargando = 1;
+            if(this.cargando == 0){
+                e.preventDefault();
+                let currentObj = this;
+                this.cargando = 1;
 
-            let formData = new FormData();
-            formData.append('file', this.newArchivo.file);
-            formData.append('id', this.solicitudData.id);
-            formData.append('tipo', this.newArchivo.tipo);
-            let me = this;
-            axios.post('/files-solic', formData)
-            .then(function (response) {
-                me.cerrarModal();
-                me.cargando = 0;
-                me.solicitudData.files = response.data.data;
-                me.newArchivo = {
-                    description: "",
-                    tipo: "",
-                    file: "",
-                    nom_archivo: 'Seleccione Archivo'
-                };
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Archivo guardado correctamente',
-                    showConfirmButton: false,
-                    timer: 2000
-                })
-            }).catch(function (error) {
-                currentObj.output = error;
-                me.cargando = 0;
-            });
+                let formData = new FormData();
+                formData.append('file', this.newArchivo.file);
+                formData.append('id', this.solicitudData.id);
+                formData.append('tipo', this.newArchivo.tipo);
+                let me = this;
+                axios.post('/files-solic', formData)
+                .then(function (response) {
+                    me.cerrarModal();
+                    me.cargando = 0;
+                    me.solicitudData.files = response.data.data;
+                    me.newArchivo = {
+                        description: "",
+                        tipo: "",
+                        file: "",
+                        nom_archivo: 'Seleccione Archivo'
+                    };
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }).catch(function (error) {
+                    currentObj.output = error;
+                    me.cargando = 0;
+                });
+            }
+            else{
+                return;
+            }
         },
         deleteDetalle(id){
             axios.delete(`/solic-detalles/deleteDetalle/${id}`,
@@ -2864,6 +2891,7 @@ export default {
         /**Metodo para mostrar los registros */
         indexSolicitudes(page) {
             let me = this;
+            this.loading = true;
             me.arraySolic = [];
             var url =
                 "/solic-pagos?page=" + page
@@ -2887,9 +2915,11 @@ export default {
                     me.arraySolic = respuesta.solicitudes;
                     me.admin = respuesta.admin;
                     me.total = respuesta.total;
+                    me.loading = false;
                 })
                 .catch(function(error) {
                     console.log(error);
+                    me.loading = false;
                 });
         },
         getProveedores(search,loading){

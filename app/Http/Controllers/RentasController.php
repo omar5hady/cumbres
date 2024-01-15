@@ -119,6 +119,75 @@ class RentasController extends Controller
                         ->where('lotes.id','=',$request->id)
                         ->first();
     }
+    public function renovar(Request $request){
+        $rentaAct = Renta::findOrFail($request->id);
+        $rentaAct->status = 3;
+        $rentaAct->save();
+        $pagos = $request->pagares;
+        try {
+            DB::beginTransaction();
+            //Registro para renta
+            $renta = new Renta();
+            $renta->lote_id = $rentaAct->lote_id;
+            //Arrendatario
+            $renta->tipo_arrendatario = $rentaAct->tipo_arrendatario;
+            $renta->nombre_arrendatario = $rentaAct->nombre_arrendatario;
+            $renta->tel_arrendatario = $rentaAct->tel_arrendatario;
+            $renta->clv_lada_arr = $rentaAct->clv_lada_arr;
+            //Moral arrendatario
+            $renta->representante_arrendatario = $rentaAct->representante_arrendatario;
+            $renta->dir_arrendatario = $rentaAct->dir_arrendatario;
+            $renta->cp_arrendatario = $rentaAct->cp_arrendatario;
+            $renta->col_arrendatario = $rentaAct->col_arrendatario;
+            $renta->estado_arrendatario = $rentaAct->estado_arrendatario;
+            $renta->municipio_arrendatario = $rentaAct->municipio_arrendatario;
+            $renta->rfc_arrendatario = $rentaAct->rfc_arrendatario;
+            //Aval (Fiador)
+            $renta->tipo_aval = $rentaAct->tipo_aval;
+            $renta->nombre_aval = $rentaAct->nombre_aval;
+            $renta->tel_aval = $rentaAct->tel_aval;
+            $renta->clv_lada_aval = $rentaAct->clv_lada_aval;
+                //Moral aval
+            $renta->representante_aval = $rentaAct->representante_aval;
+            $renta->dir_aval = $rentaAct->dir_aval;
+            $renta->cp_aval = $rentaAct->cp_aval;
+            $renta->col_aval = $rentaAct->col_aval;
+            $renta->estado_aval = $rentaAct->estado_aval;
+            $renta->municipio_aval = $rentaAct->municipio_aval;
+            //Testigo
+            $renta->nombre = $rentaAct->nombre;
+            //Datos contrato
+            $renta->monto_renta = $request->monto_renta;
+            $renta->fecha_ini = $request->fecha_ini;
+            $renta->fecha_fin = $request->fecha_fin;
+            $renta->num_meses = $request->num_meses;
+            $renta->fecha_firma = Carbon::now();
+            $renta->dep_garantia = $rentaAct->dep_garantia;
+
+            $renta->muebles = $rentaAct->muebles;
+            $renta->adendum = $rentaAct->adendum;
+            $renta->servicios = $rentaAct->servicios;
+
+            $renta->luz = $rentaAct->luz;
+            $renta->agua = $rentaAct->agua;
+            $renta->gas = $rentaAct->gas;
+            $renta->television = $rentaAct->television;
+            $renta->telefonia = $rentaAct->telefonia;
+            $renta->save();
+            //Se crean los pagares de la renta
+            foreach($pagos as $pago){
+                //Llamada a la función privada que genera el pagare.
+                $this->storePagare($renta->id,
+                    $pago['num_pago'],
+                    $pago['fecha'],
+                    $pago['importe']
+                );
+            }
+        DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
     //Funcion para registrar una nueva renta
     public function storeRenta(Request $request){
         $datosRenta = $request->datosRenta;
@@ -299,7 +368,7 @@ class RentasController extends Controller
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->leftjoin('arrendadores','licencias.duenio_id','arrendadores.id')
                     ->select('rentas.id','rentas.num_meses','rentas.fecha_fin', 'rentas.facturar',
-                        'rentas.status', 'rentas.monto_renta', 'rentas.nombre_arrendatario',
+                        'rentas.status', 'rentas.monto_renta', 'rentas.nombre_arrendatario', 'rentas.lote_id',
                         'lotes.calle', 'lotes.numero', 'lotes.interior', 'etapas.num_etapa as etapa',
                         'fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo'
                     );
@@ -563,9 +632,11 @@ class RentasController extends Controller
             $contrato = Renta::findOrFail($request->id);
             $contrato->status = $request->status;
 
-            if($contrato->status == 0){//Estatus cancelado
-                $contrato->motivo_cancel = $request->motivo_cancel;//Se captura el motivo de cancelación
-                $contrato->fecha_firma = $datosRenta['fecha_firma'];//Fecha en la que se cancela
+            if($contrato->status == 0 || $contrato->status == 3){//Estatus cancelado o finalizado
+                if($contrato->status == 0){
+                    $contrato->motivo_cancel = $request->motivo_cancel;//Se captura el motivo de cancelación
+                    $contrato->fecha_firma = $datosRenta['fecha_firma'];//Fecha en la que se cancela
+                }
 
                 $lote= Lote::findOrFail($contrato->lote_id);//Se accede al registro del lote
                 $lote->contrato = 0;//Se libera el lote para que aparezca nuevamente en el inventario

@@ -206,6 +206,11 @@
                         <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>
                     </select>
                 </RowModal>
+
+                <RowModal label1="Comentarios" clsRow1="col-md-8" id1="comentarios">
+                    <textarea class="form-control" cols="30" rows="3" v-model="cliente.observacion"></textarea>
+                </RowModal>
+
                 <div v-show="errorCot" class="form-group row div-error">
                     <div class="text-center text-error">
                         <div
@@ -218,6 +223,12 @@
             </template>
         </template>
         <template v-slot:buttons-footer>
+            <a v-if="doc_equipamiento && vista == 0" title="Descargar catalogo"
+                :href="`/downloadCatEquipamiento/${doc_equipamiento}`"
+                    target="_blank"
+                    class="btn btn-scarlet">
+                    <i class="fa fa-file-pdf-o"></i>
+            </a>
             <ButtonComponent v-if="vista==0" icon="icon-check" btnClass="btn-success" @click="openSave()">Guardar cotización</ButtonComponent>
             <ButtonComponent v-if="vista==1" icon="icon-check" btnClass="btn-success" @click="printCotizacion()">Imprimir cotización</ButtonComponent>
         </template>
@@ -236,6 +247,11 @@
     export default {
         props:{
             titulo:{
+                type: String,
+                default: '',
+                required: true
+            },
+            doc_equipamiento:{
                 type: String,
                 default: '',
                 required: true
@@ -291,7 +307,8 @@
                     proyecto_interes_id: '',
                     publicidad_id: '',
                     edo_civil: '',
-                    vendedor_id: ''
+                    vendedor_id: '',
+                    observacion: ''
                 },
                 cotizacion:{},
                 errorCot: 0,
@@ -361,7 +378,8 @@
                     proyecto_interes_id: this.catalogo.fraccionamiento_id,
                     publicidad_id: '',
                     edo_civil: '',
-                    vendedor_id: ''
+                    vendedor_id: '',
+                    observacion: ''
                 }
             },
             changeCocinaTracional(){
@@ -417,11 +435,12 @@
                         encuentraRFC = respuesta.rfc1;
 
                         if(encuentraRFC==1) {
-                        let res = respuesta.personaid[0];
-                        me.cliente = {
-                            ...res,
-                            proyecto_interes_id: me.catalogo.fraccionamiento_id
-                        }
+                            let res = respuesta.personaid[0];
+                            me.cliente = {
+                                ...res,
+                                proyecto_interes_id: me.catalogo.fraccionamiento_id,
+                                observacion: ''
+                            }
                         }
                     })
                     .catch(function (error) {

@@ -213,7 +213,7 @@ sup {
 }
 
 a {
-    color: #00ADEF;
+    color: #1C2B4C;
     text-decoration: none;
     background-color: transparent;
     -webkit-text-decoration-skip: objects;
@@ -2122,8 +2122,8 @@ fieldset[disabled] a.btn {
 
 .btn-primary {
     color: #fff;
-    background-color: #00ADEF;
-    border-color: #00ADEF;
+    background-color: #1C2B4C;
+    border-color: #1C2B4C;
 }
 
 .btn-primary:hover {
@@ -2139,8 +2139,8 @@ fieldset[disabled] a.btn {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-    background-color: #00ADEF;
-    border-color: #00ADEF;
+    background-color: #1C2B4C;
+    border-color: #1C2B4C;
 }
 
 .btn-primary:active,
@@ -2402,16 +2402,16 @@ fieldset[disabled] a.btn {
 }
 
 .btn-outline-primary {
-    color: #00ADEF;
+    color: #1C2B4C;
     background-color: transparent;
     background-image: none;
-    border-color: #00ADEF;
+    border-color: #1C2B4C;
 }
 
 .btn-outline-primary:hover {
     color: #fff;
-    background-color: #00ADEF;
-    border-color: #00ADEF;
+    background-color: #1C2B4C;
+    border-color: #1C2B4C;
 }
 
 .btn-outline-primary:focus,
@@ -2421,7 +2421,7 @@ fieldset[disabled] a.btn {
 
 .btn-outline-primary.disabled,
 .btn-outline-primary:disabled {
-    color: #00ADEF;
+    color: #1C2B4C;
     background-color: transparent;
 }
 
@@ -2429,8 +2429,8 @@ fieldset[disabled] a.btn {
 .btn-outline-primary.active,
 .show>.btn-outline-primary.dropdown-toggle {
     color: #fff;
-    background-color: #00ADEF;
-    border-color: #00ADEF;
+    background-color: #1C2B4C;
+    border-color: #1C2B4C;
 }
 
 .btn-outline-secondary {
@@ -2659,7 +2659,7 @@ fieldset[disabled] a.btn {
 
 .btn-link {
     font-weight: normal;
-    color: #00ADEF;
+    color: #1C2B4C;
     border-radius: 0;
 }
 
@@ -2839,7 +2839,7 @@ tbody.collapse.show {
 .dropdown-item:active {
     color: #fff;
     text-decoration: none;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .dropdown-item.disabled,
@@ -3130,11 +3130,11 @@ tbody.collapse.show {
 
 .custom-control-input:checked~.custom-control-indicator {
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .custom-control-input:focus~.custom-control-indicator {
-    box-shadow: 0 0 0 1px #e4e5e6, 0 0 0 3px #00ADEF;
+    box-shadow: 0 0 0 1px #e4e5e6, 0 0 0 3px #1C2B4C;
 }
 
 .custom-control-input:active~.custom-control-indicator {
@@ -3173,7 +3173,7 @@ tbody.collapse.show {
 }
 
 .custom-checkbox .custom-control-input:indeterminate~.custom-control-indicator {
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3E%3Cpath stroke='%23fff' d='M0 2h4'/%3E%3C/svg%3E");
 }
 
@@ -3382,7 +3382,7 @@ tbody.collapse.show {
 .show>.nav-pills .navbar .dropdown-toggle,
 .navbar .show>.nav-pills .dropdown-toggle {
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .nav-fill .nav-item {
@@ -4010,7 +4010,7 @@ tbody.collapse.show {
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
     list-style: none;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .breadcrumb::after {
@@ -4073,7 +4073,7 @@ tbody.collapse.show {
 .pagination li.active a {
     z-index: 2;
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
     border-color: #5dc4c4;
 }
 
@@ -4100,7 +4100,7 @@ tbody.collapse.show {
     padding: 0.5rem 0.75rem;
     margin-left: -1px;
     line-height: 1.25;
-    color: #00ADEF;
+    color: #1C2B4C;
     background-color: #fff;
     border: 1px solid #ddd;
 }
@@ -4165,7 +4165,7 @@ tbody.collapse.show {
 
 .badge-primary {
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .badge-primary[href]:focus,
@@ -4442,7 +4442,7 @@ tbody.collapse.show {
     height: 1rem;
     line-height: 1rem;
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
     transition: width 0.6s ease;
 }
 
@@ -4522,8 +4522,8 @@ tbody.collapse.show {
 .list-group-item.active {
     z-index: 2;
     color: #fff;
-    background-color: #00ADEF;
-    border-color: #00ADEF;
+    background-color: #1C2B4C;
+    border-color: #1C2B4C;
 }
 
 .list-group-flush .list-group-item {
@@ -5447,7 +5447,7 @@ button.close {
 }
 
 .bg-primary {
-    background-color: #00ADEF !important;
+    background-color: #1C2B4C !important;
 }
 
 a.bg-primary:focus,
@@ -5551,7 +5551,7 @@ a.bg-dark:hover {
 }
 
 .border-primary {
-    border-color: #00ADEF !important;
+    border-color: #1C2B4C !important;
 }
 
 .border-secondary {
@@ -8325,7 +8325,7 @@ a.bg-dark:hover {
 }
 
 .text-primary {
-    color: #00ADEF !important;
+    color: #1C2B4C !important;
 }
 
 a.text-primary:focus,
@@ -8514,7 +8514,7 @@ body {
 .aside-menu .nav-tabs .nav-link.active,
 .aside-menu .nav-tabs .navbar .active.dropdown-toggle,
 .navbar .aside-menu .nav-tabs .active.dropdown-toggle {
-    color: #00ADEF;
+    color: #1C2B4C;
     border-right-color: #c2cfd6;
     border-left-color: #c2cfd6;
 }
@@ -9917,11 +9917,11 @@ button {
 }
 
 .callout-primary {
-    border-left-color: #00ADEF;
+    border-left-color: #1C2B4C;
 }
 
 .callout-primary h4 {
-    color: #00ADEF;
+    color: #1C2B4C;
 }
 
 .callout-secondary {
@@ -10145,7 +10145,7 @@ button {
 
 .card-accent-primary {
     border-top-width: 2px;
-    border-top-color: #00ADEF;
+    border-top-color: #1C2B4C;
 }
 
 .card-accent-secondary {
@@ -10405,7 +10405,7 @@ base-chart.chart {
     z-index: 20002;
     width: 100%;
     height: 2px;
-    background: #00ADEF;
+    background: #1C2B4C;
     border-top-right-radius: 1px;
     border-bottom-right-radius: 1px;
     transition: width 350ms;
@@ -10486,16 +10486,16 @@ base-chart.chart {
     z-index: 2000;
     width: 100%;
     height: 2px;
-    background: #00ADEF;
+    background: #1C2B4C;
 }
 
 .modal-primary .modal-content {
-    border-color: #00ADEF;
+    border-color: #1C2B4C;
 }
 
 .modal-primary .modal-header {
     color: #fff;
-    background-color: #00ADEF;
+    background-color: #1C2B4C;
 }
 
 .modal-secondary .modal-content {
@@ -10709,7 +10709,7 @@ base-chart.chart {
 .navbar-nav .nav-link:hover,
 .navbar-nav .navbar .dropdown-toggle:hover,
 .navbar .navbar-nav .dropdown-toggle:hover {
-    color: #00ADEF;
+    color: #1C2B4C;
 }
 
 .navbar-nav .open>.nav-link,
@@ -10948,7 +10948,7 @@ base-chart.chart {
 .sidebar .nav-link.active i,
 .sidebar .navbar .active.dropdown-toggle i,
 .navbar .sidebar .active.dropdown-toggle i {
-    color: #00ADEF;
+    color: #1C2B4C;
 }
 
 .sidebar .nav-link:hover,
@@ -10973,7 +10973,7 @@ base-chart.chart {
 .sidebar .nav-link.nav-link-primary,
 .sidebar .navbar .nav-link-primary.dropdown-toggle,
 .navbar .sidebar .nav-link-primary.dropdown-toggle {
-    background: #00ADEF;
+    background: #1C2B4C;
 }
 
 .sidebar .nav-link.nav-link-primary i,
@@ -11937,7 +11937,7 @@ base-chart.chart {
 }
 
 .switch-primary>.switch-input:checked~.switch-label {
-    background: #00ADEF !important;
+    background: #1C2B4C !important;
     border-color: #00b0bb;;
 }
 
@@ -11947,29 +11947,29 @@ base-chart.chart {
 
 .switch-primary-outline>.switch-input:checked~.switch-label {
     background: #fff !important;
-    border-color: #00ADEF;
+    border-color: #1C2B4C;
 }
 
 .switch-primary-outline>.switch-input:checked~.switch-label::after {
-    color: #00ADEF;
+    color: #1C2B4C;
 }
 
 .switch-primary-outline>.switch-input:checked~.switch-handle {
-    border-color: #00ADEF;
+    border-color: #1C2B4C;
 }
 
 .switch-primary-outline-alt>.switch-input:checked~.switch-label {
     background: #fff !important;
-    border-color: #00ADEF;
+    border-color: #1C2B4C;
 }
 
 .switch-primary-outline-alt>.switch-input:checked~.switch-label::after {
-    color: #00ADEF;
+    color: #1C2B4C;
 }
 
 .switch-primary-outline-alt>.switch-input:checked~.switch-handle {
-    background: #00ADEF !important;
-    border-color: #00ADEF;
+    background: #1C2B4C !important;
+    border-color: #1C2B4C;
 }
 
 .switch-secondary>.switch-input:checked~.switch-label {
@@ -13115,7 +13115,7 @@ hr.transparent {
 }
 
 *[dir="rtl"] .callout.callout-primary {
-    border-right-color: #00ADEF;
+    border-right-color: #1C2B4C;
 }
 
 *[dir="rtl"] .callout.callout-secondary {

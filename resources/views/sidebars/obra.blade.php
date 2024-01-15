@@ -39,33 +39,40 @@
                             <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
                         </li>
                     @endif
+                    @if(Auth::user()->estimaciones == 1)
+                        <li @click="menu=302" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-money"></i> Resumen de pago</a>
+                        </li>
+                    @endif
                 </ul>
             </li>
         @endif
 
-        @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1 || Auth::user()->estimaciones == 1)
-            <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#">
-                    <i class="fa fa-building-o"></i> Departamentos
-                </a>
-                <ul class="nav-dropdown-items nav-dropdown-items2">
-                    @if(Auth::user()->aviso_obra == 1)
-                        <li @click="menu=281 "class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso Departamentos</a>
-                        </li>
-                    @endif
-                    @if(Auth::user()->estimaciones == 1)
-                        <li @click="menu=282" class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa fa-star-half"></i> Partidas</a>
-                        </li>
-                    @endif
-                    @if(Auth::user()->estimaciones == 1)
-                        <li @click="menu=283" class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
-                        </li>
-                    @endif
-                </ul>
-            </li>
+        @if(Auth::user()->rol_id != 13)
+            @if(Auth::user()->aviso_obra == 1 || Auth::user()->partidas == 1 || Auth::user()->estimaciones == 1)
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link nav-dropdown-toggle" href="#">
+                        <i class="fa fa-building-o"></i> Departamentos
+                    </a>
+                    <ul class="nav-dropdown-items nav-dropdown-items2">
+                        @if(Auth::user()->aviso_obra == 1)
+                            <li @click="menu=281 "class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso Departamentos</a>
+                            </li>
+                        @endif
+                        @if(Auth::user()->estimaciones == 1)
+                            <li @click="menu=282" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-star-half"></i> Partidas</a>
+                            </li>
+                        @endif
+                        @if(Auth::user()->estimaciones == 1)
+                            <li @click="menu=283" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Estimaciones</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
         @endif
 
         @if(Auth::user()->entregas == 1)
@@ -73,7 +80,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
             </li>
         @endif
-        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
+        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9  || Auth::user()->rol_id == 8)
             <li @click="menu=55 "class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
             </li>

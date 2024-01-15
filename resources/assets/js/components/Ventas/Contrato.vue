@@ -1859,6 +1859,32 @@
                         </div>
                     </template>
                     <hr>
+
+                    <template v-if="status == 0">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Imprimir:</label>
+                            <div class="col-md-4">
+                                <a class="btn btn-primary"
+                                :href="`/devoluciones/printSolicDevolucion?id=${id_contrato}&tipo=Cancelacion`"
+                                    target="_blank"><i class="fa fa-file-text"></i> Solicitud de Devolución
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="btn btn-primary"
+                                :href="`/devoluciones/printSolicCancelacion?id=${id_contrato}`"
+                                    target="_blank"><i class="fa fa-file-text"></i> Solicitud de Cancelación
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
+                            <div class="col-md-9">
+                                <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
+                            </div>
+                        </div>
+                    </template>
+
+                    <hr>
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
                         <div class="col-md-9">
@@ -1867,12 +1893,6 @@
                     </div>
                 </template>
 
-                <div class="form-group row" v-if="tipoAccion==1 && status == 0">
-                    <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
-                    <div class="col-md-9">
-                        <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
-                    </div>
-                </div>
 
                 <template v-if="tipoAccion==2">
                     <div class="form-group row">

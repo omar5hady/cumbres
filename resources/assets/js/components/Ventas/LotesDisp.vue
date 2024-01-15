@@ -13,7 +13,7 @@
                          <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' +
                                 buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+
                                 b_apartado +'&criterio=' + criterio + '&rolId=' + rolId + '&casa_muestra=' + casa_muestra+
-                                '&b_empresa='+b_empresa  + '&tipo=' + tab">
+                                '&b_empresa='+b_empresa  + '&tipo=' + tab + '&rango1=' + b_rango1 + '&rango2=' + b_rango2">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
                         <!---->
@@ -90,6 +90,10 @@
                                         <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
                                         <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
 
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" v-model="b_rango1" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Desde: $">
+                                        <input type="text" v-model="b_rango2" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Hasta: $">
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -670,6 +674,7 @@
             <ModalCotizacion v-if="modal==2"
                 :titulo="tituloModal"
                 :catalogo="cotizacion"
+                :doc_equipamiento="doc_equipamiento"
                 @close="cerrarModal()"
             ></ModalCotizacion>
 
@@ -764,12 +769,15 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                b_rango1: '',
+                b_rango2: '',
                 b_apartado : '',
                 casa_muestra : 0,
                 b_empresa:'',
                 empresas:[],
                 tab:1,
                 equipamiento:[],
+                doc_equipamiento: '',
                 cotizacion:{
                     precio_venta: 0,
                     cocina_tradicional: 0,
@@ -820,6 +828,8 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 this.tab = vista;
                 this.criterio = 'lotes.fraccionamiento_id';
                 this.b_modelo = '';
+                this.b_rango1 = '';
+                this.b_rango2 = '';
                 this.selectFraccionamientos();
                 this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.criterio,this.rolId);
             },
@@ -828,6 +838,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 let me = this;
                 var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 +
                     '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio +
+                    '&rango1=' + this.b_rango1 + '&rango2=' + this.b_rango2 +
                     '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra +'&b_empresa='+this.b_empresa + '&tipo=' + this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1170,6 +1181,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                                 this.modal = 2;
                                 this.tituloModal = 'Cotización'
                                 const equipamiento = data['cat_equipamiento']
+                                this.doc_equipamiento = data['doc_equipamiento'];
                                 if(data['cat_equipamiento'].length > 0){
                                     this.cotizacion = {...equipamiento[0]}
                                 }

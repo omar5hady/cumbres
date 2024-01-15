@@ -136,8 +136,12 @@
                                 <div class="col-md-8" >
                                     <div class="input-group">
                                         <Button icon="fa fa-search" @click="listarProspectos(1)">Buscar</Button>
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + this.b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad +  + '&b_advertising=' + b_advertising + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_advertising=' + b_advertising +
+                                            '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+b_seguimiento +
+                                            '&b_publicidad=' + b_publicidad + '&criterio=' + criterio + '&b_aux=' + b_aux"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_advertising=' + b_advertising +
+                                            '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&seguimiento='+b_seguimiento +
+                                            '&b_publicidad=' + b_publicidad + '&criterio=' + criterio + '&b_aux=' + b_aux"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>

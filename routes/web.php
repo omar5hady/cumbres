@@ -326,6 +326,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/rentas/pruebaSms','RentasController@pruebaSms');
         Route::put('/lotes/updateDatosRenta','RentasController@updateDatosRenta');
         Route::post('/rentas/storeRenta','RentasController@storeRenta');
+        Route::post('/rentas/renovar','RentasController@renovar');
         Route::put('/rentas/updateRenta','RentasController@updateRenta');
         Route::post('/rentas/storeDeposito','RentasController@storeDeposito');
         Route::put('/rentas/updateDeposito','RentasController@updateDeposito');
@@ -385,6 +386,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/sp/getConceptos','solicPagos\SolicitudesController@getConceptos');
     Route::get('/sp/getDetallesPendientes','solicPagos\SolicitudesController@getDetallesPendientes');
     Route::get('/sp/indexPendientes','solicPagos\SolicitudesController@indexPendientes');
+    Route::get('/sp/exportPendientes','solicPagos\SolicitudesController@exportPendientes');
 
     ///////////////////// RUTAS INGRESOS CONCRETANIA
         Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');
@@ -486,13 +488,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/iniobra','IniObraController@index');
         Route::get('/iniobra/excelAvisos','IniObraController@excelAvisos');
         Route::post('/iniobra/registrar','IniObraController@store');
+        Route::post('/obra/storeObs','IniObraController@storeObs');
         Route::put('/iniobra/actualizar','IniObraController@ActualizarIniObra');
+        Route::put('/iniobra/changeStatus','IniObraController@changeStatus');
         Route::get('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');
         Route::get('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
         Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
         Route::post('/iniobra/lote/registrar','IniObraController@agregarIniObraLotes');
         Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
         Route::get('/iniobra/pdf','IniObraController@contratoObraPDF')->name('contratos.pdf');
+        Route::get('/iniobra/adendum','IniObraController@adendumPDF')->name('adendum.pdf');
         Route::get('/iniobra/relacion/excel/{id}','IniObraController@exportExcel');
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::get('/licencias/excelVisita','LicenciasController@excelVisita');
@@ -500,7 +505,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avisoObra/siroc','IniObraController@imprimirSiroc');
 
         Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
-        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra');
+        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra');
+        Route::post('/saveAcuseCierre','Contrato\ContratoObraController@store');
         Route::post('/formSubmitAdendum/{id}','IniObraController@formSubmitAdendum');
         Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile');
         Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra');
@@ -535,6 +541,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/storeObs','EstimacionController@storeObs');
 
         Route::get('/estimaciones/resumen','EstimacionController@resumen');
+        Route::get('/estimaciones/getResumenPago','EstimacionController@getResumenPago');
         Route::get('/estimaciones/excelEdoCuenta','IniObraController@excelEdoCuenta');
 
         Route::get('/estimaciones/resumenEdoCuenta','EstimacionController@resumenEdoCuenta');
@@ -933,6 +940,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
         Route::get('/devoluciones/excel','DevolucionController@excelHistDev');
+        Route::get('/devoluciones/printSolicDevolucion','DevolucionController@printSolicDevolucion');
+        Route::get('/devoluciones/printSolicCancelacion','DevolucionController@printSolicCancelacion');
 
         Route::get('/devolucionVirtual/index','DevolucionController@cancelacionesVirtuales');
         Route::post('/devolucionVirtual/store','DevolucionController@storeDevolucionVirtual');
@@ -987,6 +996,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/equipamiento/indexHistorial','SolEquipamientoController@indexHistorial');
         Route::post('/equipamiento/indexHistorial/upfile1','SolEquipamientoController@upComprPago1');
         Route::post('/equipamiento/indexHistorial/upfile2','SolEquipamientoController@upComprPago2');
+        Route::post('/equipamiento/indexHistorial/saveRender','SolEquipamientoController@saveRender');
         Route::get('/equipamiento/indexHistorial/downloadFile1/{fileName}','SolEquipamientoController@downloadPago1');
         Route::get('/equipamiento/indexHistorial/downloadFile2/{fileName}','SolEquipamientoController@downloadPago2');
         Route::get('/equipamiento/contRea','SolEquipamientoController@indexRea');
@@ -1308,6 +1318,11 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////////////////// Rutas Amenidades
         Route::resource('/amenities', Privada\AmenidadesController::class);
+
+        //////////////////////// Rutas Asesores Externos
+        Route::resource('/inmobiliarias', Inmobiliaria\InmobiliariaController::class);
+        Route::get('/selectInmobiliarias','Inmobiliaria\InmobiliariaController@selectInmobiliarias');
+        Route::resource('/asesores-externos', Inmobiliaria\AsesoresExternosController::class);
 
         /////////////////////// Rutas Ecotenologias
         Route::resource('/ecotecnologia', EcotecnologiaController::class);

@@ -16,8 +16,72 @@ use App\Notifications\NotifyAdmin;
 use App\Credito;
 use File;
 
+use App\DropboxFiles;
+use Spatie\Dropbox\Client;
+use Illuminate\Support\Facades\Storage;
+
+
 class SolEquipamientoController extends Controller
 {
+    public function __construct()
+    {
+        // Necesitamos obtener una instancia de la clase Client la cual tiene algunos métodos
+        // que serán necesarios.
+        $this->dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+    }
+
+    private function storeFile(Request $request){
+
+        $carpeta = 'Ventas/Equipamiento/';
+        $name = uniqid() . '' . $request->file->getClientOriginalName();
+        // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
+        // el directorio donde será almacenado, el archivo y el nombre.
+        // ¡No olvides validar todos estos datos antes de guardar el archivo!
+        Storage::disk('dropbox')->putFileAs(
+            $carpeta,
+            $request->file,
+            $name
+        );
+
+        // Creamos el enlace publico en dropbox utilizando la propiedad dropbox
+        // definida en el constructor de la clase y almacenamos la respuesta.
+        $response = $this->dropbox->createSharedLinkWithSettings(
+            $carpeta.$name,
+            ["requested_visibility" => "public"]
+        );
+
+        // Creamos un nuevo registro en la tabla files con los datos de la respuesta.
+        $archivo = new DropboxFiles();
+        $archivo->name = $response['name'];
+        $archivo->extension = $request->file->getClientOriginalExtension();
+        $archivo->size = $response['size'];
+        $archivo->public_url = $response['url'];
+        $archivo->save();
+
+        return $archivo->public_url;
+
+    }
+
+    private function deleteRender($file){
+        $drop = DropboxFiles::select('id')->where('public_url','=',$file)->get();
+        if(sizeof($drop)){
+            $render = DropboxFiles::findOrFail($drop[0]->id);
+            $this->dropbox->delete('Ventas/Equipamiento/'.$render->name);
+            $render->delete();
+        }
+    }
+
+    public function saveRender(Request $request){
+        $solic = Solic_equipamiento::findOrFail($request->id);
+        $file = $this->storeFile($request);
+
+        if($solic->render != NULL){
+            $this->deleteRender($solic->render);
+        }
+
+        $solic->render = $file;
+        $solic->save();
+    }
 
     //Funcion para optener informacion general sobre las solicitudes de equipamiento
     public function indexHistorial(Request $request){
@@ -62,6 +126,7 @@ class SolEquipamientoController extends Controller
                     'solic_equipamientos.control',
                     'solic_equipamientos.anticipo_cand',
                     'solic_equipamientos.liquidacion_cand',
+                    'solic_equipamientos.render',
                     'proveedores.proveedor',
                     'proveedores.tipo',
                     'equipamientos.equipamiento',

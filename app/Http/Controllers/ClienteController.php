@@ -25,7 +25,7 @@ use Auth;
 class ClienteController extends Controller
 {
     /* Función para obtener y retornar los clientes
-
+S
         La petición cambia segun el rol del usuario, para vendedores se busca solo los que
         el asesor de ventas tenga asignado para el.
 
@@ -63,7 +63,6 @@ class ClienteController extends Controller
             /* Getting the query generator. */
             $queryGen = $this->getQueryGen();
         }
-
 
         /* Checking if the user is logged in and if the user is an asesor. */
         if( Auth::user()->rol_id == 2){
@@ -370,6 +369,8 @@ class ClienteController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
+        $clasificacion = $request->clasificacion;
+
         try{
             DB::beginTransaction();
             $cliente = Cliente::findOrFail($request->id);
@@ -418,7 +419,7 @@ class ClienteController extends Controller
             $cliente->precio_rango = $request->precio_rango;
             $cliente->ingreso = $request->ingreso;
             $cliente->coacreditado = $request->coacreditado;
-            $cliente->clasificacion = $request->clasificacion;
+            $cliente->clasificacion = $clasificacion;
 
             if($cliente->nombre_coa != $request->nombre_coa){
                 $cliente->sexo_coa = $request->sexo_coa;
@@ -451,6 +452,20 @@ class ClienteController extends Controller
                 }
 
             }
+
+            $rfc_coa = $cliente->rfc_coa;
+
+            if($clasificacion == 1 ){
+                $coacreditado = Personal::join('clientes','clientes.id','=','personal.id')
+                    ->select('clientes.id')->where('personal.rfc','like','%'.$rfc_coa.'%')->get();
+
+                if(sizeof($coacreditado)){
+                    $c = Cliente::findOrFail($coacreditado[0]->id);
+                    $c->clasificacion = 1;
+                    $c->save();
+                }
+            }
+
             $cliente->save();
 
             $observacion = new Cliente_observacion();
@@ -813,6 +828,7 @@ class ClienteController extends Controller
             DB::beginTransaction();
             $persona = Personal::findOrFail($request->id);
             $cliente = Cliente::findOrFail($request->id);
+            $cliente->seguimiento = Carbon::now();
             $vendedorAnt = Personal::select('id','nombre','apellidos')->where('id','=',$cliente->vendedor_id)->get();
             $vendedorNew = Personal::select('id','nombre','apellidos')->where('id','=',$request->asesor_id)->get();
             $cliente->vendedor_id = $request->asesor_id;
@@ -823,6 +839,13 @@ class ClienteController extends Controller
             $observacion->cliente_id = $request->id;
             $observacion->comentario = 'Cliente reasignado del asesor '.$vendedorAnt[0]->nombre.' '.$vendedorAnt[0]->apellidos.' al asesor '.$vendedorNew[0]->nombre.' '.$vendedorNew[0]->apellidos;
             $observacion->usuario = Auth::user()->usuario;
+            $observacion->gerente = 1;
+            $observacion->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = 'Cliente reasignado';
+            $observacion->usuario = 'Sistema';
             $observacion->save();
 
             // Se crea notificación para avisar del cambio al nuevo asesor de ventas.
@@ -858,6 +881,7 @@ class ClienteController extends Controller
             DB::beginTransaction();
             //FindOrFail se utiliza para buscar lo que recibe de argumento
             $cliente = Cliente::findOrFail($request->id);
+            $cliente->seguimiento = Carbon::now();
             $cliente->vendedor_id = $request->asesor_id;
             if($cliente->clasificacion == 1 && Auth::user()->id == 28271 || $cliente->clasificacion == 1 && Auth::user()->id == 28270 || $cliente->clasificacion == 1 && Auth::user()->id == 28128)
                 return redirect('/');
@@ -869,6 +893,13 @@ class ClienteController extends Controller
             $observacion->cliente_id = $request->id;
             $observacion->comentario = $request->observacion;
             $observacion->usuario = Auth::user()->usuario;
+            $observacion->gerente = 1;
+            $observacion->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = 'Cliente reasignado';
+            $observacion->usuario = 'Sistema';
             $observacion->save();
 
             DB::commit();
@@ -887,31 +918,44 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->b_publicidad;
+        $b_aux = $request->b_aux;
 
         $personas = $this->getQueryVendedor();
-        $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+        if($b_aux != '')
+            $personas = $personas->where('clientes.vendedor_aux','!=',NULL);
+        else
+            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+
+        if ($buscar!=''){
+            switch($criterio){
+                case 'personal.nombre':
+                {
+                    $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+                default:
+                {
+                    $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
+                    break;
+                }
+
+            }
+        }
 
         if($buscarC != '')
             $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
         else
             $personas = $personas->where('clientes.clasificacion', '!=', 7);
 
-        if($buscar != ''){
-            if($criterio == 'personal.nombre'){
-                $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
-            }
-            else{
-                $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
-            }
-        }
-
         if($request->b_advertising != '')
             $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
 
+        if($publicidad != '')
+            $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-                        ->get();
+                    ->orderBy('personal.apellidos', 'asc')
+                    ->get();
 
 
         return Excel::create('resumen_cliente', function($excel) use ($personas){
@@ -1023,19 +1067,12 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->b_publicidad;
+        $b_aux = $request->b_aux;
+        $seguimiento = $request->seguimiento;
 
         $personas = $this->getQueryGen();
 
-        if($buscarC!='')
-            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
-        else
-            $personas = $personas->where('clientes.clasificacion', '!=', 7);
-
-        if($request->b_advertising != '')
-            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
-
-
-        if($buscar != '')
+        if($buscar != ''){
             switch($criterio){
                 case 'personal.nombre':
                 {
@@ -1044,9 +1081,22 @@ class ClienteController extends Controller
                 }
                 case 'clientes.vendedor_id':
                 {
+                    $fecha = Carbon::now()->subDays(180);
+                    $fecha2 = Carbon::now()->subDays(8);
                     $personas = $personas->where($criterio, '=',$buscar);
-                    if($buscar2 != '')
+                    if($buscar2!=''){
                         $personas = $personas->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%');
+                    }
+
+                    if($seguimiento != ''){
+                        if($seguimiento == 1){ // Pendientes
+                            $personas = $personas->whereBetween('seguimiento',[$fecha,$fecha2]);
+                        }
+                        if($seguimiento == 0){ // Al dia
+                            $personas = $personas->whereBetween('seguimiento',[$fecha2,Carbon::now()]);
+                        }
+                    }
+
                     break;
                 }
                 case 'clientes.created_at':
@@ -1054,6 +1104,7 @@ class ClienteController extends Controller
                     $personas = $personas->whereBetween($criterio, [$buscar, $buscar2]);
                     if($buscar3 != '')
                         $personas = $personas->where('fraccionamientos.id','=',$buscar3);
+
                     break;
                 }
                 default:
@@ -1061,7 +1112,16 @@ class ClienteController extends Controller
                     $personas = $personas->where($criterio, 'like', '%'. $buscar . '%');
                     break;
                 }
+
             }
+        }
+        if($buscarC != '')
+            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+        else
+            $personas = $personas->where('clientes.clasificacion', '!=', 7);
+
+        if($request->b_advertising != '')
+            $personas = $personas->where('clientes.advertising','=',$request->b_advertising);
 
         if($publicidad != '')
             $personas = $personas->where('clientes.publicidad_id', '=', $publicidad);
@@ -1331,6 +1391,13 @@ class ClienteController extends Controller
                     ->whereDate('end_date','>=',$current->addDays(1))
                     ->whereDate('start_date','>=',$current->addDays(1));
                 }
+                if($hora > 15){
+                    $calendario = $calendario
+                    ->orWhere('event_name','=','Vacaciones')
+                    ->where('proyecto_id','=',$tipo)
+                    ->whereDate('end_date','>=',$current->addDays(1))
+                    ->whereDate('start_date','>=',$current->addDays(1));
+                }
                 $calendario = $calendario->get();
 
         $cal = [];
@@ -1359,7 +1426,8 @@ class ClienteController extends Controller
             ->whereNotIn('users.usuario',[
                 'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
-                'yasmin_ventas', 'ivan.mtz'
+                'yasmin_ventas', 'ivan.mtz', 'MARIAG',
+                'aldo.alvarez'
             ])
 
             ->orderBy('vendedores.cont_leads','asc')
@@ -1392,8 +1460,8 @@ class ClienteController extends Controller
                     ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
-                        'ALEJANDROT',
-                        'yasmin_ventas', 'ivan.mtz'
+                        'ALEJANDROT', 'aldo.alvarez',
+                        'yasmin_ventas', 'ivan.mtz',  'MARIAG'
                     ])
 
                     ->orderBy('vendedores.cont_leads','asc')
@@ -1414,8 +1482,9 @@ class ClienteController extends Controller
                     ->whereNotIn('users.id',$castigados)
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
-                        'Guadalupe', 'ALEJANDROT',
-                        'yasmin_ventas','lisseth_rios', 'ivan.mtz'
+                        'Guadalupe', 'ALEJANDROT',  'MARIAG',
+                        'yasmin_ventas','lisseth_rios', 'ivan.mtz',
+                        'aldo.alvarez'
                     ])
                     ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
@@ -1701,7 +1770,5 @@ class ClienteController extends Controller
 
 
     }
-
-
 
 }

@@ -1191,7 +1191,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                         'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.casa_renta', 'lotes.precio_renta', 'modelos.ficha_tecnica as archivo',
-                        'modelos.cat_equipamiento',
+                        'modelos.cat_equipamiento as doc_equipamiento',
                         'lotes.area_jardin', 'lotes.area_estacionamiento', 'lotes.indivisos',
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
@@ -1264,6 +1264,10 @@ class LoteController extends Controller
             $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra);
         if($request->b_empresa != '')//Busqueda por empresa constructora
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+
+        if ($request->rango1 != '' && $request->rango2 != '') {
+            $lotes = $lotes->whereBetween(DB::raw('lotes.precio_base + lotes.sobreprecio + lotes.excedente_terreno + lotes.obra_extra'), [$request->rango1, $request->rango2]);
+        }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
@@ -1442,7 +1446,21 @@ class LoteController extends Controller
                     $costoEquipamiento += $eq->costo;
                 }
 
+
             $lote->ajuste += $costoEquipamiento;
+            $lote->precio_base = $lote->precio_base + $lote->ajuste;
+            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+            $lote->precio_c_equipamiento = $lote->precio_venta;
+
+            $lote->cat_equipamiento = CatEquipamiento::where('modelo_id','=',$lote->modelo_id)
+                ->where('status','=',1)
+                ->get();
+
+            if(sizeof($lote->cat_equipamiento)){
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->cocina_tradicional;
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->vestidor;
+                $lote->precio_c_equipamiento += $lote->cat_equipamiento[0]->closets;
+            }
         }
             //Creación y retorno en excel de lotes habilitados para venta
             if($request->tipo == 1){
@@ -1453,11 +1471,10 @@ class LoteController extends Controller
                             $sheet->row(1, [
                                 'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
                                 '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente','Obra extra',
-                                'Sobreprecios','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
+                                'Sobreprecios','Precio venta' ,'Precio c/Equipamiento','Promocion','Fecha de termino', 'Canal de venta'
                             ]);
 
-
-                            $sheet->cells('A1:R1', function ($cells) {
+                            $sheet->cells('A1:S1', function ($cells) {
                                 $cells->setBackground('#052154');
                                 $cells->setFontColor('#ffffff');
                                 // Set font family
@@ -1471,7 +1488,6 @@ class LoteController extends Controller
                                 $cells->setAlignment('center');
                             });
 
-
                             $cont=1;
 
                             $sheet->setColumnFormat(array(
@@ -1480,28 +1496,23 @@ class LoteController extends Controller
                                 'M' => '$#,##0.00',
                                 'N' => '$#,##0.00',
                                 'O' => '$#,##0.00',
+                                'P' => '$#,##0.00',
                             ));
-
-
 
                             foreach($lotes as $index => $lote) {
                                 if($lote->fecha_termino_ventas == NULL){
                                     $lote->fecha_termino_ventas = 'Por definir';
                                 }else{
-                                setlocale(LC_TIME,'es_MX.utf8');
-                                $mesAño = new Carbon($lote->fecha_termino_ventas);
-                                $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
+                                    setlocale(LC_TIME,'es_MX.utf8');
+                                    $mesAño = new Carbon($lote->fecha_termino_ventas);
+                                    $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
                                 }
                                 if($lote->casa_muestra == 1){
                                     $casaMuestra = 'Casa muestra';
-
-
                                 }else{
                                     $casaMuestra = '';
                                 }
 
-                                $lote->precio_base = $lote->precio_base + $lote->ajuste;
-                                $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
                                 $promocion=[];
                                 $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
                                     ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
@@ -1514,7 +1525,6 @@ class LoteController extends Controller
                                 }
                                 else
                                     $lote->promocion = 'Sin Promoción';
-
 
                                 $cont++;
                                 if($lote->sublote !=''){
@@ -1544,6 +1554,7 @@ class LoteController extends Controller
                                     $lote->obra_extra,
                                     $lote->sobreprecio,
                                     $lote->precio_venta,
+                                    $lote->precio_c_equipamiento,
                                     $lote->promocion,
                                     $lote->fecha_termino_ventas,
                                     $lote->comentarios,
@@ -1573,11 +1584,12 @@ class LoteController extends Controller
 
                             $sheet->row(1, [
                                 'Proyecto', 'Etapa' ,'Nivel', '# Departamento', '% Avance', 'Modelo', 'Calle',
-                                '# Oficial', 'Construccion','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
+                                '# Oficial', 'Construccion','Precio venta' ,'Precio c/Equipamiento',
+                                'Promocion','Fecha de termino', 'Canal de venta'
                             ]);
 
 
-                            $sheet->cells('A1:M1', function ($cells) {
+                            $sheet->cells('A1:N1', function ($cells) {
                                 $cells->setBackground('#052154');
                                 $cells->setFontColor('#ffffff');
                                 // Set font family
@@ -1596,6 +1608,7 @@ class LoteController extends Controller
 
                             $sheet->setColumnFormat(array(
                                 'J' => '$#,##0.00',
+                                'K' => '$#,##0.00',
                             ));
 
 
@@ -1604,9 +1617,9 @@ class LoteController extends Controller
                                 if($lote->fecha_termino_ventas == NULL){
                                     $lote->fecha_termino_ventas = 'Por definir';
                                 }else{
-                                setlocale(LC_TIME,'es_MX.utf8');
-                                $mesAño = new Carbon($lote->fecha_termino_ventas);
-                                $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
+                                    setlocale(LC_TIME,'es_MX.utf8');
+                                    $mesAño = new Carbon($lote->fecha_termino_ventas);
+                                    $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
                                 }
                                 if($lote->casa_muestra == 1){
                                     $casaMuestra = 'Departamento muestra';
@@ -1615,23 +1628,16 @@ class LoteController extends Controller
                                 }else{
                                     $casaMuestra = '';
                                 }
-
-                                $lote->precio_base = $lote->precio_base + $lote->ajuste;
-                                $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
                                 $promocion=[];
                                 $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
                                     ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
                                     ->where('lotes_promocion.lote_id','=',$lote->id)
                                     ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
                                 if(sizeof($promocion) > 0){
-                                    // $lote->v_iniPromo = $promocion[0]->v_ini;
-                                    // $lote->v_finPromo = $promocion[0]->v_fin;
                                     $lote->promocion = $promocion[0]->nombre;
                                 }
                                 else
                                     $lote->promocion = 'Sin Promoción';
-
-
                                 $cont++;
                                 if($lote->sublote !=''){
                                     $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
@@ -1655,6 +1661,7 @@ class LoteController extends Controller
                                     $loteConInterior,
                                     $lote->construccion,
                                     $lote->precio_venta,
+                                    $lote->precio_c_equipamiento,
                                     $lote->promocion,
                                     $lote->fecha_termino_ventas,
                                     $lote->comentarios,

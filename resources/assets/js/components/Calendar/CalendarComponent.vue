@@ -185,6 +185,11 @@ export default {
         locale: 'es',
         selectable:true,
         weekends: true,
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridWeek,dayGridDay' // user can switch between the two
+        }
 
 
       },

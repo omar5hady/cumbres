@@ -135,7 +135,10 @@
         </template>
 
         <template v-if="menu==54">
-            <aviso-obra rol-id="{{ Auth::user()->rol_id }}"></aviso-obra>
+            <aviso-obra
+                rol-id="{{ Auth::user()->rol_id }}"
+                usuario="{{ Auth::user()->usuario }}"
+            ></aviso-obra>
         </template>
 
         <template v-if="menu==55">
@@ -382,7 +385,7 @@
         </template>
 
         <template v-if="menu==248">
-            <estimaciones user-name="{{ Auth::user()->usuario }}"></estimaciones>
+            <estimaciones user-name="{{ Auth::user()->usuario }}" rol-id="{{ Auth::user()->rol_id }}"></estimaciones>
         </template>
 
         <template v-if="menu==249">
@@ -586,6 +589,13 @@
         </template>
         <template v-if="menu==301">
             <cat-cotizaciones></cat-cotizaciones>
+        </template>
+        <template v-if="menu==302">
+            <resumen-pago rol-id = "{{ Auth::user()->rol_id }}"
+                usuario="{{ Auth::user()->usuario }}"></resumen-pago>
+        </template>
+        <template v-if="menu==303">
+            <inmobiliarias rol-id = "{{ Auth::user()->rol_id }}"></inmobiliarias>
         </template>
     @endif
 @endsection

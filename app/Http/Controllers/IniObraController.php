@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
+use App\ObsContratoObra;
 use App\Lote;
 use App\Licencia;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,16 @@ use App\Importe_extra;
 
 class IniObraController extends Controller
 {
+    public function storeObs(Request $request){
+        $obs = new ObsContratoObra();
+        $obs->comentario = $request->comentario;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->aviso_id = $request->aviso_id;
+        $obs->save();
+
+        return $obs;
+    }
+
     //Función privada que retorna la query para obtener los avisos de obra
     private function getQueryAvisos(Request $request){
         $buscar = $request->buscar;
@@ -33,10 +44,12 @@ class IniObraController extends Controller
         //Query principal
         $avisos = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin', 'ini_obras.f_fin2',
+            'ini_obras.acuse_cierre', 'ini_obras.acuse_contratista',
+            'ini_obras.total_original', 'ini_obras.total_extra', 'ini_obras.tipo', 'ini_obras.iva',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
             'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
-            'ini_obras.direccion_proy', 'ini_obras.adendum',
+            'ini_obras.direccion_proy', 'ini_obras.adendum', 'ini_obras.adendum2','ini_obras.folio_siroc',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
         if($request->tipo == 'Departamentos')
             $avisos = $avisos->where('ini_obras.tipo','=','Departamentos');
@@ -45,6 +58,9 @@ class IniObraController extends Controller
         //Filtro por empresa constructora
         if($request->empresa != '')
             $avisos = $avisos->where('ini_obras.emp_constructora','=',$request->empresa);
+
+        if($request->status != '')
+            $avisos = $avisos->where('ini_obras.status','=', $request->status);
         //Filtro de busqueda
         if ($buscar!=''){
             if($criterio!='ini_obras.f_ini' && $criterio!='ini_obras.f_fin'){
@@ -56,7 +72,21 @@ class IniObraController extends Controller
                 ->where($criterio, '=',  $buscar );
             }
         }
+
+        if(Auth::user()->rol_id == 13)
+            $avisos = $avisos->where('ini_obras.contratista_id','=',Auth::user()->id);
         return $avisos;
+    }
+
+    public function changeStatus(Request $request){
+        $contrato = Ini_obra::findOrFail($request->id);
+        $contrato->status = $request->status;
+        if($contrato->status == 1){
+            $contrato->total_original = $request->total_original;
+            $contrato->f_fin2 = $request->f_fin2;
+            $contrato->total_extra = $request->total_extra;
+        }
+        $contrato->save();
     }
 
     // Función que retorna los avisos de obra
@@ -65,7 +95,19 @@ class IniObraController extends Controller
         if (!$request->ajax()) return redirect('/');
         //Llamada a la función privada que devuelve la query principal
         $ini_obra = $this->getQueryAvisos($request);
-        $ini_obra = $ini_obra->orderBy('ini_obras.id', 'desc')->paginate(8);
+        $ini_obra = $ini_obra->orderBy('ini_obras.f_fin2', 'desc')->paginate(8);
+
+        foreach($ini_obra as $index => $contrato){
+
+            $contrato->obs = ObsContratoObra::where('aviso_id','=',$contrato->id)->get();
+            $contrato->diferencia = 0;
+            $now = Carbon::now();
+
+            $date = Carbon::parse($contrato->f_fin2);
+            $contrato->diferencia = $date->diffInDays($now, false);
+        }
+
+
         //Retorno de información
         return [
             'pagination' => [
@@ -181,6 +223,7 @@ class IniObraController extends Controller
             'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
             'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
             'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+            'ini_obra_lotes.observacion',
             'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.lote', 'desc')->get();
@@ -205,9 +248,11 @@ class IniObraController extends Controller
             $ini_obra->clave = $request->clave;
             $ini_obra->f_ini = $fecha_ini;
             $ini_obra->f_fin = $fecha_fin;
+            $ini_obra->f_fin2 = $fecha_fin;
             $ini_obra->calle1 = $request->calle1;
             $ini_obra->calle2 = $request->calle2;
             $ini_obra->total_importe = $request->total_importe;
+            $ini_obra->total_original = $request->total_importe;
             $ini_obra->total_costo_directo = $request->total_costo_directo;
             $ini_obra->total_costo_indirecto =  $request->total_costo_indirecto;
             $ini_obra->anticipo = $request->anticipo;
@@ -245,6 +290,7 @@ class IniObraController extends Controller
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
+                $lotes->observacion= $det['observacion'];
                 $lotes->save();
                 //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
@@ -380,7 +426,7 @@ class IniObraController extends Controller
             $ini_obra->contratista_id = $request->contratista_id;
             $ini_obra->clave = $request->clave;
             $ini_obra->f_ini = $fecha_ini;
-            $ini_obra->f_fin = $fecha_fin;
+            $ini_obra->f_fin2 = $fecha_fin;
             $ini_obra->calle1 = $request->calle1;
             $ini_obra->calle2 = $request->calle2;
             $ini_obra->total_importe = $request->total_importe;
@@ -420,6 +466,7 @@ class IniObraController extends Controller
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
                 $lotes->obra_extra= $det['obra_extra'];
+                $lotes->observacion= $det['observacion'];
                 $lotes->save();
                 //Se verifica que la partida corresponda a un lote
                 if($det['lote_id']>0){
@@ -532,9 +579,58 @@ class IniObraController extends Controller
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
             //Creación de PDF
-            $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
+            if($cabecera[0]->tipo == 'Urbanización' )
+                $pdf = \PDF::loadview('pdf.obra.contratoUrbanizacion',['cabecera' => $cabecera]);
+            else
+                $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
             //retorno de archivo.
             return $pdf->stream('contrato.pdf');
+    }
+
+    //Función para imprimir el contrato de obra en PDF.
+    public function adendumPDF(Request $request)
+    {
+        $id = $request->id;
+        //Query para obtener los datos del contrato
+        $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('ini_obras.*',
+            'contratistas.nombre as contratista',
+            'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
+            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc', 'fraccionamientos.delegacion',
+            'fraccionamientos.estado as estadoFracc','fraccionamientos.ciudad as ciudadFracc')
+        ->where('ini_obras.id','=',$id)
+        ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+        //Se obtienen los datos relacionados a los lotes del contrato.
+        $cabecera[0]->etapa = Ini_obra_lote::join('lotes','ini_obra_lotes.lote_id','=','lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->select('etapas.num_etapa')
+                        ->where('ini_obra_lotes.ini_obra_id','=',$id)
+                        ->first();
+        //Formato de fecha
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $tiempo = new Carbon($cabecera[0]->f_ini);
+        $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
+        //Apoderado legal que es seleccionado
+        $cabecera[0]->apoderado = $request->apoderado;
+        //Formato para fechas
+        $tiempo2 = new Carbon($cabecera[0]->f_fin);
+        $tiempo3 = new Carbon($cabecera[0]->f_fin2);
+        $hoy = new Carbon();
+        $cabecera[0]->hoy = $hoy->formatLocalized('%d de %B de %Y');
+        $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
+        $cabecera[0]->f_fin2 = $tiempo3->formatLocalized('%d de %B de %Y');
+
+        //Alamacenamiento de cantidad en letra
+        $cabecera[0]->totalOriginalLetra = NumerosEnLetras::convertir(($cabecera[0]->total_original + $cabecera[0]->total_extra),'Pesos',true,'Centavos');
+        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
+        //Formato de moneda
+        $cabecera[0]->total_original = number_format((float)($cabecera[0]->total_original + $cabecera[0]->total_extra),2,'.',',');
+        $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.',',');
+            //Creación de PDF
+            $pdf = \PDF::loadview('pdf.obra.adendum',['cabecera' => $cabecera]);
+            //retorno de archivo.
+            return $pdf->stream('adendum.pdf');
     }
 
     //Codigo para exportar vista PRE a excel
@@ -788,6 +884,15 @@ class IniObraController extends Controller
     public function formSubmitAdendum(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        $c = Ini_obra::findOrFail($id);
+        if($c->status == 1)
+            $this->saveAdendumImporte($request, $id);
+        else
+            $this->saveAdendum($request, $id);
+        return back();
+    }
+
+    private function saveAdendum(Request $request, $id){
         //Se accede a la información del aviso de obra
         $pdfAnterior = Ini_obra::select('adendum', 'id')
             ->where('id', '=', $id)
@@ -811,7 +916,32 @@ class IniObraController extends Controller
 
         }
 
-        return back();
+    }
+
+    private function saveAdendumImporte(Request $request, $id){
+        //Se accede a la información del aviso de obra
+        $pdfAnterior = Ini_obra::select('adendum2', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        //En caso de tener un archivo ya almacenado
+        if ($pdfAnterior->isEmpty() != 1) {
+            //Se elimina el archivo anterior
+            $pathAnterior = public_path() . '/files/contratos/obra/adendum/' . $pdfAnterior[0]->adendum;
+            File::delete($pathAnterior);
+        }
+        //Variable que almacena el nombre con el que se guardara el nuevo archivo
+        $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+        //Se almacena el archivo en el servidor
+        $moved =  $request->pdf->move(public_path('/files/contratos/obra/adendum/'), $fileName);
+        //Si se almacena correctamente
+        if ($moved) {
+            //Se registra el nombre del archivo en el registro del aviso de obra.
+            $documento = Ini_obra::findOrFail($request->id);
+            $documento->adendum2 = $fileName;
+            $documento->save(); //Insert
+
+        }
+
     }
     ////////////////////////////////////////////////////////////////////////////////
     //Función para registrar y almacenar en el servidor el archivo del contrato.
@@ -866,6 +996,7 @@ class IniObraController extends Controller
             //Se registra el nombre del archivo en el registro del aviso de obra.
             $documento = Ini_obra::findOrFail($request->id);
             $documento->registro_obra = $fileName;
+            $documento->folio_siroc = $request->folio_siroc;
             $documento->save(); //Insert
 
         }
@@ -982,6 +1113,10 @@ class IniObraController extends Controller
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->where('ini_obras.total_importe2','!=',0)
             ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
+
+        if(Auth::user()->rol_id == 13)
+            $ini_obra = $ini_obra->where('ini_obras.contratista_id','=',Auth::user()->id);
+
         //Busqueda por proyecto
         if($request->proyecto != '')
             $ini_obra = $ini_obra->where('ini_obras.fraccionamiento_id','=',$request->proyecto);

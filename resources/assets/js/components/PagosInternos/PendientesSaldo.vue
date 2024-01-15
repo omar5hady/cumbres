@@ -35,6 +35,9 @@
                                 <Button :btnClass="'btn-primary'" :icon="'fa fa-search'" @click="indexSolicitudes(1)">
                                     Buscar
                                 </Button>
+                                <a  :href="'/sp/exportPendientes?proveedor='+ b_proveedor
+                                            +'&empresa='+ b_empresa"
+                                class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                             </div>
                         </div>
                     </div>
@@ -211,7 +214,7 @@ export default {
             me.arrayPendientes=[];
             var url = '/sp/indexPendientes?page=' + page
                 +'&proveedor='+ me.b_proveedor
-                +'&empresa='+ me.b_empresa;;
+                +'&empresa='+ me.b_empresa;
             axios.get(url).then(function (response) {
                 me.arrayPendientes = response.data;
             })
