@@ -5,7 +5,9 @@
                 <div class="input-group">
                     <select class="form-control" v-model="search.b_empresa" >
                         <option value="">Empresa constructora</option>
-                        <option v-for="empresa in $root.$data.empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                        <option v-for="empresa in $root.$data.empresas" :key="empresa" :value="empresa"
+                            v-text="empresa">
+                        </option>
                     </select>
                 </div>
             </div>
@@ -33,18 +35,18 @@
                             v-text="gestor.nombre_gestor">
                         </option>
                     </select>
-                    <input v-else type="text" v-model="search.buscar"
-                        @keyup.enter="$emit('listarData', search)" class="form-control" placeholder="Texto a buscar">
+                    <input v-else type="text" v-model="search.buscar" @keyup.enter="$emit('listarData', search)"
+                        class="form-control" placeholder="Texto a buscar">
                 </div>
-                <div class="input-group"  v-if="search.criterio=='lotes.fraccionamiento_id'">
-                    <select class="form-control col-md-6" v-model="search.b_etapa">
+                <div class="input-group" v-if="search.criterio=='lotes.fraccionamiento_id'">
+                    <select class="form-control col-md-6"  v-model="search.b_etapa">
                         <option value="">Etapa</option>
                         <option v-for="etapas in $root.$data.etapas" :key="etapas.id" :value="etapas.id"
                             v-text="etapas.num_etapa">
                         </option>
                     </select>
                 </div>
-                <div class="input-group"  v-if="search.criterio=='lotes.fraccionamiento_id'">
+                <div class="input-group" v-if="search.criterio=='lotes.fraccionamiento_id'">
                     <input type="text" v-model="search.b_manzana" class="form-control" placeholder="Manzana a buscar">
                     <input type="text" v-model="search.b_lote" class="form-control" placeholder="Lote a buscar">
                 </div>
@@ -54,42 +56,23 @@
             <div class="col-md-10">
                 <div class="input-group">
                     <Button icon="fa fa-search" @click="$emit('listarData', search)">Buscar</Button>
-                    <a :href="'/expediente/excelLiquidacion?buscar=' + search.buscar + '&b_etapa=' + search.b_etapa +
-                            '&b_manzana=' + search.b_manzana + '&b_lote=' + search.b_lote +  '&criterio=' + search.criterio +
-                            '&b_empresa='+search.b_empresa"
+                    <a :href="'/expediente/excelProgramacion?buscar=' + search.buscar + '&b_etapa=' + search.b_etapa + '&b_manzana=' + search.b_manzana +
+                            '&b_lote=' + search.b_lote +  '&criterio=' + search.criterio +'&b_empresa='+ search.b_empresa"
                         class="btn btn-success"><i class="fa fa-file-text"></i> Excel
                     </a>
                 </div>
             </div>
         </div>
-        <TableComponent :cabecera="['','Detener','Celular',
-                'Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana','# Lote',
-                'Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo','Aviso preventivo','Tipo de Crédito',
-                'Institución de Fin.', 'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar',
-                'Crédito Puente','Fecha ultimo pagare','Saldo','Inscripción Infonavit','Liquidación','Entrega de vivienda',
-                'Observaciones'
-            ]"
-        >
+        <TableComponent :cabecera="[
+            'Celular','Email','# Ref','Cliente','Asesor','Proyecto','Etapa','Manzana',
+            '# Lote','Modelo','Dirección','Avance obra','Firma Contrato','Resultado avaluo',
+            'Aviso preventivo','Ingreso expediente','Tipo de Crédito','Institución de Fin.',
+            'Monto autorizado','Fecha vigencia','Valor de la vivienda','Valor escriturar',
+            'Inscripción Infonavit','Liquidación','Firma de Escrituras','Fecha ultimo pagare',
+            'Saldo','Entrega de vivienda','Proceso concluido','Observaciones',
+        ]">
             <template v-slot:tbody>
-                <tr v-for="item in arrayData" :key="item.id"
-                    :style="{ backgroundColor : !item.detenido ? '#FFFFFF' : '#FF5F5F'}">
-                    <td class="td2">
-                        <Button v-if="!item.fecha_liquidacion && item.detenido == 0" btnClass="btn-danger btn-sm"
-                            @click="$emit('regresarExpediente', item.folio)"
-                            icon="fa fa-exclamation-triangle">
-                        </Button>
-                    </td>
-                    <td class="td2">
-                        <Button v-if="item.detenido == 0"
-                            @click="$emit('cambiarProceso', { folio: item.folio, opc:1 })"
-                            btnClass="btn-danger btn-sm" title="Detener solicitud"
-                            icon="fa fa-hand-paper-o">
-                        </Button>
-                        <Button v-if="item.detenido == 1" @click="$emit('cambiarProceso', { folio: item.folio, opc: 0 })"
-                            btnClass="btn-success btn-sm" title="Reanudar solicitud"
-                            icon="fa fa-play">
-                        </Button>
-                    </td>
+                <tr v-for="item in arrayData" :key="item.id">
                     <td class="td2" >
                         <a title="Llamar" class="btn btn-dark" :href="'tel:'+item.celular">
                             <i class="fa fa-phone fa-lg"></i>
@@ -110,14 +93,13 @@
                             {{item.folio}}
                         </a>
                         <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                            <a v-if="item.sit_fg" class="dropdown-item"
-                                @click="$emit('abrirModal',{ opcion: 'sit_fg', data: item })">
+                            <a v-if="item.sit_fg" class="dropdown-item" @click="$emit('abrirModal', { opcion: 'sit_fg', data: item })">
                                 Doc Sit. Geologica
                             </a>
-                            <a class="dropdown-item" v-if="item.pdf != '' && item.pdf != null"
-                                :href="'/downloadAvaluo/'+item.pdf">Avaluo
+                            <a class="dropdown-item" v-if="item.pdf != '' && item.pdf != null" :href="'/downloadAvaluo/'+item.pdf">
+                                Avaluo
                             </a>
-                            <a class="dropdown-item" @click="$emit( 'abrirPDF',item )">
+                            <a class="dropdown-item" @click="$emit('abrirPDF', item )">
                                 Estado de cuenta
                             </a>
                             <a class="dropdown-item" target="_blank" :href="'/contratoCompraVenta/pdf/'+ item.folio">
@@ -130,7 +112,7 @@
                                 Servicios de telecomunición
                             </a>
                             <a class="dropdown-item" :href="'/descargarReglamento/contrato/'+ item.folio">
-                                Reglamento
+                                Reglamento de la etapa
                             </a>
                             <a class="dropdown-item" @click="$emit( 'catEspecificaciones', item.folio )">
                                 Catalogo de especificaciones
@@ -167,65 +149,56 @@
                         </div>
                     </td>
                     <td class="td2" v-text="item.modelo"></td>
-                    <td class="td2" v-text="`${item.calle} ${item.numero} ${item.interior}`"></td>
-                    <td class="td2">{{ item.avance_lote }} %</td>
-                    <td class="td2" v-text="item.fecha_status"></td>
-
-                    <td v-if="item.avaluo_preventivo!='0000-01-01' && item.avaluo_preventivo" class="td2">
+                    <td class="td2" v-text="item.calle + ' '+ item.numero + ' ' + item.interior"></td>
+                    <td class="td2" v-text="item.avance_lote + '%'"></td>
+                    <td class="td2" v-text="this.moment(item.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                    <td v-if="item.avaluo_preventivo!='0000-01-01'" class="td2">
                         <span v-text="'$'+ $root.formatNumber(item.resultado)"></span>
                     </td>
-                    <td v-else class="td2" v-text="'No aplica'"></td>
-
-                    <td v-if="item.aviso_prev=='0000-01-01' || item.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
+                    <td v-if="item.avaluo_preventivo=='0000-01-01'" class="td2">
+                        No aplica
+                    </td>
+                    <td v-if="item.aviso_prev=='0000-01-01' || item.aviso_prev==null" class="td2">
+                        No Aplica
+                    </td>
                     <td v-else-if="item.aviso_prev!='0000-01-01' && !item.aviso_prev_venc"
-                        @dblclick="$emit('abrirModal',{ opcion: 'fecha_recibido', data: item })"
-                        class="td2" title="Doble click">
+                        @dblclick="$emit('abrirModal',{ opcion: 'fecha_recibido', data: item })" class="td2"
+                        title="Doble click">
                         <a href="#" v-text="'Fecha solicitud: ' + this.moment(item.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
                     </td>
-                    <td v-else-if="item.aviso_prev!='0000-01-01' && item.aviso_prev_venc"
-                        @dblclick="$emit('abrirModal', { opcion: 'fecha_recibido', data: item })" class="td2">
 
+                    <td v-else-if="item.aviso_prev!='0000-01-01' && item.aviso_prev_venc"
+                        @dblclick="$emit('abrirModal', { opcion: 'fecha_recibido', data: programacion })" class="td2">
                         <span v-if = "item.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
                         + this.moment(item.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
                         <span v-if = "item.diferencia < 0 && item.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
                         + this.moment(item.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
                         <span v-if = "item.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
                         + this.moment(item.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
-
                     </td>
 
+                    <td class="td2" v-text="this.moment(item.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                     <td class="td2" v-text="item.tipo_credito"></td>
                     <td class="td2" v-text="item.institucion"></td>
                     <td class="td2" v-text="'$'+ $root.formatNumber(item.credito_solic)"></td>
-
-                    <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
-                        <span v-if="!item.fecha_vigencia"></span>
-                        <span v-else-if = "item.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
+                    <td class="td2" v-if="band==0" @dblclick="band=1">
+                        <span v-if = "item.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: '
                         + this.moment(item.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                        <span v-else-if = "item.vigencia <= 0 && item.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
+                        <span v-if = "item.vigencia <= 0 && item.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: '
                         + this.moment(item.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
-                        <span v-else-if = "item.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
+                        <span v-if = "item.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: '
                         + this.moment(item.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
-
                     </td>
                     <td class="td2" v-if="band==1">
-                        <input type="date" @keyup.esc="band=0" :id="item.folio" :value="item.fecha_vigencia" class="form-control Fields"
-                            @change="$emit('actualizarVigencia', { folio: item.folio, valor: $event.target.value})">
+                        <input type="date" @keyup.esc="band=0" class="form-control Fields"
+                            @change="$emit('actualizarVigencia', { folio: item.folio, valor: $event.target.value})"
+                            :id="item.folio" :value="item.fecha_vigencia">
                     </td>
 
                     <td class="td2" v-text="'$'+ $root.formatNumber(item.precio_venta)"></td>
                     <td class="td2" v-text="'$'+ $root.formatNumber(item.valor_escrituras)"></td>
-                    <td class="td2" v-text="item.credito_puente"></td>
-                    <td class="td2"
-                        v-text="this.moment(item.ultimo_pagare).locale('es').format('DD/MMM/YYYY')">
-                    </td>
-                    <td class="td2" v-text="'$'+ $root.formatNumber(item.saldo)"></td>
 
-                    <template v-if="item.fecha_infonavit">
+                    <template>
                         <td v-if="item.fecha_infonavit!='0000-01-01'" class="td2"
                             v-text="this.moment(item.fecha_infonavit).locale('es').format('DD/MMM/YYYY')">
                         </td>
@@ -233,31 +206,41 @@
                             v-text="'No aplica'">
                         </td>
                     </template>
+
                     <td class="td2">
-                        <template v-if="item.detenido == 0">
-                            <Button v-if="!item.fecha_liquidacion"
-                                icon="fa fa-calculator" btnClass="btn-danger pull-right"
-                                title="Generar liquidación"
-                                @click="$emit('abrirModal', { opcion: 'liquidacion', data: item })"
-                                >Generar
-                            </Button>
-                            <Button v-if="item.liquidado == 0 && item.fecha_liquidacion"
-                                icon="fa fa-calculator" btnClass="btn-danger pull-right"
-                                title="Intereses"
-                                @click="$emit('abrirModal', { opcion:'intereses', data: item })"
-                            >Generar Intereses
-                            </Button>
-                        </template>
-                        <label v-else> DETENIDO </label>
+                        <a class="btn btn-warning btn-sm" target="_blank" :href="'/expediente/liquidacionPDF/'+item.folio">
+                            Imprimir
+                        </a>
                     </td>
-                    <td class="td2">
-                        <Button v-if="item.postventa == 0 && item.detenido == 0"
-                            title="Solicitar entrega de vivienda" btnClass="btn-warning pull-right"
-                            @click="$emit('abrirModal', { opcion: 'solic_entrega', data: item })"
-                        > Solicitar
+
+                    <td class="td2" v-if="item.fecha_firma_esc"
+                        @click="$emit('abrirModal', { opcion: 'firma_esc_act', data: item })"
+                        v-text="this.moment(item.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')">
+                    </td>
+                    <td class="td2" v-else>
+                        <Button btnClass="btn-warning pull-right" icon="fa fa-fa-handshake-o"
+                            title="Programar Firma"
+                            @click="$emit('abrirModal', { opcion: 'firma_esc', data: item})"
+                        >
+                            Generar
                         </Button>
-                        <label v-if="item.postventa == 0 && item.detenido == 1">DETENIDO</label>
                     </td>
+
+                    <td class="td2" v-text="this.moment(item.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                    <td class="td2" v-text="'$'+ $root.formatNumber(item.saldo)"></td>
+
+                    <td class="td2">
+                        <Button v-if="item.entrega == 0" btnClass="btn-warning pull-right"
+                            title="Solicitar entrega de vivienda"
+                            @click="$emit('abrirModal', { opcion: 'solic_entrega', data: item })"
+                        >
+                            Solicitar entrega
+                        </Button>
+                    </td>
+
+                    <td class="td2" v-if="item.saldo != 0" v-text="'Saldo Pendiente ó sin solicitud'"></td>
+                    <td class="td2" v-else v-text="'Concluido'"></td>
+
                     <td class="td2">
                         <Button title="Ver todas las observaciones" btnClass="btn-info pull-right"
                             @click="$emit('verObs', item.folio)"
@@ -291,7 +274,7 @@ export default {
                 b_manzana: '',
                 b_lote: '',
                 b_empresa: '',
-                criterio: '',
+                criterio: 'lotes.fraccionamiento_id',
             },
             band: 0
         }
