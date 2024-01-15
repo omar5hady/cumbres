@@ -747,6 +747,12 @@ class DigitalLeadController extends Controller
 
                 $comentario =  'El lead se ha enviado a la base de prospectos del vendedor';
 
+                $obs_cl =  new Cliente_observacion();
+                $obs_cl->cliente_id = $cliente->id;
+                $obs_cl->comentario = 'El prospecto se envio desde base de leads';
+                $obs_cl->usuario = Auth::user()->usuario;
+                $obs_cl->save();
+
             }
             else{ // Si ya esta registrado el prospecto.
                 // Se actualiza la informacion en la tabla Personal y Clientes.
@@ -780,6 +786,12 @@ class DigitalLeadController extends Controller
                 $cliente->curp = $request->curp;
                 $cliente->lugar_nacimiento = $request->lugar_nacimiento;
                 $cliente->save();
+
+                $obs_cl =  new Cliente_observacion();
+                $obs_cl->cliente_id = $cliente->id;
+                $obs_cl->comentario = 'El prospecto se envio desde base de leads';
+                $obs_cl->usuario = Auth::user()->usuario;
+                $obs_cl->save();
 
             }
             // Se accede al registro del Lead

@@ -60,8 +60,7 @@ class SolicitudesController extends Controller
             || $usuario == 'carlos.dom'
         )$admin = 3;
         if(
-            $usuario == 'mendez.erika59'
-            || $usuario == 'lomelin'
+            $usuario == 'lomelin'
             || $usuario == 'ricardo_esparza'
         )$admin = 4;
 

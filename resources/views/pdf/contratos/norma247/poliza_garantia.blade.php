@@ -241,7 +241,7 @@
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
-                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="90" >
+                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="40" >
                         @endif
                     </div>
                 </div>
@@ -417,7 +417,7 @@
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
-                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="90" >
+                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="40" >
                         @endif
                     </div>
                 </div>
@@ -531,7 +531,7 @@
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
-                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="90" >
+                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="40" >
                         @endif
                     </div>
                 </div>
@@ -1128,7 +1128,7 @@
                     </div>
                     <div  class="table-cell1">
                         @if($contrato->logo_fracc2)
-                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="90" >
+                            <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="40" >
                         @endif
                     </div>
                 </div>
@@ -1286,7 +1286,7 @@
                         <p class="text-table2"></p>
                     </div>
                 </div>
-                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ' && $contrato->etapa != 'ZEREZ')
+                @if(!str_contains($contrato->etapa, 'EXTERIOR') && $contrato->proyecto != 'ANDALUZ' && $contrato->etapa != 'ZEREZ' && $contrato->etapa != 'Departamentos Aurea')
                     <div class="table-row2">
                         <div colspan="4" class="table-cell2">
                             <li style="margin-left: 25px; padding: 2px;"><p class="text-table2">2 MARBETES DE IDENTIFICACIÓN VEHICULAR</p></li>

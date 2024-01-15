@@ -80,7 +80,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
             </li>
         @endif
-        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
+        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9  || Auth::user()->rol_id == 8)
             <li @click="menu=55 "class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
             </li>

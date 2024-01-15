@@ -117,7 +117,7 @@
                 </div>
                 <div  class="table-cell1">
                     @if($contrato->logo_fracc2)
-                        <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="90" >
+                        <img src="img/logosFraccionamientos/{{$contrato->logo_fracc2}}" height="40" >
                     @endif
                 </div>
             </div>

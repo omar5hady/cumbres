@@ -16,8 +16,8 @@ use Carbon\Carbon;
 
 class EstadisticasController extends Controller
 {
-        /* 
-                Funcion que regresa el reporte de estadisticas, 
+        /*
+                Funcion que regresa el reporte de estadisticas,
                 Lugar de nacimiento, Edo civil, Empresas, Genero, etc.
                 de los clientes que han adquirido una vivienda.
         */
@@ -35,7 +35,7 @@ class EstadisticasController extends Controller
         $genero = (object) array('hombres' => 0, 'mujeres' => 0); // Ventas por genero
         $autos = (object) array('sinAuto' => 0, 'unAuto' => 0, 'dosAuto' => 0, 'tresAuto' => 0, 'cuatroAuto' => 0,); // Numero de autos del cliente
         $edoCivil = (object) array( // Edo Civil del cliente
-                                'separacionBienes' => 0, 
+                                'separacionBienes' => 0,
                                 'sociedadConyugal' => 0,
                                 'divorciado' => 0,
                                 'soltero' => 0,
@@ -60,7 +60,7 @@ class EstadisticasController extends Controller
                                 ->select(
                                         'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
                                         'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
-                                        'contratos.id as folio', 
+                                        'contratos.id as folio',
                                         'creditos.fraccionamiento' ,'creditos.etapa',
                                         'creditos.manzana', 'lotes.num_lote',
                                         'creditos.precio_venta'
@@ -82,7 +82,7 @@ class EstadisticasController extends Controller
                 $autos->dosAuto = $this->getVentasAuto($request,2); // Ventas con clientes que tienen dos autos
                 $autos->tresAuto = $this->getVentasAuto($request,3); // Ventas con clientes que tienen 3 autos
                 $autos->cuatroAuto = $this->getVentasAuto($request,4); // Ventas con clientes que tienen mas de 3 autos
-                                
+
                 $edoCivil->separacionBienes = $this->getVentasEdoCivil($request,1); // Ventas con clientes con separacion de bienes
                 $edoCivil->sociedadConyugal = $this->getVentasEdoCivil($request,2); // Ventas con clientes en sociedad conyugal
                 $edoCivil->divorciado = $this->getVentasEdoCivil($request,3); // Ventas con clientes divorciados
@@ -116,7 +116,7 @@ class EstadisticasController extends Controller
                                 $edadesVenta = $edadesVenta->where('lotes.etapa_id',$etapa);
                         if($fecha != '' && $fecha2 != '')
                                 $edadesVenta = $edadesVenta->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                                
+
                         $edadesVenta = $edadesVenta->get();
 
 
@@ -125,6 +125,10 @@ class EstadisticasController extends Controller
 
                 $genero->mujeres = $this->getVentasGenero($request,'F'); // Ventas por genero femenino
                 $genero->hombres = $this->getVentasGenero($request,'M'); // Ventas por genero masculino
+
+                $total_genero = $genero->mujeres + $genero->hombres;
+                $genero->mujeres = number_format(($genero->mujeres * 100)/$total_genero, 2);
+                $genero->hombres = number_format(($genero->hombres * 100)/$total_genero, 2);
 
                 $origen = $this->queryGral($request) // Ventas por ciudad de origen del comprador.
                         ->select('clientes.lugar_nacimiento')
@@ -169,7 +173,7 @@ class EstadisticasController extends Controller
                                                         $colonia->num = $colonia->num->where('lotes.etapa_id',$etapa);
                                                 if($fecha != '' && $fecha2 != '')
                                                         $colonia->num = $colonia->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                                                
+
                                                 $colonia->num = $colonia->num->where('personal.colonia','=',$colonia->colonia)
                                                 ->count();
                                 }
@@ -191,18 +195,18 @@ class EstadisticasController extends Controller
                                                         $lugar->num = $lugar->num->where('lotes.etapa_id',$etapa);
                                                 if($fecha != '' && $fecha2 != '')
                                                         $lugar->num = $lugar->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                                                
+
                                                 $lugar->num = $lugar->num->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
                                                 ->count();
                                 }
                         }
-                        
-                
+
+
                 $discapacitados = $this->queryGral($request) // Ventas con persona con capacidad diferente.
                         ->select(
                                 'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
                                 'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
-                                'contratos.id as folio', 
+                                'contratos.id as folio',
                                 'creditos.fraccionamiento' ,'creditos.etapa',
                                 'creditos.manzana', 'lotes.num_lote',
                                 'creditos.precio_venta'
@@ -216,14 +220,14 @@ class EstadisticasController extends Controller
                                 $discapacitados = $discapacitados->where('lotes.etapa_id',$etapa);
                         if($fecha != '' && $fecha2 != '')
                                 $discapacitados = $discapacitados->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                        
+
                         $discapacitados = $discapacitados->get();
-                
+
                 $silla_ruedas = $this->queryGral($request) // Ventas con personas que requieren silla de ruedas
                         ->select(
                                 'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
                                 'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
-                                'contratos.id as folio', 
+                                'contratos.id as folio',
                                 'creditos.fraccionamiento' ,'creditos.etapa',
                                 'creditos.manzana', 'lotes.num_lote',
                                 'creditos.precio_venta'
@@ -236,10 +240,10 @@ class EstadisticasController extends Controller
                                 $silla_ruedas = $silla_ruedas->where('lotes.etapa_id',$etapa);
                         if($fecha != '')
                                 $silla_ruedas = $silla_ruedas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                                
+
                         $silla_ruedas = $silla_ruedas->get();
-        
-                
+
+
                 $SinMascotas = $this->queryGral($request) // Ventas con clientes sin mascota
                         ->where('datos_extra.mascota','=',0)
                         ->where('contratos.status','=',3);
@@ -250,10 +254,10 @@ class EstadisticasController extends Controller
                                 $SinMascotas = $SinMascotas->where('lotes.etapa_id',$etapa);
                         if($fecha != '' && $fecha2 != '')
                                 $SinMascotas = $SinMascotas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                        
+
                         $SinMascotas = $SinMascotas->get()->count();
-        
-                $mascotas = $this->queryGral($request) // Ventas con clientes con mascota 
+
+                $mascotas = $this->queryGral($request) // Ventas con clientes con mascota
                         ->select(
                                 DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
                                 DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
@@ -265,13 +269,13 @@ class EstadisticasController extends Controller
                                 $mascotas = $mascotas->where('lotes.fraccionamiento_id',$proyecto);
                         if($etapa != '')
                                 $mascotas = $mascotas->where('lotes.etapa_id',$etapa);
-                        
+
                         if($fecha != '' && $fecha2 != '')
                                 $mascotas = $mascotas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
 
                         $mascotas = $mascotas->get();
-        
-        
+
+
         $mascotas[0]->sin_mascotas = $SinMascotas;
         $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
         $sinDiscap = $totalPersonas - sizeOf($discapacitados);
@@ -329,9 +333,9 @@ class EstadisticasController extends Controller
                                 $rango7 ++;
                         }
 
-                        
+
                 }
-                
+
         }
 
         return [
@@ -345,9 +349,9 @@ class EstadisticasController extends Controller
                 'genero'=>$genero,
                 'estadoCivil'=> $edoCivil,
                 'participantes'=>$participantes,
-                'edades'=>$edades,'mascotas'=>$mascotas, 
+                'edades'=>$edades,'mascotas'=>$mascotas,
                 'conPerro'=>$conPerro,
-                'discap'=>$discapacitados, 
+                'discap'=>$discapacitados,
                 'sinDiscap'=> $sinDiscap,
                 'silla_ruedas'=>$silla_ruedas,
                 'promedioAutos'=>$promedioAutos,
@@ -358,7 +362,7 @@ class EstadisticasController extends Controller
                 'rango5'=> $rango5,
                 'rango6'=> $rango6,
                 'rango7'=> $rango7,
-                'promedioAmasCasa'=>$promedioAmasCasa];      
+                'promedioAmasCasa'=>$promedioAmasCasa];
     }
 
     // Funcion que retorna los datos para el reporte resumen de ventas por proyecto
@@ -376,13 +380,13 @@ class EstadisticasController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$proyecto);
                         if($etapa != '')
                                 $vendidasFin = $vendidasFin->where('lotes.etapa_id','=',$etapa);
-                        
+
                         $vendidasFin = $vendidasFin->where('contratos.status','=',3)
                         ->orderBy('contratos.fecha','desc')
                         ->get();
         if($etapa=='')
                 $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$proyecto)->get();
-                
+
         else
                 $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$proyecto)->get();
 
@@ -396,16 +400,16 @@ class EstadisticasController extends Controller
         else{
                 $diff_in_months = 0;
         }
-        
+
         // Total de lotes por proyecto
         $lotes = Lote::where('fraccionamiento_id','=',$proyecto);
                 if($etapa!='')
-                        $lotes = $lotes->where('etapa_id','=',$etapa);        
+                        $lotes = $lotes->where('etapa_id','=',$etapa);
                 $lotes =$lotes->count();
         //Total de lotes habilitados para venta
         $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto);
                 if($etapa!='')
-                        $lotesHabilitados = $lotesHabilitados->where('etapa_id','=',$etapa);        
+                        $lotesHabilitados = $lotesHabilitados->where('etapa_id','=',$etapa);
                 $lotesHabilitados = $lotesHabilitados->where('habilitado','=',1)->count();
         //Total de lotes disponibles
         $disponibles = Lote::where('fraccionamiento_id','=',$proyecto);
@@ -454,13 +458,13 @@ class EstadisticasController extends Controller
                         if($etapa != '')
                                 $indiviDirecto = $indiviDirecto->where('lotes.etapa_id','=',$etapa);
                         $indiviDirecto = $indiviDirecto->where('contratos.status','=',3)
-                                ->where('contratos.integracion','=',1)                        
+                                ->where('contratos.integracion','=',1)
                                 ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '=', 'Crédito Directo')
                                 ->distinct('contratos.id')
                                 ->count();
-        // Sumatorias total por ventas 
+        // Sumatorias total por ventas
         $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -486,7 +490,7 @@ class EstadisticasController extends Controller
         $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->select(       
+                        ->select(
                                         DB::raw("SUM(contratos.total_pagar) as enganche")
                                 )
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -501,7 +505,7 @@ class EstadisticasController extends Controller
                         $sumaDirecto = $sumaDirecto->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
-              
+
         // Retorno de contratos firmados
         $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                         //->leftJoin('expedientes','contratos.id','=','expedientes.id')
@@ -517,7 +521,7 @@ class EstadisticasController extends Controller
                                         'creditos.num_lote',
                                         'contratos.fecha_status',
                                         'i.tipo_credito',
-                                        'i.institucion', 
+                                        'i.institucion',
                                         'creditos.precio_venta',
                                         'creditos.descuento_promocion',
                                         'creditos.costo_paquete',
@@ -546,7 +550,7 @@ class EstadisticasController extends Controller
         // Retorno de Lotes disponibles
         $lotesDisp = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->select(      
+                        ->select(
                                         'lotes.id', 'lotes.manzana', 'lotes.num_lote',
                                         'fraccionamientos.nombre as proyecto',
                                         'lotes.calle','lotes.numero',
@@ -572,7 +576,7 @@ class EstadisticasController extends Controller
         $vendidas = $vendidas - $individualizadas - $indiviDirecto;
         $individualizadas = $individualizadas + $indiviDirecto;
 
-        
+
 
         setlocale(LC_TIME, 'es_MX.utf8');
         if($fecha){
@@ -580,7 +584,7 @@ class EstadisticasController extends Controller
                 $fecha = $tiempo->formatLocalized('%d de %B de %Y');
         }
 
-        return[ 'lotes'=>$lotes, 
+        return[ 'lotes'=>$lotes,
                 'disponibles'=>$disponibles,
                 'vendidas'=>$vendidas,
                 'contratos'=>$contratos,
@@ -624,7 +628,7 @@ class EstadisticasController extends Controller
                                         'creditos.num_lote',
                                         'contratos.fecha_status',
                                         'i.tipo_credito',
-                                        'i.institucion', 
+                                        'i.institucion',
                                         'creditos.precio_venta',
                                         'creditos.descuento_promocion',
                                         'creditos.costo_paquete',
@@ -654,7 +658,7 @@ class EstadisticasController extends Controller
         // Retorno de Lotes disponibles
         $lotesDisp = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->select(      
+                        ->select(
                                         'lotes.id', 'lotes.manzana', 'lotes.num_lote',
                                         'fraccionamientos.nombre as proyecto',
                                         'lotes.calle','lotes.numero',
@@ -670,10 +674,10 @@ class EstadisticasController extends Controller
 
         return Excel::create('Resumen', function($excel) use ($resContratos, $lotesDisp){
                 $excel->sheet('Resumen', function($sheet) use ($resContratos){
-                    
+
                     $sheet->row(1, [
                         'Proyecto', 'Etapa', 'Manzana',
-                        '# Lote', 'Modelo','Dirección', 'Venta', 
+                        '# Lote', 'Modelo','Dirección', 'Venta',
                         'Cliente', 'Institución', 'Tipo Crédito',
                         'Firma escrituras','Precio venta', 'Enganche',
                         'Crédito', 'Saldo'
@@ -701,7 +705,7 @@ class EstadisticasController extends Controller
                         $cells->setAlignment('center');
                     });
 
-                    
+
                     $cont=1;
 
                     foreach($resContratos as $index => $contrato) {
@@ -719,9 +723,9 @@ class EstadisticasController extends Controller
                                 $fecha = new Carbon($contrato->fecha_firma_esc);
                                 $contrato->fecha_firma_esc = $fecha->formatLocalized('%d de %B de %Y');
                         }
-                        
+
                         $sheet->row($index+2, [
-                            $contrato->proyecto, 
+                            $contrato->proyecto,
                             $contrato->etapa,
                             $contrato->manzana,
                             $contrato->num_lote,
@@ -737,48 +741,48 @@ class EstadisticasController extends Controller
                             $contrato->monto_total_credito,
                             $contrato->saldo
 
-                        ]);	
+                        ]);
                     }
                     $num='A1:O' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
                 $excel->sheet('Disponibles', function($sheet) use ($lotesDisp){
-                    
+
                         $sheet->row(1, [
                             'Proyecto', 'Manzana',
-                            '# Lote', 'Modelo','Dirección', 
+                            '# Lote', 'Modelo','Dirección',
                         ]);
-    
-    
+
+
                         $sheet->cells('A1:E1', function ($cells) {
                             $cells->setBackground('#052154');
                             $cells->setFontColor('#ffffff');
                             // Set font family
                             $cells->setFontFamily('Calibri');
-    
+
                             // Set font size
                             $cells->setFontSize(13);
-    
+
                             // Set font weight to bold
                             $cells->setFontWeight('bold');
                             $cells->setAlignment('center');
                         });
-    
-                        
+
+
                         $cont=1;
-    
+
                         foreach($lotesDisp as $index => $lote) {
                             $cont++;
-    
+
                             $direccion = $lote->calle.' Num. '.$lote->numero;
-    
+
                             $sheet->row($index+2, [
-                                $lote->proyecto, 
+                                $lote->proyecto,
                                 $lote->manzana,
                                 $lote->num_lote,
                                 $lote->modelo,
                                 $direccion,
-                            ]);	
+                            ]);
                         }
                         $num='A1:E' . $cont;
                         $sheet->setBorder($num, 'thin');
@@ -794,12 +798,12 @@ class EstadisticasController extends Controller
         $fecha = $request->fecha;
         $fecha2 = $request->fecha2;
 
-        
+
         $query = $this->queryGral($request)
                 ->select(
                         'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
                         'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
-                        'contratos.id as folio', 
+                        'contratos.id as folio',
                         'creditos.fraccionamiento' ,'creditos.etapa',
                         'creditos.manzana', 'lotes.num_lote',
                         'creditos.precio_venta'
@@ -831,12 +835,12 @@ class EstadisticasController extends Controller
                 $query = $query->select('clientes.edo_civil',
                         'personal.nombre as nombre_c', 'personal.apellidos as apellidos_c',
                         'v.nombre as nombre_v', 'v.apellidos as apellidos_v',
-                        'contratos.id as folio', 
+                        'contratos.id as folio',
                         'creditos.fraccionamiento' ,'creditos.etapa',
                         'creditos.manzana', 'lotes.num_lote',
                         'creditos.precio_venta'
                 );
-                
+
                 if($proyecto != '')
                         $query = $query->where('lotes.fraccionamiento_id',$proyecto);
                 if($etapa != '')
@@ -869,7 +873,7 @@ class EstadisticasController extends Controller
                         $query = $query->where('lotes.etapa_id',$etapa);
                 if($fecha != '' && $fecha2 != '')
                         $query = $query->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                
+
                 $query = $query->count();
 
         return $query;
@@ -893,7 +897,7 @@ class EstadisticasController extends Controller
                         $query = $query->where('lotes.etapa_id',$etapa);
                 if($fecha != '' && $fecha2 != '')
                         $query = $query->whereBetween('contratos.fecha', [$fecha, $fecha2]);
-                
+
                 $query = $query->count();
 
         return $query;
