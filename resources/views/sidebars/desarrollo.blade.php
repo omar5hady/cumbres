@@ -52,7 +52,12 @@
                 </ul>
             </li>
         @endif
-
+        @if(Auth::user()->rol_id == 1
+            || Auth::user()->usuario == 'eli_hdz')
+            <li @click="menu=304" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-globe"></i> Reserva Territorial</a>
+            </li>
+        @endif
         @if(Auth::user()->fraccionamiento == 1)
             <li @click="menu=1" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
@@ -86,7 +91,6 @@
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Especificaciones de modelo</a>
             </li>
         @endif
-
         @if(Auth::user()->ruv == 1)
             <li @click="menu=234" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-bag"></i> Solicitud de RUV</a>

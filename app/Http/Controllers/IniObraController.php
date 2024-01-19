@@ -338,8 +338,11 @@ class IniObraController extends Controller
         $lotesManzana = Lote::select('manzana')
                         ->where('fraccionamiento_id','=',$buscar)
                         ->where('ini_obra', '=', '1')
-                        ->where('aviso','=','0')->distinct()
-                        ->get();
+                        ->where('aviso','=','0')->distinct();
+        if($request->emp_constructora != ''){
+            $lotesManzana = $lotesManzana->where('emp_constructora','=', $request->emp_constructora);
+        }
+        $lotesManzana = $lotesManzana->get();
 
                         return ['lotesManzana' => $lotesManzana];
     }
@@ -366,6 +369,9 @@ class IniObraController extends Controller
                         ->where('fraccionamiento_id','=',$proyecto);
                         if($manzana != '')
                             $lotes = $lotes->where('manzana','=',$manzana);
+                        if($request->emp_constructora != ''){
+                            $lotes = $lotes->where('emp_constructora','=', $request->emp_constructora);
+                        }
                         $lotes = $lotes->where('ini_obra', '=', '1')
                         ->where('aviso','=','0')
                         ->get();

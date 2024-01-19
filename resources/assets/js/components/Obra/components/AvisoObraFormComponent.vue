@@ -460,7 +460,7 @@
                 let me = this;
                 me.manzana = '';
                 me.arrayManzanaLotes=[];
-                var url = '/select_manzana_lotes?buscar='+buscar;
+                var url = '/select_manzana_lotes?buscar=' + buscar + '&emp_constructora=' + this.data.emp_constructora;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayManzanaLotes = respuesta.lotesManzana;
@@ -474,7 +474,7 @@
                 let me = this;
 
                 me.arrayLotes=[];
-                var url = '/select_lotes_obra?buscar='+buscar + '&buscar2=' + buscar2;
+                var url = '/select_lotes_obra?buscar='+buscar + '&buscar2=' + buscar2 +'&emp_constructora=' + this.data.emp_constructora;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes;

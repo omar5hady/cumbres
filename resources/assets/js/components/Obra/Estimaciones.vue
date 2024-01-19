@@ -148,10 +148,11 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
                                         <div class="col-md-2">
-                                            <select class="form-control" :disabled="editarEstimacion == 1" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
+                                            <select class="form-control" v-if="editarEstimacion == 0" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
                                             </select>
+                                            <label v-if="editarEstimacion == 1" class="form-control">{{ b_estimacion }}</label>
                                         </div>
 
                                         <template v-if="editarEstimacion == 0 && fecha_pago_act != null">
@@ -166,7 +167,7 @@
                                     <div class="form-group row">
                                         <template v-if="rolId != 13">
                                             <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
-                                                <button type="button" @click="nueva = 1"  class="btn btn-primary">
+                                                <button type="button" @click="nuevaEstimacion()"  class="btn btn-primary">
                                                     <i class="icon-plus"></i>&nbsp;Nueva estimación
                                                 </button>
                                             </div>
@@ -255,7 +256,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group row">
                                         <div class="col-md-2">
-                                            <button type="button" @click="updateEstimacion(arrayPartidas)"  class="btn btn-success">
+                                            <button v-if="actual == numero" type="button" @click="updateEstimacion(arrayPartidas)"  class="btn btn-success">
                                                 <i class="icon-check"></i>&nbsp;Actualizar
                                             </button>
                                         </div>
@@ -962,6 +963,11 @@
 
         },
         methods : {
+            nuevaEstimacion(){
+                this.b_estimacion = this.actual;
+                this.getPartidas(this.aviso_id);
+                this.nueva = 1;
+            },
             editarImpExtra(){
                 if(this.rolId!=13){
                     this.edit2 = 1

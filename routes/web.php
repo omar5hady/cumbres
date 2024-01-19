@@ -1346,6 +1346,9 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);
 
+        ////////////////////// Rutas Control presupuestal
+        Route::resource('/terrenos-compra', controlPresupuestal\TerrenosCompraController::class);
+
          /////////////////////// Rutas Catalogo de equipamientos
          Route::resource('/cat-equipamiento', Modelo\EquipamientoController::class);
          Route::post('/cat-equipamiento/createCotizacion','Modelo\EquipamientoController@createCotizacion');

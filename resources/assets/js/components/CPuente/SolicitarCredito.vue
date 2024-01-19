@@ -100,7 +100,7 @@
                                         <span v-else class="badge badge-danger"> Por Asignar </span>
                                     </td>
                                     <td class="td2" v-text="lote.manzana"></td>
-                                    <td class="td2" v-text="lote.num_lote">
+                                    <td class="td2">
                                         {{(lote.sublote) ? lote.numlote + '-'+lote.sublote : lote.num_lote}}
                                     </td>
                                     <td class="td2">

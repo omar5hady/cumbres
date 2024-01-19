@@ -466,6 +466,9 @@ S
                 }
             }
 
+            if(Auth::user()->rol_id == 4)
+            $cliente->seguimiento = Carbon::now();
+
             $cliente->save();
 
             $observacion = new Cliente_observacion();
@@ -473,6 +476,8 @@ S
             $observacion->comentario = $request->observacion;
             $observacion->prox_cita = $request->makeRemember;
             $observacion->usuario = Auth::user()->usuario;
+            if(Auth::user()->rol_id == 4)
+            $observacion->gerente = 1;
             $observacion->save();
 
             DB::commit();

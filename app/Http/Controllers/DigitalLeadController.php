@@ -703,7 +703,7 @@ class DigitalLeadController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
         // Se busca en la tabla personal si existe un prospecto registrado con el mismo RFC del lead.
-        $cliente = Personal::leftJoin('clientes','personal.id','=','clientes.id')
+        $clientes = Personal::leftJoin('clientes','personal.id','=','clientes.id')
             ->select('personal.id', 'clientes.vendedor_id')->where('personal.rfc','=',$request->rfc)->get();
         // Se obtiene el id del medio de publicidad.
         $medio = Medio_publicitario::select('id')->where('nombre','like','%'.$request->medio_publicidad.'%')->get();
@@ -715,7 +715,7 @@ class DigitalLeadController extends Controller
         try{
             DB::beginTransaction();
             // Si no se encuentra ningun prospecto registrado
-            if(sizeof($cliente) == 0){
+            if(sizeof($clientes) == 0){
                 $persona = new Personal(); // Crea nuevo registro en la tabla Personal.
                 $persona->nombre = $request->nombre;
                 $persona->apellidos = $request->apellidos;
@@ -748,7 +748,7 @@ class DigitalLeadController extends Controller
                 $comentario =  'El lead se ha enviado a la base de prospectos del vendedor';
 
                 $obs_cl =  new Cliente_observacion();
-                $obs_cl->cliente_id = $cliente->id;
+                $obs_cl->cliente_id = $id ;
                 $obs_cl->comentario = 'El prospecto se envio desde base de leads';
                 $obs_cl->usuario = Auth::user()->usuario;
                 $obs_cl->save();
@@ -757,7 +757,7 @@ class DigitalLeadController extends Controller
             else{ // Si ya esta registrado el prospecto.
                 // Se actualiza la informacion en la tabla Personal y Clientes.
                 $comentario =  'El lead ya se encuentra registrado en la base de datos de otro vendendor.';
-                $persona = Personal::findOrFail($cliente[0]->id);
+                $persona = Personal::findOrFail($clientes[0]->id);
                 $persona->nombre = $request->nombre;
                 $persona->apellidos = $request->apellidos;
                 $persona->telefono = $request->telefono;
@@ -768,7 +768,7 @@ class DigitalLeadController extends Controller
                 $persona->f_nacimiento = $request->f_nacimiento;
                 $persona->save;
 
-                $cliente = Cliente::findOrFail($cliente[0]->id);
+                $cliente = Cliente::findOrFail($clientes[0]->id);
                 $cliente->publicidad_id = $publi;
                 $cliente->proyecto_interes_id = $request->proyecto_interes;
                 if($cliente->vendedor_id == 104){
@@ -787,7 +787,7 @@ class DigitalLeadController extends Controller
                 $cliente->lugar_nacimiento = $request->lugar_nacimiento;
                 $cliente->save();
 
-                $obs_cl =  new Cliente_observacion();
+                $obs_cl = new Cliente_observacion();
                 $obs_cl->cliente_id = $cliente->id;
                 $obs_cl->comentario = 'El prospecto se envio desde base de leads';
                 $obs_cl->usuario = Auth::user()->usuario;

@@ -243,6 +243,9 @@ Vue.component('integracion-cobros', require('./components/IntegracionCobros/Inte
 Vue.component('cat-equipamiento', require('./components/Precios/CatEquipamiento.vue'));
 Vue.component('cat-cotizaciones', require('./components/Ventas/Cotizaciones.vue'));
 
+//Control presupuestal
+Vue.component('cat-compra-terreno', require('./components/ControlPresupuestal/CompraTerreno.vue'));
+
 
 //ENCUESTAS
 Vue.component('encuesta-venta', require('./components/Postventa/Encuestas/EncuestaVenta.vue'));

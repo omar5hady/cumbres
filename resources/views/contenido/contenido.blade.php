@@ -597,5 +597,8 @@
         <template v-if="menu==303">
             <inmobiliarias rol-id = "{{ Auth::user()->rol_id }}"></inmobiliarias>
         </template>
+        <template v-if="menu==304">
+            <cat-compra-terreno></cat-compra-terreno>
+        </template>
     @endif
 @endsection
