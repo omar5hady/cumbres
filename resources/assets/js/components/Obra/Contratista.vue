@@ -31,7 +31,7 @@
                                         <option value="0" >Persona Moral</option>
                                         <option value="1" >Persona Fisica</option>
                                     </select>
-                                    
+
                                     <input  type="text" v-else v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarContratista(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -71,7 +71,7 @@
                                         <td class="td2" v-text="contratista.cp"></td>
                                         <td class="td2" v-text="contratista.estado"></td>
                                         <td class="td2" v-text="contratista.ciudad"></td>
-                                    </tr>                               
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -233,7 +233,7 @@
                                         <input type="password" v-model="password" class="form-control" placeholder="Password">
                                     </div>
                                 </div>
-                            
+
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorContratista" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -256,7 +256,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-            
+
 
         </main>
 </template>
@@ -291,7 +291,7 @@
                 errorContratista : 0,
                 errorMostrarMsjContratista : [],
                 pagination : {
-                    'total' : 0,         
+                    'total' : 0,
                     'current_page' : 0,
                     'per_page' : 0,
                     'last_page' : 0,
@@ -299,7 +299,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'nombre',
                 buscar : '',
                 arrayCiudades : [],
                 arrayColonias : []
@@ -418,6 +418,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             actualizarContratista(){
@@ -460,6 +461,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             eliminarContratista(data =[]){
@@ -488,7 +490,7 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/contratista/eliminar', 
+                axios.delete('/contratista/eliminar',
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
@@ -523,10 +525,10 @@
 
                 if(!this.direccion)
                     this.errorMostrarMsjContratista.push("La direccion del Contratista no puede ir vacio.");
-                
+
                 if(!this.colonia)
                     this.errorMostrarMsjContratista.push("La colonia del Contratista no puede ir vacio.");
-                
+
                 if(!this.telefono)
                     this.errorMostrarMsjContratista.push("El telefono del Contratista no puede ir vacio.");
 
@@ -670,5 +672,5 @@
 
     .td2:last-of-type, th:last-of-type {
     border-right: none;
-    } 
+    }
 </style>

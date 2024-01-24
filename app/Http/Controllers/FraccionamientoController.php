@@ -12,6 +12,7 @@ use App\Modelo;
 use App\Lote;
 use App\User;
 use App\Urban_equipment;
+use App\PreciosAreaVendible;
 use App\Http\Resources\UrbanEquipmentResource;
 use Carbon\Carbon;
 use Excel;
@@ -150,6 +151,14 @@ class FraccionamientoController extends Controller
             $fraccionamiento->ciudad = $request->ciudad;
             $fraccionamiento->delegacion = $request->delegacion;
             $fraccionamiento->cp = $request->cp;
+
+            $fraccionamiento->area_vendible_habitacional = $request->area_vendible_habitacional;
+            $fraccionamiento->area_vendible_comercial = $request->area_vendible_comercial;
+            $fraccionamiento->area_vendible_reserva = $request->area_vendible_reserva;
+
+            $fraccionamiento->precio_m2_habitacional = $request->precio_m2_habitacional;
+            $fraccionamiento->precio_m2_comercial = $request->precio_m2_comercial;
+            $fraccionamiento->precio_m2_reserva = $request->precio_m2_reserva;
             $fraccionamiento->save();
 
             //Se genera una etapa default y se liga con el nuevo registro de Fraccionamientos
@@ -207,6 +216,11 @@ class FraccionamientoController extends Controller
 
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proyecto = $request->nombre;
+
+        $habitacional = $request->precio_m2_habitacional;
+        $comercial = $request->precio_m2_comercial;
+        $reserva = $request->precio_m2_reserva;
+
         $usuario_id = Auth::user()->id;
         //FindOrFail se utiliza para buscar el registro en la tabla de fraccionamientos
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
@@ -220,15 +234,33 @@ class FraccionamientoController extends Controller
         $fraccionamiento->delegacion = $request->delegacion;
         $fraccionamiento->cp = $request->cp;
         $fraccionamiento->fecha_ini_venta = $request->fecha_ini_venta;
-        if($request->gerente_id != ''){
+        if($request->gerente_id != '')
             $fraccionamiento->gerente_id = $request->gerente_id;
-        }
-        if($request->arquitecto_id != ''){
+        if($request->arquitecto_id != '')
             $fraccionamiento->arquitecto_id = $request->arquitecto_id;
-        }
-        if($request->postventa_id != ''){
+        if($request->postventa_id != '')
             $fraccionamiento->postventa_id = $request->postventa_id;
+
+        if($fraccionamiento->precio_m2_habitacional != $habitacional
+            || $fraccionamiento->precio_m2_comercial != $comercial
+            || $fraccionamiento->precio_m2_reserva != $reserva
+        ){
+            $hist = new PreciosAreaVendible();
+            $hist->fraccionamiento_id = $fraccionamiento->id;
+            $hist->habitacional = $fraccionamiento->precio_m2_habitacional;
+            $hist->comercial = $fraccionamiento->precio_m2_comercial;
+            $hist->reserva = $fraccionamiento->precio_m2_reserva;
+            $hist->usuario = Auth::user()->usuario;
+            $hist->save();
         }
+
+        $fraccionamiento->area_vendible_habitacional = $request->area_vendible_habitacional;
+        $fraccionamiento->area_vendible_comercial = $request->area_vendible_comercial;
+        $fraccionamiento->area_vendible_reserva = $request->area_vendible_reserva;
+
+        $fraccionamiento->precio_m2_habitacional = $habitacional;
+        $fraccionamiento->precio_m2_comercial = $comercial;
+        $fraccionamiento->precio_m2_reserva = $reserva;
         $fraccionamiento->save();
         // Creación de notificación indicando el cambio.
         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=', $usuario_id)->get();

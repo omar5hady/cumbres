@@ -26,7 +26,7 @@
                 <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Paquetes</a>
             </li>
         @endif
-        @if( Auth::user()->usuario == 'eli_hdz'
+        @if( Auth::user()->usuario == 'zaira.valt'
             || Auth::user()->usuario == 'shady'
             || Auth::user()->usuario == 'ana_alvarado'
             || Auth::user()->usuario == 'mayra'

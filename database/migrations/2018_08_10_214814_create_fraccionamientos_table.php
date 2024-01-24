@@ -38,6 +38,14 @@ class CreateFraccionamientosTable extends Migration
             $table->text('rest_federales')->nullable();
             $table->text('rest_otras')->nullable();
 
+            $table->float('area_vendible_habitacional',10,2)->default(0);
+            $table->float('area_vendible_comercial',10,2)->default(0);
+            $table->float('area_vendible_reserva',10,2)->default(0);
+
+            $table->float('precio_m2_habitacional',10,2)->default(0);
+            $table->float('precio_m2_comercial',10,2)->default(0);
+            $table->float('precio_m2_reserva',10,2)->default(0);
+
             $table->timestamps();
         });
     }
