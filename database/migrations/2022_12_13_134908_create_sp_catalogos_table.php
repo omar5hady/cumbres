@@ -17,6 +17,7 @@ class CreateSpCatalogosTable extends Migration
             $table->increments('id');
             $table->string('cargo',200);
             $table->string('concepto',255);
+            $table->string('cca',100)->nullable();
             $table->integer('departamento_id')->nullable();
             $table->timestamps();
         });

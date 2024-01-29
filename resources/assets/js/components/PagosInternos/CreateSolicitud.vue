@@ -1276,12 +1276,19 @@
                                                     <template v-slot:tbody>
                                                         <tr v-for="det in solicitudData.detalle"
                                                             :key="det.id+det.obra+det.sub_obra+det.cargo+det.concepto+det.pago">
-                                                            <td>
+                                                            <td class="td2" :style="solicitudData.vb_direccion == 0 && (admin === 1 || usuario == 'shady')?'min-width:150px !important;':''">
                                                                 <button class="btn btn-danger" title="Eliminar" v-if="tipoAccion != 3"
                                                                     @click="removeDetalle(det)"
                                                                 >
                                                                     <i class="icon-trash"></i>
                                                                 </button>
+                                                                <select v-if="solicitudData.vb_direccion == 0 && admin === 1
+                                                                            || solicitudData.vb_direccion == 0 && usuario == 'shady'"
+                                                                    class="form-control" :disable="det.concepto != 'OTROS'" v-model="det.cca" @change="changeCCA(det)">
+                                                                    <option value="OTROS">OTROS</option>
+                                                                    <option value="GASTO">GASTO</option>
+                                                                    <option value="COSTO">COSTO</option>
+                                                                </select>
                                                             </td>
                                                             <td class="td2">
                                                                 {{det.obra}} {{det.sub_obra }}
@@ -2105,6 +2112,26 @@ export default {
                 }
             })
 
+        },
+        changeCCA(detalle){
+            let me = this;
+            axios.put(`/sp/changeCCA/`,{
+                    'id': detalle.id,
+                    'cca': detalle.cca
+                }).then(function (response){
+                    //Se muestra mensaje Success
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'CCA actualizado'
+                    })
+                }).catch(function (error){
+            });
         },
         autorizarDireccion(estado){
             let me = this;

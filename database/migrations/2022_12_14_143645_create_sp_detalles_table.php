@@ -20,6 +20,7 @@ class CreateSpDetallesTable extends Migration
             $table->string('sub_obra')->nullable();
             $table->string('cargo',200);
             $table->string('concepto',255);
+            $table->string('cca',100)->nullable();
             $table->text('observacion');
             $table->boolean('tipo_mov')->default(0);//0 Anticipo, //1 Liquidacion //2 Pago partes
             $table->double('total',10,2)->default(0);

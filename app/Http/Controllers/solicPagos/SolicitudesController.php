@@ -38,7 +38,7 @@ class SolicitudesController extends Controller
     }
 
     public function getConceptos(Request $request){
-        return SpCatalogo::select('id','concepto')->where('cargo','=',$request->cargo)->get();
+        return SpCatalogo::select('id','concepto','cca')->where('cargo','=',$request->cargo)->get();
     }
 
     public function index(Request $request){
@@ -615,6 +615,7 @@ class SolicitudesController extends Controller
                 $detalle->sub_obra      = $det['sub_obra'];
                 $detalle->cargo         = $det['cargo'];
                 $detalle->concepto      = $det['concepto'];
+                $detalle->cca           = $det['cca'];
                 $detalle->observacion   = $det['observacion'];
                 $detalle->tipo_mov      = $det['tipo_mov'];
                 $detalle->total         = $det['total'];
@@ -644,6 +645,7 @@ class SolicitudesController extends Controller
                 $detalle = SpDetalle::findOrFail($det['id']);
                 $detalle->cargo         = $det['cargo'];
                 $detalle->concepto      = $det['concepto'];
+                $detalle->cca           = $det['cca'];
                 $detalle->observacion   = $det['observacion'];
                 $detalle->save();
             }
@@ -1150,6 +1152,27 @@ class SolicitudesController extends Controller
             $status = 'Pagada';
 
         return $status;
+    }
+
+    public function updateCCA(Request $request){
+        $detalles = SpDetalle::get();
+
+        foreach($detalles as $det){
+            $d = SpDetalle::findOrFail($det->id);
+            $cat = SpCatalogo::select('id','cargo','concepto','cca')
+                ->where('cargo','=',$det->cargo)
+                ->where('concepto','=',$det->concepto)
+                ->get();
+            if(sizeof($cat))
+                $d->cca = $cat[0]->cca;
+            $d->save();
+        }
+    }
+
+    public function changeCCA(Request $request){
+        $det = SpDetalle::findOrFail($request->id);
+        $det->cca = $request->cca;
+        $det->save();
     }
 
 }
