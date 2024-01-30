@@ -148,8 +148,8 @@ class MedioPublicitarioController extends Controller
                                     )
                                     ->where('clientes.publicidad_id','=',$publiAll->id)
                                     ->where('vendedor_id','!=',104)
-                                    ->where('clasificacion','!=',7)
-                                    ->where('clasificacion','!=',5);
+                                    ->where('clasificacion','!=',7)//coacreditado
+                                    ->where('clasificacion','!=',5);//ventas
                                     if($proyecto != '')
                                         $res = $res->where('clientes.proyecto_interes_id','=',$proyecto);
                                     if($asesor != '')
@@ -182,8 +182,8 @@ class MedioPublicitarioController extends Controller
                                             )
                                             ->where('clientes.publicidad_id','=',$descartado->id)
                                             ->where('vendedor_id','=',104)//Vendedor descartado
-                                            ->where('clasificacion','!=',7)
-                                            ->where('clasificacion','!=',5);
+                                            ->where('clasificacion','!=',7)//Coacreditado
+                                            ->where('clasificacion','!=',5);//Ventas
                                             if($proyecto != '')
                                                 $res = $res->where('clientes.proyecto_interes_id','=',$proyecto);
                                             if($asesor != '')

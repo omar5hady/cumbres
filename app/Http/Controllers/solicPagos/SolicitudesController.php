@@ -605,6 +605,18 @@ class SolicitudesController extends Controller
         return $solic->id;
     }
 
+    private function searchCCA($cargo, $concepto){
+        $cca = 'OTROS';
+        $cat = SpCatalogo::select('id','cargo','concepto','cca')
+            ->where('cargo','=',$cargo)
+            ->where('concepto','=',$concepto)
+            ->get();
+        if(sizeof($cat))
+            $cca = $cat[0]->cca;
+
+        return $cca;
+    }
+
     private function storeDetalle($id, $detalles){
         foreach($detalles as $det){
             if($det['id'] == '')
@@ -615,7 +627,7 @@ class SolicitudesController extends Controller
                 $detalle->sub_obra      = $det['sub_obra'];
                 $detalle->cargo         = $det['cargo'];
                 $detalle->concepto      = $det['concepto'];
-                $detalle->cca           = $det['cca'];
+                $detalle->cca           = $this->searchCCA($detalle->cargo, $detalle->concepto);
                 $detalle->observacion   = $det['observacion'];
                 $detalle->tipo_mov      = $det['tipo_mov'];
                 $detalle->total         = $det['total'];
@@ -645,7 +657,7 @@ class SolicitudesController extends Controller
                 $detalle = SpDetalle::findOrFail($det['id']);
                 $detalle->cargo         = $det['cargo'];
                 $detalle->concepto      = $det['concepto'];
-                $detalle->cca           = $det['cca'];
+                $detalle->cca           = $this->searchCCA($detalle->cargo, $detalle->concepto);;
                 $detalle->observacion   = $det['observacion'];
                 $detalle->save();
             }

@@ -92,14 +92,7 @@
                                                     </td>
                                                 </template>
                                             </tr>
-                                            <!-- <tr>
-                                                <td class="td2" colspan="2">Total:</td>
-                                                <td class="td2" v-text="campanias.t_leads "></td>
-                                                <td class="td2" v-text="campanias.t_descartados"></td>
-                                                <td class="td2" v-text="campanias.t_canalizados"></td>
-                                                <td class="td2" v-text="campanias.t_desc_asesor"></td>
-                                                <td class="td2" v-text="campanias.t_venta"></td>
-                                            </tr> -->
+
 
                                         </tbody>
                                     </table>

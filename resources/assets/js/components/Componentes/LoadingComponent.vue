@@ -48,5 +48,7 @@ export default {};
         display: flex;
         justify-content: center;
         width: 100% !important;
+        padding-top: 5rem;
+        padding-bottom: 5rem;
     }
 </style>

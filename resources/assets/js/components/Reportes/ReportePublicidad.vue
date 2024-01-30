@@ -18,175 +18,179 @@
                         </button>
                     </div>
 
-                    <div class="card-body" v-if="listado == 0">
-                        <div class="form-group row">
-                            <div class="input-group">
-                                <button title="Mostrar Filtros" type="button" v-if="filtros==0" @click="filtros=1" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-plus-square"></i>
-                                </button>
-                                <button title="Mostrar Filtros" type="button" v-if="filtros==1" @click="filtros=0" class="btn btn-default btn-sm">
-                                    <i class="fa fa-minus-square-o"></i>
-                                </button>
-                                &nbsp;&nbsp;
-                                <button v-if="filtros==1" type="submit" @click="getDatos()" class="btn btn-primary"><i class="fa fa-search"></i></button>
-                            </div>
-
-                                <div class="col-md-6" v-if="filtros==1">
-                                    <label >Proyecto</label>
-                                    <div class="input-group">
-                                        <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control"  @change="selectEtapas(proyecto_id)" v-model="proyecto_id" >
-                                            <option value="">Fraccionamiento</option>
-                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                        </select>
-
-                                        <select class="form-control" v-model="etapa_id" >
-                                            <option value="">Etapa</option>
-                                            <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                        </select>
-                                    </div>
+                    <template v-if="!load">
+                        <div class="card-body" v-if="listado == 0">
+                            <div class="form-group row">
+                                <div class="input-group">
+                                    <button title="Mostrar Filtros" type="button" v-if="filtros==0" @click="filtros=1" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-plus-square"></i>
+                                    </button>
+                                    <button title="Mostrar Filtros" type="button" v-if="filtros==1" @click="filtros=0" class="btn btn-default btn-sm">
+                                        <i class="fa fa-minus-square-o"></i>
+                                    </button>
+                                    &nbsp;&nbsp;
+                                    <button v-if="filtros==1" type="submit" @click="getDatos()" class="btn btn-primary"><i class="fa fa-search"></i></button>
                                 </div>
 
-                                <div class="col-md-6" v-if="filtros==1">
-                                    <label >Rango de fechas</label>
-                                    <div class="input-group">
-                                        <!--Criterios para el listado de busqueda -->
-                                        <input type="date" v-model="desde" placeholder="Desde" class="form-control">
-                                        <input type="date" v-model="hasta" placeholder="Hasta" class="form-control">
-                                    </div>
-                                </div>
+                                    <div class="col-md-6" v-if="filtros==1">
+                                        <label >Proyecto</label>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <select class="form-control"  @change="selectEtapas(proyecto_id)" v-model="proyecto_id" >
+                                                <option value="">Fraccionamiento</option>
+                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                            </select>
 
-                                <div class="col-md-6" v-if="filtros==1">
-                                    <label >Asesor de venta</label>
-                                    <div class="input-group">
-                                        <select class="form-control" v-model="asesor_id" >
-                                            <option value="">Seleccione</option>
-                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
-                                        </select>
+                                            <select class="form-control" v-model="etapa_id" >
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                    </div>
 
-                    <div class="card-body" v-if="listado == 0">
-                        <div class="form-group row">
-                            <div class="col-md-3" >
-                                <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Ventas (Total {{totalVentas}}) {{porcVentas.toFixed(2) + '%'}}</h6></div>
-                                <div class="card text-dark bg-light" v-for="venta in arrayDatosVentas" :key="venta.id">
-                                    <div class="card-body"
-                                        @click="verCliente(venta.clientes,1)"
-                                    >
-                                        <div class="h6 text-muted text-left mb-2">{{venta.publicidad}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}} ({{((venta.cant/totalVentas)*100).toFixed(2) + '%'}})</div>
-                                        <div class="progress progress-primary progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (venta.cant/totalVentas)*100 + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="col-md-6" v-if="filtros==1">
+                                        <label >Rango de fechas</label>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <input type="date" v-model="desde" placeholder="Desde" class="form-control">
+                                            <input type="date" v-model="hasta" placeholder="Hasta" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" v-if="filtros==1">
+                                        <label >Asesor de venta</label>
+                                        <div class="input-group">
+                                            <select class="form-control" v-model="asesor_id" >
+                                                <option value="">Seleccione</option>
+                                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-3" >
-                                <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Prospectos Nuevos (Total {{totalProspectos}})</h6></div>
-                                <div class="card text-light bg-dark" v-for="prospecto in arrayDatosProspectos" :key="prospecto.id">
-                                    <div class="card-body text-light"
-                                        @click="verCliente(prospecto.clientes,2)"
-                                    >
-                                        <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
-                                        <div class="progress progress-dark progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalProspectos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-3" >
-                                <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Prospectos Atendidos (Total {{totalTodos}})</h6></div>
-                                <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosPros" :key="prospecto.id">
-                                    <div class="card-body text-dark"
-                                        @click="verCliente(prospecto.clientes,2)"
-                                    >
-                                        <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
-                                        <div class="progress progress-dark progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalTodos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3" >
-                                <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Atendidos Descartados (Total {{totalDesc}})</h6></div>
-                                <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosDesc" :key="prospecto.id">
-                                    <div class="card-body text-dark"
-                                        @click="verCliente(prospecto.clientes,2)"
-                                    >
-                                        <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
-                                        <div class="progress progress-dark progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalTodos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
+                        <div class="card-body" v-if="listado == 0">
+                            <div class="form-group row">
+                                <div class="col-md-3" >
+                                    <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Ventas (Total {{totalVentas}}) {{porcVentas.toFixed(2) + '%'}}</h6></div>
+                                    <div class="card text-dark bg-light" v-for="venta in arrayDatosVentas" :key="venta.id">
+                                        <div class="card-body"
+                                            @click="verCliente(venta.clientes,1)"
+                                        >
+                                            <div class="h6 text-muted text-left mb-2">{{venta.publicidad}}</div>
+                                            <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}} ({{((venta.cant/totalVentas)*100).toFixed(2) + '%'}})</div>
+                                            <div class="progress progress-primary progress-xs my-2">
+                                                <div class="progress-bar" role="progressbar" v-bind:style="{ width: (venta.cant/totalVentas)*100 + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                    </div>
+                                <div class="col-md-3" >
+                                    <div class="text-value-sm text-primary"><h6 style="font-weight: bold;">Prospectos Nuevos (Total {{totalProspectos}})</h6></div>
+                                    <div class="card text-light bg-dark" v-for="prospecto in arrayDatosProspectos" :key="prospecto.id">
+                                        <div class="card-body text-light"
+                                            @click="verCliente(prospecto.clientes,2)"
+                                        >
+                                            <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
+                                            <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
+                                            <div class="progress progress-dark progress-xs my-2">
+                                                <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalProspectos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <div class="card-body"  v-if="listado == 1">
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Cliente</th>
+
+                                <div class="col-md-3" >
+                                    <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Prospectos Atendidos (Total {{totalTodos}})</h6></div>
+                                    <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosPros" :key="prospecto.id">
+                                        <div class="card-body text-dark"
+                                            @click="verCliente(prospecto.clientes,2)"
+                                        >
+                                            <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
+                                            <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
+                                            <div class="progress progress-dark progress-xs my-2">
+                                                <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalTodos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" >
+                                    <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Atendidos Descartados (Total {{totalDesc}}) {{ (totalDesc*100/(totalTodos+totalDesc)).toFixed(2) }}%</h6></div>
+                                    <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosDesc" :key="prospecto.id">
+                                        <div class="card-body text-dark"
+                                            @click="verCliente(prospecto.clientes,2)"
+                                        >
+                                            <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
+                                            <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
+                                            <div class="progress progress-dark progress-xs my-2">
+                                                <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalTodos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="card-body"  v-if="listado == 1">
+                            <div class="table-responsive">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Cliente</th>
+                                            <template v-if="tipo == 2">
+                                                <th>Asesor</th>
+                                                <th>Proyecto de interes</th>
+                                            </template>
+                                            <template v-if="tipo == 1">
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Institucion Fin.</th>
+                                                <th>Tipo de Crédito</th>
+                                                <th>Asesor</th>
+                                                <th></th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         <template v-if="tipo == 2">
-                                            <th>Asesor</th>
-                                            <th>Proyecto de interes</th>
+                                            <tr v-for="cliente,index in clientes" :key="cliente.nombre+'-'+cliente.apellidos+index">
+                                                <td v-text="parseInt(index+1)"></td>
+                                                <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
+                                                <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
+                                                <td class="td2" v-text="cliente.proyecto"></td>
+                                            </tr>
                                         </template>
                                         <template v-if="tipo == 1">
-                                            <th>Fraccionamiento</th>
-                                            <th>Etapa</th>
-                                            <th>Manzana</th>
-                                            <th>Lote</th>
-                                            <th>Institucion Fin.</th>
-                                            <th>Tipo de Crédito</th>
-                                            <th>Asesor</th>
-                                            <th></th>
+                                            <tr v-for="cliente,index in clientes" :key="cliente.id">
+                                                <td v-text="parseInt(index+1)"></td>
+                                                <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
+                                                <td class="td2" v-text="cliente.proyecto"></td>
+                                                <td class="td2" v-text="cliente.etapa"></td>
+                                                <td class="td2" v-text="cliente.manzana"></td>
+                                                <td class="td2" v-text="cliente.num_lote"></td>
+                                                <td class="td2" v-text="cliente.institucion"></td>
+                                                <td class="td2" v-text="cliente.tipo_credito"></td>
+                                                <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
+                                                <td class="td2" v-if="cliente.publicidad_id == 5">
+                                                    {{ cliente.campania  }}
+                                                </td>
+                                            </tr>
                                         </template>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template v-if="tipo == 2">
-                                        <tr v-for="cliente,index in clientes" :key="cliente.nombre+'-'+cliente.apellidos+index">
-                                            <td v-text="parseInt(index+1)"></td>
-                                            <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
-                                            <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
-                                            <td class="td2" v-text="cliente.proyecto"></td>
-                                        </tr>
-                                    </template>
-                                    <template v-if="tipo == 1">
-                                        <tr v-for="cliente,index in clientes" :key="cliente.id">
-                                            <td v-text="parseInt(index+1)"></td>
-                                            <td class="td2" v-text="cliente.nombre + ' ' + cliente.apellidos"></td>
-                                            <td class="td2" v-text="cliente.proyecto"></td>
-                                            <td class="td2" v-text="cliente.etapa"></td>
-                                            <td class="td2" v-text="cliente.manzana"></td>
-                                            <td class="td2" v-text="cliente.num_lote"></td>
-                                            <td class="td2" v-text="cliente.institucion"></td>
-                                            <td class="td2" v-text="cliente.tipo_credito"></td>
-                                            <td class="td2" v-text="cliente.v_nombre + ' ' + cliente.v_apellidos"></td>
-                                            <td class="td2" v-if="cliente.publicidad_id == 5">
-                                                {{ cliente.campania  }}
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                    </template>
+                    <LoadingComponent v-else></LoadingComponent>
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -199,7 +203,11 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+import LoadingComponent from '../Componentes/LoadingComponent.vue'
     export default {
+        components:{
+            LoadingComponent,
+        },
         data(){
             return{
                arrayDatosProspectos:[],
@@ -215,8 +223,8 @@
                totalTodos:0,
                totalDesc:0,
                filtros:1,
-               desde:'',
-               hasta:'',
+               desde: new Date().getFullYear()+'-01-01' ,
+               hasta: new Date().getFullYear()+'-12-31',
                etapa_id:'',
                asesor_id:'',
                proyecto_id:'',
@@ -224,6 +232,7 @@
                listado : 0,
                clientes: [],
                tipo:2,
+               load: false
             }
         },
         computed:{
@@ -289,6 +298,7 @@
                 me.totalVentas=0;
                 me.totalDesc=0;
                 me.totalProspectos=0;
+                me.load = true;
                 var url = '/estadisticas/publicidad';
                 axios.get(url,{params:{
                     'desde'     : this.desde,
@@ -299,13 +309,13 @@
                     }
                 }).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayDatosProspectos = respuesta.publicidadProspectos;
+                    me.arrayDatosProspectos = respuesta.publicidadProspectos;//Nuevas
                     me.arrayDatosVentas = respuesta.publicidadVentas;
-                    me.arrayTodosPros = respuesta.publicidadAll;
+                    me.arrayTodosPros = respuesta.publicidadAll;//Atendidos
                     me.arrayTodosDesc = respuesta.descartadosAll;
 
                     me.arrayDatosProspectos.forEach(element => {
-                        me.totalProspectos += element.cant;
+                        me.totalProspectos += element.cant;//Nuevas
                     });
 
                     me.arrayDatosVentas.forEach(element => {
@@ -313,22 +323,24 @@
                     });
 
                     me.arrayTodosPros.forEach(element => {
-                        me.totalTodos += element.cant;
+                        me.totalTodos += element.cant;//Atendidos
                     });
 
                     me.arrayTodosDesc.forEach(element => {
                         me.totalDesc += element.cant;
                     });
 
-                    me.porcVentas = (me.totalVentas/me.totalProspectos)*100;
+                    me.porcVentas = (me.totalVentas/me.totalTodos)*100;
 
                     me.arrayDatosProspectos.sort((b, a) => a.cant - b.cant);
                     me.arrayDatosVentas.sort((b, a) => a.cant - b.cant);
                     me.arrayTodosPros.sort((b, a) => a.cant - b.cant);
                     me.arrayTodosDesc.sort((b, a) => a.cant - b.cant);
+                    me.load = false;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.load = false
                 });
 
             },

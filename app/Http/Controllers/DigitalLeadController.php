@@ -1163,11 +1163,16 @@ class DigitalLeadController extends Controller
         $proyecto = $request->proyecto;
 
         // Se obtienen los asesores que tienen por lo menos un lead asignado.
-        $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
+        $asesores = Vendedor::join('personal','vendedores.id','=','personal.id')
+                ->join('users','users.id','=','personal.id')
                 ->select('personal.id','personal.nombre','personal.apellidos')
                 //->where('vendedor_asign','!=',NULL)
-                ->where('motivo','=',1)
-                ->groupBy('personal.id')
+                ->where('vendedores.tipo','=',0)
+                ->where('users.condicion','=',1)
+                ->whereNotIn('users.usuario',
+                    ['mayra_jaz','yasmin_ventas','e_preciado','descartado', 'oficina']
+                )
+                ->distinct()
                 ->get();
 
         foreach ($asesores as $asesor) {
