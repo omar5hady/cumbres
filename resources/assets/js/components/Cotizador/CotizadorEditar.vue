@@ -174,7 +174,7 @@
                                 <option value="6">1 A 6 MESES</option>
                                 <option value="12">7 A 12 MESES</option>
                                 <option value="24">13 A 24 MESES</option>
-                                <option value="36">25 A 36 MESES</option>
+                                <!-- <option value="36">25 A 36 MESES</option> -->
                                 <!-- <option value="48">37 A 48 MESES</option> -->
                             </select>
 

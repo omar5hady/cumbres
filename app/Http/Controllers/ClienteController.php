@@ -1431,7 +1431,7 @@ S
             ->whereNotIn('users.usuario',[
                 'may_jaz', 'vero', 'e_preciado',
                 'Guadalupe', 'ALEJANDROT',
-                'yasmin_ventas', 'ivan.mtz', 'MARIAG',
+                'yasmin_ventas', 'MARIAG',
                 'aldo.alvarez'
             ])
 
@@ -1466,7 +1466,7 @@ S
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'ALEJANDROT', 'aldo.alvarez',
-                        'yasmin_ventas', 'ivan.mtz',  'MARIAG'
+                        'yasmin_ventas', 'MARIAG'
                     ])
 
                     ->orderBy('vendedores.cont_leads','asc')
@@ -1488,7 +1488,7 @@ S
                     ->whereNotIn('users.usuario',[
                         'may_jaz', 'vero', 'e_preciado',
                         'Guadalupe', 'ALEJANDROT',  'MARIAG',
-                        'yasmin_ventas','lisseth_rios', 'ivan.mtz',
+                        'yasmin_ventas','lisseth_rios',
                         'aldo.alvarez'
                     ])
                     ->orderBy('vendedores.cont_leads','asc')
