@@ -10,6 +10,7 @@ use App\Cliente;
 use App\User;
 use App\ProvCuenta;
 use Auth;
+use App\Equipamiento;
 
 use App\DropboxFiles;
 use Spatie\Dropbox\Client;
@@ -222,6 +223,10 @@ class ProveedorController extends Controller
         $proveedor = Proveedor::select('id','proveedor');
         if($request->constancia){
             $proveedor = $proveedor->where('const_fisc','!=',NULL);
+            if($request->equipamiento){
+                $eq = Equipamiento::select('proveedor_id')->distinct()->get();
+                $proveedor = $proveedor->whereIn('id',$eq);
+            }
             $proveedor = $proveedor->take(150)->get();
 
             return ['proveedor' => $proveedor];

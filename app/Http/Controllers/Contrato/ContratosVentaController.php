@@ -179,9 +179,12 @@ class ContratosVentaController extends Controller
         //Llamada a la función privada que obtiene los datos del contrato.
         $contrato = $this->getDatosContrato($id);
 
-        $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->first();
+        $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->get();
 
-        $contrato->diasTramites = $credito_sel->dias_nat;
+        $contrato->diasTramites = 0;
+
+        if(sizeof($credito_sel))
+            $contrato->diasTramites = $credito_sel[0]->dias_nat;
 
         if($contrato->avance_lote < 95 && $contrato->modelo != 'Terreno'){
             $contrato->diasTramites += $this->calcularDiasHabiles($contrato->fecha_contrato, $contrato->fin_obra);

@@ -30,6 +30,7 @@
             || Auth::user()->usuario == 'shady'
             || Auth::user()->usuario == 'ana_alvarado'
             || Auth::user()->usuario == 'mayra'
+            || Auth::user()->usuario == 'eli_hdz'
             )
             <li @click="menu=300" class="nav-item">
                 <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Cat. de equipamiento</a>

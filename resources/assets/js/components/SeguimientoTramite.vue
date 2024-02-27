@@ -62,6 +62,7 @@
                         <!-- Listado de liquidacion -->
                         <div class="tab-pane fade" id="liquidacion" role="tabpanel" aria-labelledby="liquidacion-tab">
                             <ListadoLiquidacion :rolId="rolId" :arrayData="arrayLiquidados"
+                                @listarData="listarData"
                                 @regresarExpediente="regresarExpediente"
                                 @cambiarProceso="cambiarProceso"
                                 @abrirModal="abrirModal"

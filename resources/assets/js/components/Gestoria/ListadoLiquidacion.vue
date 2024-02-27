@@ -291,7 +291,7 @@ export default {
                 b_manzana: '',
                 b_lote: '',
                 b_empresa: '',
-                criterio: '',
+                criterio: 'contratos.id',
             },
             band: 0
         }

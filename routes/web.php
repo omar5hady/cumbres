@@ -31,6 +31,10 @@ Route::get('invitacion/print','Form\EventoController@printInvitacion');
 //     return view('mails/welcome');
 // });
 
+Route::get('/birthday', function () {
+    return view('mails/happy_birthday');
+});
+
 Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/','Auth\LoginController@showLoginForm');
@@ -181,7 +185,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
         Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
 
-        Route::post('/customsms', 'TwilioSmsController@sendMessage');
+        Route::get('/customsms', 'TwilioSmsController@sendMessage');
 
     ///////////////////        RUTAS Inst. Financiamiento    //////////////////////////////////
         Route::get('/institucion_financiamiento','InstitucionFinanciamientoController@index');

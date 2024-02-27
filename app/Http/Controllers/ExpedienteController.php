@@ -62,9 +62,12 @@ class ExpedienteController extends Controller
 
                 $contrato->planos = $this->getPlanos($contrato->lote_id);
 
-                $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->first();
+                $credito_sel = Tipo_credito::where('nombre','=',$contrato->tipo_credito)->where('institucion_fin','=',$contrato->institucion)->get();
 
-                $contrato->diasTramites = $credito_sel->dias_nat;
+                $contrato->diasTramites = 0;
+                if(sizeof($credito_sel)){
+                    $contrato->diasTramites = $credito_sel[0]->dias_nat;
+                }
 
                 if($contrato->avance_contrato < 95)
                     $contrato->diasTramites += $this->calcularDiasHabiles($contrato->fecha_contrato, $contrato->fin_obra);

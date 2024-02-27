@@ -90,7 +90,7 @@ export default {
             let me = this;
 
             me.arrayProveedores=[];
-            var url = '/select_proveedor?constancia=1';
+            var url = '/select_proveedor?constancia=1&equipamiento=1';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayProveedores = respuesta.proveedor;

@@ -6,14 +6,15 @@ use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
+use App\Mail\birthdayCard;
 
 class TwilioSmsController extends Controller
 {
     // Herramienta para administracion de mensajes
     public function sendMessage(Request $request){
-        Mail::to('0m4r5h4dy@gmail.com')->send(new NotificationReceived('OSO PARDO'));
-        Mail::to('omar.ramos@grupocumbres.com')->send(new NotificationReceived('OSO PARDO'));
-        Mail::to('omar_vazquez_7@hotmail.com')->send(new NotificationReceived('OSO PARDO'));
+        Mail::to('0m4r5h4dy@gmail.com')->send(new birthdayCard());
+        Mail::to('omar.ramos@grupocumbres.com')->send(new birthdayCard());
+        Mail::to('omar_vazquez_7@hotmail.com')->send(new birthdayCard());
         //$this->createSMS("SMS Prueba desde SII Cumbres", "+524444605232");
     }
 

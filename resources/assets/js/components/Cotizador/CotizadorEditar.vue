@@ -269,7 +269,7 @@
                                         <td class="text-center"><strong>De 1 a 6 mes</strong></td>
                                         <td class="text-center"><strong>De 7 a 12 meses</strong></td>
                                         <td class="text-center"><strong>De 13 a 24 meses</strong></td>
-                                        <td class="text-center"><strong>De 25 a 36 meses</strong></td>
+                                        <!-- <td class="text-center"><strong>De 25 a 36 meses</strong></td> -->
                                         <!-- <td class="text-center"><strong>De 37 a 48 meses</strong></td> -->
                                     </tr>
                                     <tr>
@@ -277,7 +277,7 @@
                                         <td class="text-center">0% de Interes de tasa anual</td>
                                         <td class="text-center">{{arrayListA[6].valor + '% de Interes de tasa anual'}}</td>
                                         <td class="text-center">{{arrayListA[7].valor + '% de Interes de tasa anual'}}</td>
-                                        <td class="text-center">{{arrayListA[8].valor + '% de Interes de tasa anual'}}</td>
+                                        <!-- <td class="text-center">{{arrayListA[8].valor + '% de Interes de tasa anual'}}</td> -->
                                         <!-- <td class="text-center">{{arrayListA[9].valor + '% de Interes de tasa anual'}}</td> -->
                                     </tr>
                                 </template>
