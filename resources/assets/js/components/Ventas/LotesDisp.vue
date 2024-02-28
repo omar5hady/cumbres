@@ -19,7 +19,6 @@
                         <!---->
                     </div>
                     <div class="card-body">
-
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a @click="cambiarVista(1)" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
@@ -92,8 +91,8 @@
 
                                     </div>
                                     <div class="input-group">
-                                        <input type="text" v-model="b_rango1" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Desde: $">
-                                        <input type="text" v-model="b_rango2" @keypress="$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Hasta: $">
+                                        <input type="text" v-model="b_rango1" @keypress="$root.$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Desde: $">
+                                        <input type="text" v-model="b_rango2" @keypress="$root.$root.isNumber($event)" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Hasta: $">
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
@@ -204,14 +203,14 @@
                                             <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                         <td class="td2" v-text="lote.terreno"></td>
                                         <td class="td2" v-text="lote.construccion"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.excedente_terreno)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
-                                        <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(lote.precio_base)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(lote.excedente_terreno)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(lote.obra_extra)"></td>
+                                        <td class="td2" v-text="'$'+$root.formatNumber(lote.sobreprecio)"></td>
+                                        <td class="td2" style="width:20%"> <strong>{{'$'+$root.formatNumber(lote.precio_venta)}}</strong> </td>
                                         <td class="td2" style="width:20%">
                                             <a href="#" @click="abrirModal('lote', 'cotizacion', lote)">
-                                                <strong>{{'$'+formatNumber(lote.precio_c_equipamiento)}}</strong>
+                                                <strong>{{'$'+$root.formatNumber(lote.precio_c_equipamiento)}}</strong>
                                             </a>
                                         </td>
                                         <td>
@@ -378,10 +377,10 @@
                                         <td class="td2" v-text="lote.indivisos+'%'"></td>
                                             <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                             <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                        <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>
+                                        <td class="td2" style="width:20%"> <strong>{{'$'+$root.formatNumber(lote.precio_venta)}}</strong> </td>
                                         <td class="td2" style="width:20%">
                                             <a href="#" @click="abrirModal('lote', 'cotizacion', lote)">
-                                                <strong>{{'$'+formatNumber(lote.precio_c_equipamiento)}}</strong>
+                                                <strong>{{'$'+$root.formatNumber(lote.precio_c_equipamiento)}}</strong>
                                             </a>
                                         </td>
                                         <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
@@ -559,7 +558,7 @@
                                                 <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                             <td class="td2" v-text="lote.terreno"></td>
                                             <td class="td2" v-text="lote.construccion"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_renta)"></td>
+                                            <td class="td2" v-text="'$'+$root.formatNumber(lote.precio_renta)"></td>
                                             <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
 
                                         </template>
@@ -594,61 +593,15 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <ModalComponent v-if="modal==1"
+            <ModalApartar v-if="modal == 1"
+                @close="cerrarModal()"
+                @verObs="verObs"
                 :titulo="tituloModal"
-                @closeModal="cerrarModal()"
-            >
-                <template v-slot:body>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
-                        <div class="col-md-6">
-                            <select v-model="vendedor_id"  class="form-control"  @change="selectClientes(vendedor_id)" >
-                                <option value="0">Seleccione</option>
-                                <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
-                        <div class="col-md-6">
-                            <select v-model="cliente_id"   class="form-control" >
-                                <option value="0">Seleccione</option>
-                                <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
-                        <div class="col-md-6">
-                            <select  v-model="credito"  class="form-control" >
-                                <option value="">Seleccione</option>
-                                <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
-                        <div class="col-md-4" >
-                            <label v-if="tipoAccion==2" v-text="fecha_mostrar"></label>
-                            <label v-if="tipoAccion==3" v-text="fecha_apartado_format"></label>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 form-control-label" for="text-input">Comentario</label>
-                        <div class="col-md-6" >
-                            <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Comentario"></textarea>
-                        </div>
-                    </div>
-                </template>
-                <template v-slot:buttons-footer>
-                    <button type="button" v-if="tipoAccion==2 && userId != 28128" class="btn btn-primary" @click="apartarLote()">Apartar</button>
-                    <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
-                    <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-success" @click="actualizarLote()">Guardar</button>
-                </template>
-            </ModalComponent>
+                :arrayVendedores="arrayVendedores"
+                :arrayCreditos="arrayCreditos"
+                :tipoAccion="tipoAccion"
+                :datos="apartado"
+            />
             <ModalComponent v-if="modal==2"
                 :titulo="tituloModal"
                 @closeModal="cerrarModal()"
@@ -677,6 +630,28 @@
                 :doc_equipamiento="doc_equipamiento"
                 @close="cerrarModal()"
             ></ModalCotizacion>
+
+            <ModalComponent v-if="modalObs==1"
+                @closeModal="modalObs = 0"
+                titulo="Obsevaciones del prospecto"
+            >
+                <template v-slot:body>
+
+                    <TableComponent
+                        :cabecera="['Usuario','Observacion','Fecha','Cita']"
+                    >
+                        <template v-slot:tbody>
+                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.comentario" ></td>
+                                <td v-text="observacion.created_at"></td>
+                                <td v-text="observacion.prox_cita"></td>
+                            </tr>
+                        </template>
+                    </TableComponent>
+                </template>
+            </ModalComponent>
 
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -715,12 +690,14 @@
 import ModalComponent from '../Componentes/ModalComponent.vue';
 import TableComponent from '../Componentes/TableComponent.vue';
 import ModalCotizacion from './components/ModalCotizacion.vue';
+import ModalApartar from './components/LotesDisponibles/ModalApartar.vue';
 
     export default {
         components:{
             ModalComponent,
             TableComponent,
-            ModalCotizacion
+            ModalCotizacion,
+            ModalApartar
         },
         props:{
             rolId:{type: String},
@@ -730,32 +707,19 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
             return{
                 proceso:false,
                 id: 0,
-                cliente_id:0,
-                cliente:'',
-                vendedor_id:0,
-                lote_id: 0,
-                apartado:0,
                 b_modelo:'',
                 b_lote:'',
-                fraccionamiento_id:0,
                 contador: 0,
-                credito:'',
-                fecha_apartado:'',
-                fecha_mostrar:'',
-                comentario: '',
                 arrayLote : [],
                 arrayFraccionamientos :[],
-                arrayClientes:[],
                 arrayVendedores:[],
                 arrayCreditos:[],
-                arrayDatosApartado: [],
                 arrayEtapas: [],
                 arrayModelos: [],
                 modal : 0,
+                modalObs: 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorLote : 0,
-                errorMostrarMsjLote : [],
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -777,7 +741,20 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 empresas:[],
                 tab:1,
                 equipamiento:[],
+                arrayObservacion: [],
                 doc_equipamiento: '',
+                apartado:{
+                    vendedor_id: "",
+                    cliente_id: "",
+                    credito: "",
+                    fecha_mostrar: "",
+                    fecha_apartado_format: "",
+                    comentario: "",
+                    fraccionamiento_id: "",
+                    lote_id: "",
+                    apartado_id: "",
+                    fecha_apartado: ''
+                },
                 cotizacion:{
                     precio_venta: 0,
                     cocina_tradicional: 0,
@@ -824,6 +801,19 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
         },
 
         methods : {
+            verObs(prospecto_id){
+                let me = this;
+                var url = '/clientes/observacion?page=' + 1 + '&buscar=' + prospecto_id ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    me.modalObs = 1;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
             cambiarVista(vista){
                 this.tab = vista;
                 this.criterio = 'lotes.fraccionamiento_id';
@@ -865,18 +855,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                     console.log(error);
                 });
             },
-            selectClientes(vendedor){
-                let me = this;
-                me.arrayClientes=[];
-                var url = '/select_clientes?vendedor_id=' + vendedor +'&fraccionamiento_id=' + this.fraccionamiento_id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayClientes = respuesta.clientes;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
+
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2=""
@@ -931,26 +910,6 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
             fichaTecnicaRenta(archivo){
                 window.open('/files/lotes/archivoRentas/'+archivo, '_blank')
             },
-            selectDatosApartado(lote_id){
-                let me = this;
-                me.arrayDatosApartado=[];
-                var url = '/select_datos_apartado?lote_id=' + lote_id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDatosApartado = respuesta.apartados;
-                    me.vendedor_id = me.arrayDatosApartado[0].vendedor_id;
-                    me.cliente_id = me.arrayDatosApartado[0].cliente_id;
-                    me.fecha_apartado = me.arrayDatosApartado[0].fecha_apartado;
-                    me.credito = me.arrayDatosApartado[0].tipo_credito;
-                    me.comentario = me.arrayDatosApartado[0].comentario;
-                    me.fecha_apartado_format=moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
-                    me.selectClientes(me.vendedor_id);
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             selectCreditos(){
                 let me = this;
                 me.arrayCreditos=[];
@@ -970,31 +929,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLote(page,buscar,buscar2,buscar3,b_modelo, b_lote,criterio,rol);
             },
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-            validarLote(){
-                this.errorLote=0;
-                this.errorMostrarMsjLote=[];
 
-                if(!this.fraccionamiento_id) //Si la variable Lote esta vacia
-                    this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
-
-                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorLote = 1;
-
-                return this.errorLote;
-            },
             verEquipamiento(data){
                 this.equipamiento = data;
                 this.modal = 2;
@@ -1019,102 +954,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                     console.log(error);
                 });
             },
-            apartarLote(){
-                 if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
 
-                this.proceso=true;
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/apartado/registrar',{
-                    'vendedor_id': this.vendedor_id,
-                    'cliente_id': this.cliente_id,
-                    'tipo_credito': this.credito,
-                    'fecha_apartado': this.fecha_apartado,
-                    'comentario': this.comentario,
-                    'lote_id': this.lote_id,
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Lote apartado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            actualizarLote(){
-                  if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-                this.proceso=true;
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/apartado/actualizar',{
-                    'vendedor_id': this.vendedor_id,
-                    'cliente_id': this.cliente_id,
-                    'tipo_credito': this.credito,
-                    'fecha_apartado': this.fecha_apartado,
-                    'comentario': this.comentario,
-                    'lote_id': this.lote_id,
-                    'id': this.apartado,
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Lote apartado actualizado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-            desapartarLote(){
-                swal({
-                title: '¿Desea desapartar este lote?',
-                text: "El lote quedara disponible para apartar!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
-
-                axios.delete('/apartado/eliminar',
-                        {params: {'lote_id': this.lote_id,
-                        'id':this.apartado
-                        }}).then(function (response){
-                        swal(
-                        'Desapartado!',
-                        'Lote desapartado correctamente.',
-                        'success'
-                        )
-                        me.cerrarModal();
-                        me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId);
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
-            },
             limpiarCotizacion(){
                 this.cotizacion = {
                     precio_venta: 0,
@@ -1130,20 +970,26 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                     cocina: 0,
                 }
             },
+            limpiarApartado(){
+                this.apartado = {
+                    vendedor_id: "",
+                    cliente_id: "",
+                    credito: "",
+                    fecha_mostrar: "",
+                    fecha_apartado_format: "",
+                    comentario: "",
+                    fraccionamiento_id: "",
+                    lote_id: "",
+                    apartado_id: "",
+                    fecha_apartado: ''
+                }
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.fraccionamiento_id=0;
-                this.cliente_id=0;
-                this.vendedor_id=0;
-                this.credito='';
-                this.comentario='';
-                this.errorLote = 0;
-                this.errorMostrarMsjLote = [];
-                this.id=0;
-                this.lote_id=0;
-                this.cliente="";
-                this.apartado=0;
+                this.limpiarApartado()
+                this.listarLote(this.pagination.current_page,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.criterio,this.rolId); //se enlistan nuevamente los registros
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -1155,25 +1001,24 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
 
                             case 'apartar':
                             {
-                                this.modal =1;
                                 this.tituloModal='Realizar apartado';
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.lote_id=data['id'];
-                                this.fecha_apartado=moment().locale('es').format('YYYY-MM-DD');
-                                this.fecha_mostrar=moment(this.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
+                                this.apartado.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.apartado.lote_id=data['id'];
+                                this.apartado.fecha_apartado=moment().locale('es').format('YYYY-MM-DD');
+                                this.apartado.fecha_mostrar=moment(this.apartado.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
                                 this.tipoAccion=2;
+                                this.modal =1;
                                 break;
                             }
 
                              case 'mostrarApartado':
                             {
-                                this.selectDatosApartado(data['id']);
-                                this.modal =1;
                                 this.tituloModal='Lote apartado';
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.lote_id=data['id'];
-                                this.apartado=data['apartado'];
+                                this.apartado.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.apartado.lote_id=data['id'];
+                                this.apartado.apartado_id=data['apartado'];
                                 this.tipoAccion=3;
+                                this.modal =1;
                                 break;
                             }
                             case 'cotizacion':{
@@ -1194,10 +1039,6 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
                         }
                     }
                 }
-                //this.selectFraccionamientos();
-                this.selectVendedores();
-                this.selectClientes(this.vendedor_id);
-
             },
             getEmpresa(){
                 let me = this;
@@ -1217,6 +1058,7 @@ import ModalCotizacion from './components/ModalCotizacion.vue';
             this.selectFraccionamientos();
             this.selectCreditos();
             this.getEmpresa();
+            this.selectVendedores();
         }
     }
 </script>

@@ -32,7 +32,7 @@ Route::get('invitacion/print','Form\EventoController@printInvitacion');
 // });
 
 Route::get('/birthday', function () {
-    return view('mails/happy_birthday');
+    return view('mails/happy_birthday_prospectos');
 });
 
 Route::group(['middleware' => ['guest']],function(){

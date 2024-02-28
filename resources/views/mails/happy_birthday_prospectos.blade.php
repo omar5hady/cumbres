@@ -27,17 +27,17 @@
                     style="border: 1px solid #cccccc; border-collapse: collapse;">
                     <tr style="background-color: #003058;">
                         <td align="center">
-                            <img src="https://siicumbres.com/img/mail/birthday/mailing_Cumpleanios_clientes1.webp"
+                            <img src="https://siicumbres.com/img/mail/birthday/mailing_Cumpleanios_prospectos1.webp"
                                 width="600" style="display: block;" />
                         </td>
                     </tr>
-                    <tr style="background-color: #0B4B77">
+                    <tr style="background-color: #0094A8">
                         <td align="center">
                             <p style="margin-top: 30px; margin-bottom:0px; font-size: 30px; color: white;">
                                 JUAN CARLOS ANTONIO
                             </p>
                             <p
-                                style="margin-bottom: 30px; margin-top:0px; font-size: 30px; color: #00AAEE; font-weight: bold;">
+                                style="margin-bottom: 30px; margin-top:0px; font-size: 30px; color: #003058; font-weight: bold;">
                                 PEREZ LOPEZ VELAZQUEZ
                             </p>
                         </td>
@@ -45,7 +45,15 @@
                     <tr style="background-color: #003058;">
                         <td align="center">
                             <a href="https://casascumbres.mx">
-                                <img src="https://siicumbres.com/img/mail/birthday/mailing_Cumpleanios_clientes2.webp"
+                                <img src="https://siicumbres.com/img/mail/birthday/mailing_Cumpleanios_prospectos2.webp"
+                                    width="600" style="display: block;" />
+                            </a>
+                        </td>
+                    </tr>
+                    <tr style="background-color: #003058;">
+                        <td align="center">
+                            <a href="https://casascumbres.mx">
+                                <img src="https://siicumbres.com/img/mail/birthday/mailing_Cumpleanios_prospectos3.webp"
                                     width="600" style="display: block;" />
                             </a>
                         </td>
