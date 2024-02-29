@@ -132,7 +132,7 @@ class NotificacionPeriodica extends Command
             ->get();
 
         if(sizeof($clientes)){
-            Mail::to('omar.ramos@grupocumbres.com')->send(new birthdayCard($c[0]));
+            Mail::to('omar.ramos@grupocumbres.com')->send(new birthdayCard($clientes[0]));
             foreach($clientes as $c)
                 Mail::to($c->email)->send(new birthdayCard($c));
         }
