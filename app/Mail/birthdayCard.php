@@ -16,9 +16,10 @@ class birthdayCard extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public $persona;
+    public function __construct($datos)
     {
-        //
+        $this->persona = $datos;
     }
 
     /**
@@ -28,7 +29,7 @@ class birthdayCard extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.happy_birthday')
+        return $this->view('mails.happy_birthday',['p' => $this->persona ])
         ->subject("Feliz cumpleaños");
     }
 }

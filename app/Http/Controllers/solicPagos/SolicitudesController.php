@@ -347,6 +347,8 @@ class SolicitudesController extends Controller
         $b_status = $request->b_status;
         $b_fecha1 = $request->b_fecha1;
         $b_fecha2 = $request->b_fecha2;
+        $b_fecha_pago1 = $request->b_fecha_pago1;
+        $b_fecha_pago2 = $request->b_fecha_pago2;
         $b_vbgerente = $request->b_vbgerente;
         $b_vbdireccion = $request->b_vbdireccion;
         $b_rechazado = $request->b_rechazado;
@@ -375,6 +377,10 @@ class SolicitudesController extends Controller
             if($b_fecha1 != '' && $b_fecha2 != '')
                 $solicitudes = $solicitudes->whereBetween(
                     'sp_solicituds.created_at',[$b_fecha1.' 00:00:00',$b_fecha2.' 23:59:59']
+                );
+            if($b_fecha_pago1 != '' && $b_fecha_pago2 != '')
+                $solicitudes = $solicitudes->whereBetween(
+                    'sp_solicituds.fecha_pago',[$b_fecha_pago1,$b_fecha_pago2]
                 );
             if($b_status != '')
                 $solicitudes = $solicitudes->where('sp_solicituds.status','=', $b_status);

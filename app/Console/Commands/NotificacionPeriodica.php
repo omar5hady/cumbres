@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\Mail\birthdayCard;
 use App\Mail\birthdayCardProspectos;
+use App\Mail\BirthdayCardColaborador;
 use App\Notificacion_aviso;
 use App\Cliente_observacion;
 use App\Cliente;
@@ -55,12 +56,13 @@ class NotificacionPeriodica extends Command
     {
         //Se establece la fecha actual.
         $today = Carbon::today()->format('Y-m-d');
-        // $month = Carbon::today()->format('m');
-        // $day = Carbon::today()->format('d');
+        $month = Carbon::today()->format('m');
+        $day = Carbon::today()->format('d');
         $this->getNotificacionesAviso($today);
         $this->getPagosPorVencer();
         $this->cambiarPagoAVencido();
         $this->sendDescartado();
+        $this->sendBirthdayCards($month, $day);
 
         $leadController = new DigitalLeadController();
         $leadController->pruebaDescartLead();
@@ -91,36 +93,55 @@ class NotificacionPeriodica extends Command
             }
     }
 
-    // private function sendBirthdayCards($month, $day){
-    //     $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-    //         ->select('creditos.prospecto_id')->where('contratos.status', '=', 3)
-    //         ->distinct()
-    //         ->get();
+    private function sendBirthdayCards($month, $day){
+        $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->select('creditos.prospecto_id')->where('contratos.status', '=', 3)
+            ->distinct()
+            ->get();
 
-    //     $clientes = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
-    //         ->select('clientes.id', 'personal.email')->whereNotIn('clientes.iid', $ventas)
-    //         ->whereMonth('personal.f_nacimiento',$month)
-    //         ->whereDay('personal.f_nacimiento',$day)
-    //         ->get();
+        $clientes = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
+            ->select('clientes.id', 'personal.email', 'personal.nombre', 'personal.apellidos')
+            ->whereNotIn('clientes.iid', $ventas)
+            ->whereMonth('personal.f_nacimiento',$month)
+            ->whereDay('personal.f_nacimiento',$day)
+            ->where('personal.email','not like','%sin_correo%')
+            ->where('personal.email','not like','%sincorreo%')
+            ->get();
 
-    //     $prospectos = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
-    //         ->select('clientes.id', 'personal.email')->whereIn('clientes.iid', $ventas)
-    //         ->whereMonth('personal.f_nacimiento',$month)
-    //         ->whereDay('personal.f_nacimiento',$day)
-    //         ->get();
+        $prospectos = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
+            ->select('clientes.id', 'personal.email', 'personal.nombre', 'personal.apellidos')
+            ->whereIn('clientes.iid', $ventas)
+            ->whereMonth('personal.f_nacimiento',$month)
+            ->whereDay('personal.f_nacimiento',$day)
+            ->where('personal.email','not like','%sin_correo%')
+            ->where('personal.email','not like','%sincorreo%')
+            ->get();
 
-    //     $vendedoresExt = Vendedor::select('id')->where('tipo','=',1)->get();
+        $vendedoresExt = Vendedor::select('id')->where('tipo','=',1)->get();
 
-    //     $usuarios = User::join('personal', 'users.id','=','personal.id')
-    //         ->select('personal.id','personal.email')
-    //         ->whereNotIn('personal.id',$vendedoresExt)
-    //         ->where('users.condicion','=',1)
-    //         ->where('users.rol_id','!=',10)
-    //         ->where('users.rol_id','!=',13)
-    //         ->whereMonth('personal.f_nacimiento',$month)
-    //         ->whereDay('personal.f_nacimiento',$day)
-    //         ->get();
-    // }
+        $usuarios = User::join('personal', 'users.id','=','personal.id')
+            ->select('personal.id','personal.email', 'personal.nombre', 'personal.apellidos')
+            ->whereNotIn('personal.id',$vendedoresExt)
+            ->where('users.condicion','=',1)
+            ->where('users.rol_id','!=',10)
+            ->where('users.rol_id','!=',13)
+            ->where('personal.email','not like','%sin_correo%')
+            ->where('personal.email','not like','%sincorreo%')
+            ->whereMonth('personal.f_nacimiento',$month)
+            ->whereDay('personal.f_nacimiento',$day)
+            ->get();
+
+        if(sizeof($clientes)){
+            Mail::to('omar.ramos@grupocumbres.com')->send(new birthdayCard($c[0]));
+            foreach($clientes as $c)
+                Mail::to($c->email)->send(new birthdayCard($c));
+        }
+
+        if(sizeof($prospectos)){
+            foreach($prospectos as $c)
+                Mail::to($c->email)->send(new birthdayCardProspectos($c));
+        }
+    }
 
     private function getPagosPorVencer(){
         //Se establece la fecha 5 dias posteriores a la actual.

@@ -48,11 +48,11 @@
                                     border-style: solid;
                                     border-color: #88ABEC;">
                                 <p style="margin-top: 15px; margin-bottom:0px; font-size: 25px; color: #fff;">
-                                    JUAN CARLOS ANTONIO
+                                    {{ strtoupper($p->nombre) }}
                                 </p>
                                 <p
                                     style="margin-bottom: 20px; margin-top:0px; font-size: 25px; color: #F4A940; font-weight: bold;">
-                                    PEREZ LOPEZ VELAZQUEZ
+                                    {{ strtoupper($p->apellidos) }}
                                 </p>
                                 <p style="color: #fff; margin-left: 15px; margin-right: 15px;">
                                     <strong>¡Feliz Cumpleaños!</strong> Que este día esté lleno de alegría, amor

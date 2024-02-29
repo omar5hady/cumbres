@@ -10,14 +10,17 @@ use App\Mail\birthdayCard;
 use App\Mail\birthdayCardProspectos;
 use App\Mail\BirthdayCardColaborador;
 use Carbon\Carbon;
+use App\Personal;
 
 class TwilioSmsController extends Controller
 {
     // Herramienta para administracion de mensajes
     public function sendMessage(Request $request){
-        Mail::to('lemuel.lopez@grupocumbres.com')->send(new BirthdayCardColaborador());
-        Mail::to('omar.ramos@grupocumbres.com')->send(new BirthdayCardColaborador());
-        Mail::to('oscar.gavia@icloud.com')->send(new BirthdayCardColaborador());
+        $p = Personal::select('nombre', 'apellidos')
+        ->where('apellidos','like', '%Ramos Vazquez%')->first();
+        Mail::to('lemuel.lopez@grupocumbres.com')->send(new birthdayCardProspectos($p));
+        Mail::to('omar.ramos@grupocumbres.com')->send(new birthdayCardProspectos($p));
+        Mail::to('oscar.gavia@icloud.com')->send(new birthdayCardProspectos($p));
         //$this->createSMS("SMS Prueba desde SII Cumbres", "+524444605232");
     }
 

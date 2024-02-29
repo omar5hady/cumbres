@@ -71,6 +71,13 @@
                                     <input type="date" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)" v-model="b_fecha2">
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input class="form-control col-md-2" type="text" disabled placeholder="Fecha de pago:">
+                                    <input type="date" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)" v-model="b_fecha_pago1">
+                                    <input type="date" class="form-control col-md-4" @keyup.enter="indexSolicitudes(1)" v-model="b_fecha_pago2">
+                                </div>
+                            </div>
                             <div class="col-md-12" v-if="usuario == 'shady' || usuario == 'jorge.diaz'">
                                 <div class="input-group">
                                     <input class="form-control col-md-2" type="text" disabled placeholder="Devoluciones?:">
@@ -92,6 +99,8 @@
                                         + '&b_vbdireccion=' + b_vbdireccion
                                         + '&b_fecha1=' + b_fecha1
                                         + '&b_fecha2=' + b_fecha2
+                                        + '&b_fecha_pago1=' + b_fecha_pago1
+                                        + '&b_fecha_pago2=' + b_fecha_pago2
                                         + '&b_rechazado=' + b_rechazado
                                         + '&b_tipo_pago=' + b_tipo_pago
                                         + '&b_forma_pago=' + b_forma_pago
@@ -108,6 +117,8 @@
                                         + '&b_vbdireccion=' + b_vbdireccion
                                         + '&b_fecha1=' + b_fecha1
                                         + '&b_fecha2=' + b_fecha2
+                                        + '&b_fecha_pago1=' + b_fecha_pago1
+                                        + '&b_fecha_pago2=' + b_fecha_pago2
                                         + '&b_rechazado=' + b_rechazado
                                         + '&b_tipo_pago=' + b_tipo_pago
                                         + '&b_forma_pago=' + b_forma_pago
@@ -1999,6 +2010,8 @@ export default {
             b_status : 0,
             b_fecha1 : '',
             b_fecha2 : '',
+            b_fecha_pago1: '',
+            b_fecha_pago2: '',
             b_vbgerente : 0,
             b_vbdireccion : 0,
             b_rechazado: '',
@@ -2929,6 +2942,8 @@ export default {
                 + '&b_vbdireccion=' + me.b_vbdireccion
                 + '&b_fecha1=' + me.b_fecha1
                 + '&b_fecha2=' + me.b_fecha2
+                + '&b_fecha_pago1=' + me.b_fecha_pago1
+                + '&b_fecha_pago2=' + me.b_fecha_pago2
                 + '&b_rechazado=' + me.b_rechazado
                 + '&b_tipo_pago=' + me.b_tipo_pago
                 + '&b_forma_pago=' + me.b_forma_pago

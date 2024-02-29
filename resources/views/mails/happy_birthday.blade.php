@@ -34,11 +34,11 @@
                     <tr style="background-color: #0B4B77">
                         <td align="center">
                             <p style="margin-top: 30px; margin-bottom:0px; font-size: 30px; color: white;">
-                                JUAN CARLOS ANTONIO
+                                {{ strtoupper($p->nombre) }}
                             </p>
                             <p
                                 style="margin-bottom: 30px; margin-top:0px; font-size: 30px; color: #00AAEE; font-weight: bold;">
-                                PEREZ LOPEZ VELAZQUEZ
+                                {{ strtoupper($p->apellidos) }}
                             </p>
                         </td>
                     </tr>
