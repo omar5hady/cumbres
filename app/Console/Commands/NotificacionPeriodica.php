@@ -101,7 +101,7 @@ class NotificacionPeriodica extends Command
 
         $clientes = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
             ->select('clientes.id', 'personal.email', 'personal.nombre', 'personal.apellidos')
-            ->whereNotIn('clientes.iid', $ventas)
+            ->whereNotIn('clientes.id', $ventas)
             ->whereMonth('personal.f_nacimiento',$month)
             ->whereDay('personal.f_nacimiento',$day)
             ->where('personal.email','not like','%sin_correo%')
@@ -110,7 +110,7 @@ class NotificacionPeriodica extends Command
 
         $prospectos = Cliente::join('personal', 'clientes.id', '=', 'personal.id')
             ->select('clientes.id', 'personal.email', 'personal.nombre', 'personal.apellidos')
-            ->whereIn('clientes.iid', $ventas)
+            ->whereIn('clientes.id', $ventas)
             ->whereMonth('personal.f_nacimiento',$month)
             ->whereDay('personal.f_nacimiento',$day)
             ->where('personal.email','not like','%sin_correo%')
