@@ -527,18 +527,21 @@ export default {
     },
 
     getBirthdayPeople(){
-        let me = this;
-        me.arrayCumple = [];
-        var url = "/getBirthdayPeople";
-        axios
-        .get(url)
-        .then(function(response) {
-          var respuesta = response.data;
-          me.arrayCumple = respuesta.people;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+        if(this.rolId == 2 || this.rolId == 4 || this.rolId == 8)
+        {
+            let me = this;
+            me.arrayCumple = [];
+            var url = "/getBirthdayPeople";
+            axios
+            .get(url)
+            .then(function(response) {
+              var respuesta = response.data;
+              me.arrayCumple = respuesta.people;
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
 
     },
 
@@ -588,17 +591,19 @@ export default {
     },
 
     getReminderLeads(){
-        let me = this;
+        if(this.rolId == 2 || this.rolId == 4 || this.rolId == 8){
+            let me = this;
 
-        var url = '/comments/reminderCommentarioLead/';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayRemindersLead = respuesta.reminders;
-                me.arrayRemindersLeadFecha = respuesta.reminders_fecha;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            var url = '/comments/reminderCommentarioLead/';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayRemindersLead = respuesta.reminders;
+                    me.arrayRemindersLeadFecha = respuesta.reminders_fecha;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
     }
   },
   mounted() {

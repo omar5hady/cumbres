@@ -1352,6 +1352,9 @@ Route::group(['middleware' => ['auth']],function(){
         ////////////////////// Rutas Planos Proyectos
         Route::resource('/equip-lotes', Lotes\EquipLoteController::class);
 
+        ////////////////////// Rutas Modulo Vacaciones
+        Route::resource('/dias-festivos', Rh\DiasFestivosController::class);
+
         ////////////////////// Rutas Control presupuestal
         Route::resource('/terrenos-compra', controlPresupuestal\TerrenosCompraController::class);
 

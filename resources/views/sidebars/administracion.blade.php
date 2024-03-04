@@ -87,6 +87,11 @@
                 <a class="nav-link" href="#"><i class="fa fa-industry"></i>Proveedores</a>
             </li>
         @endif
+        @if(Auth::user()->rol_id == 1)
+            <li @click="menu=305" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-calendar"></i>Dias festivos</a>
+            </li>
+        @endif
     </ul>
 </li>
 

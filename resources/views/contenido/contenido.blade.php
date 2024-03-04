@@ -600,5 +600,8 @@
         <template v-if="menu==304">
             <cat-compra-terreno></cat-compra-terreno>
         </template>
+        <template v-if="menu==305">
+            <dias-festivos></dias-festivos>
+        </template>
     @endif
 @endsection

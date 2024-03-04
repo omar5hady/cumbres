@@ -50,6 +50,7 @@ Vue.component('proveedores', require('./components/Administracion/Proveedores.vu
 Vue.component('campanias', require('./components/Administracion/Campania.vue'));
 Vue.component('vehiculos', require('./components/Administracion/Vehiculos.vue'));
 Vue.component('inmobiliarias', require('./components/Administracion/Inmobiliarias.vue'));
+Vue.component('dias-festivos', require('./components/Administracion/DiasFestivos.vue'));
 
 //Componentes Desarrollo
 Vue.component('fraccionamiento', require('./components/Desarrollo/Fraccionamiento.vue'));

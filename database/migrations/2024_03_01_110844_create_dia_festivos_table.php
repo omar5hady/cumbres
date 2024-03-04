@@ -16,6 +16,7 @@ class CreateDiaFestivosTable extends Migration
         Schema::create('dia_festivos', function (Blueprint $table) {
             $table->increments('id');
             $table->date('fecha');
+            $table->string('nombre', 100);
             $table->boolean('medio_dia')->default(0); // 0 = dia completo, 1 = medio dia
             $table->timestamps();
         });

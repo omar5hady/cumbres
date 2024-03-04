@@ -8,7 +8,7 @@ class DiaFestivo extends Model
 {
     protected $table = 'dia_festivos';
     protected $fillable = [
-        'id', 'fecha', 'medio_dia'
+        'id', 'fecha', 'medio_dia', 'nombre'
     ];
 
 }
