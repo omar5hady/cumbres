@@ -229,6 +229,7 @@ Vue.component('fondo-ahorro', require('./components/Rh/FondoAhorro.vue'));
 Vue.component('fondo-pension', require('./components/Rh/FondoPension.vue'));
 Vue.component('prestamos-personal', require('./components/Rh/PrestamosPersonal.vue'));
 Vue.component('ficha-medica', require('./components/Rh/FichaMedica.vue'));
+Vue.component('vacaciones', require('./components/Rh/Vacaciones/VacacionesPage.vue'));
 
 Vue.component('panel-items', require('./components/Rh/Donativos/PanelControl.vue'));
 Vue.component('listado-items', require('./components/Rh/Donativos/ListadoDonaciones.vue'));

@@ -1550,7 +1550,7 @@ class UserController extends Controller
     //Funcion para buscar usuario por el nombre
     public function selectUser(Request $request){
         $users = User::join('personal','users.id','=','personal.id')
-                        ->select('personal.id','personal.nombre','personal.apellidos')
+                        ->select('personal.id','personal.nombre','personal.apellidos', DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_comp"))
                         ->where('users.condicion','=','1')
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%')
                         ->orderBy('nombre','asc')

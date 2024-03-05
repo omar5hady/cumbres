@@ -603,5 +603,8 @@
         <template v-if="menu==305">
             <dias-festivos></dias-festivos>
         </template>
+        <template v-if="menu==306">
+            <vacaciones></vacaciones>
+        </template>
     @endif
 @endsection

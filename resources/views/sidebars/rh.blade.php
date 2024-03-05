@@ -27,6 +27,12 @@
             </i> Prestamos personales</a>
         </li>
         @endif
+        @if(Auth::user()->rol_id == 1)
+            <li @click="menu=306" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
+                </i>Vacaciones </a>
+            </li>
+        @endif
 
 
         <li class="nav-item nav-dropdown">
