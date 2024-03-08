@@ -945,6 +945,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/devolucion/excel','DevolucionController@excelDevoluciones');
         Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
+        Route::put('/devoluciones/cambiarStatus','DevolucionController@cambiarStatus');
         Route::get('/devoluciones/excel','DevolucionController@excelHistDev');
         Route::get('/devoluciones/printSolicDevolucion','DevolucionController@printSolicDevolucion');
         Route::get('/devoluciones/printSolicCancelacion','DevolucionController@printSolicCancelacion');

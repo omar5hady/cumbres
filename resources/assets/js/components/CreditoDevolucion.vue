@@ -1002,17 +1002,6 @@
     white-space: nowrap;
     vertical-align: baseline;
 }
-
-    /*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
-
     .td2 {
     white-space: nowrap;
     border-bottom: none;

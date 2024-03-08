@@ -32,6 +32,7 @@ class CreateContratosTable extends Migration
             $table->date('fecha')->nullable();
             $table->integer('avance_lote')->nullable()->default(0);
             $table->string('vendedor_aux')->nullable();
+            $table->string('status_devolucion')->default('Pendiente');
 
             $table->string('direccion_empresa',80)->nullable();
             $table->integer('cp_empresa')->nullable();

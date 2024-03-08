@@ -13,6 +13,7 @@ use App\Deposito_gcc;
 use App\Deposito;
 use App\Cuenta;
 use App\Credito;
+use App\Obs_devolucionCanc;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use Excel;
@@ -78,6 +79,18 @@ class DevolucionController extends Controller
         }
 
         return $arrayCuentas;
+    }
+
+    public function cambiarStatus(Request $request){
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->status_devolucion = $request->status;
+        $contrato->save();
+
+        $observacion = new Obs_devolucionCanc();
+        $observacion->contrato_id = $request->id;
+        $observacion->observacion = 'Se ha actualizado el estatus de la solicitud a: '.$request->status;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
     }
 
     // Función que retorna los contratos con saldo pendiente de terreno para devolucion virtual
@@ -538,6 +551,7 @@ class DevolucionController extends Controller
                 'contratos.avance_lote',
                 'contratos.observacion',
                 'contratos.saldo',
+                'contratos.status_devolucion',
 
                 DB::raw("(SELECT SUM(devoluciones.devolver) FROM devoluciones
                             WHERE devoluciones.contrato_id = contratos.id
@@ -550,6 +564,10 @@ class DevolucionController extends Controller
         // Filtro para empresa constructora
         if($request->b_empresa != ''){
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_status != ''){
+            $contratos= $contratos->where('contratos.status_devolucion','=',$request->b_status);
         }
 
         if ($buscar != '') { // Filtros
