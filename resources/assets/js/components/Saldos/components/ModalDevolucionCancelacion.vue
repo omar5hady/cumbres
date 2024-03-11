@@ -17,7 +17,7 @@
                     <input
                         type="text"
                         disabled
-                        v-model="datos.proyecto"
+                        v-model="datos.etapa"
                         class="form-control"
                     />
                 </template>

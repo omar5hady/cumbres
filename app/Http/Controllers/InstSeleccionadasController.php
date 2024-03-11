@@ -43,15 +43,15 @@ class InstSeleccionadasController extends Controller
             ->leftJoin('lotes_puente','lotes.id','=','lotes_puente.lote_id')
             ->select('contratos.id as folio', 'lotes.credito_puente',
                     'creditos.fraccionamiento as proyecto',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',
                     'lotes.puente_id',
                     'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
                     'lotes_puente.saldo as saldoPuente','lotes_puente.abonado as abonadoPuente',
                     'lotes_puente.cobrado as cobradoPuente', 'lotes_puente.liberado', 'lotes_puente.precio_c',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-            //Ventas firmadas 
+            //Ventas firmadas
             ->where('lotes.firmado','=',$request->firmado)
             //Busqueda por empresa constructora
             ->where('lotes.emp_constructora','like','%'.$empresa.'%')
@@ -100,14 +100,14 @@ class InstSeleccionadasController extends Controller
 
         return $creditos;
     }
-    
+
     //Función que retorna los financiamientos bancarios creados para los contratos de venta
     public function indexCreditoSel(Request $request){
         if(!$request->ajax())return redirect('/');
         //Llamada a la función privada que retorna la query principal
         $creditos = $this->getFinanciamientos($request);
-        $creditos = $creditos->paginate(10);  
-        
+        $creditos = $creditos->paginate(10);
+
         if(sizeof($creditos)){
             //Se recorren los resultados obtenidos
             foreach($creditos as $et=>$contrato){
@@ -146,11 +146,11 @@ class InstSeleccionadasController extends Controller
         //Query principal
         $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->select('dep_creditos.id','dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
-                    'dep_creditos.inst_sel_id', 'inst_seleccionadas.institucion','inst_seleccionadas.monto_credito', 
+                    'dep_creditos.inst_sel_id', 'inst_seleccionadas.institucion','inst_seleccionadas.monto_credito',
                     'inst_seleccionadas.cobrado')
             ->where('inst_seleccionadas.id', '=', $request->id)//Busqueda por financiamiento elegido.
             ->get();
-                            
+
         return ['depositos' => $depositos];
     }
 
@@ -167,10 +167,10 @@ class InstSeleccionadasController extends Controller
             ->join('personal','personal.id','=','creditos.prospecto_id')
             ->select('contratos.id as folio',
                 'creditos.fraccionamiento as proyecto',
-                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                'personal.nombre','personal.apellidos', 
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                'personal.nombre','personal.apellidos',
                 'inst_seleccionadas.id as inst_sel_id',
-                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',
                 'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
                 'lotes.credito_puente'
             );
@@ -190,7 +190,7 @@ class InstSeleccionadasController extends Controller
         //Llamada a la función privada que retorna la query necesaria.
         $depositos = $this->getHistorialDep($request);
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
-        
+
         return [
             'pagination' => [
                 'total'         => $depositos->total(),
@@ -245,7 +245,7 @@ class InstSeleccionadasController extends Controller
 
                         $cliente = $deposito->nombre.' '.$deposito->apellidos;
                         $sheet->row($index+2, [
-                            $deposito->folio, 
+                            $deposito->folio,
                             $cliente,
                             $deposito->proyecto,
                             $deposito->etapa,
@@ -257,7 +257,7 @@ class InstSeleccionadasController extends Controller
                             $deposito->fecha_deposito,
                             $deposito->cant_depo
 
-                        ]);	
+                        ]);
                     }
                     $num='A1:K' . $cont;
                     $sheet->setBorder($num, 'thin');
@@ -292,7 +292,7 @@ class InstSeleccionadasController extends Controller
                 $saldo = $credit->valor_terreno - $credit->saldo_terreno;
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $deposito->cant_depo*$porcentaje;
-                
+
                 if($deposito->monto_terreno > $saldo)
                     $deposito->monto_terreno = $saldo;
                 else
@@ -336,7 +336,7 @@ class InstSeleccionadasController extends Controller
 
                 ///Mail::to($persona->email)->send(new NotificationReceived($msj));
             }
-            
+
 
             DB::commit();
         } catch (Exception $e) {
@@ -407,7 +407,7 @@ class InstSeleccionadasController extends Controller
         //Creación y retorno de los resultados en Excel
         return Excel::create('creditos', function($excel) use ($creditos){
             $excel->sheet('creditos', function($sheet) use ($creditos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto','Etapa', 'Manzana',
                     '# Lote','Credito puente', 'Institución', 'Crédito', 'Cobrado',
@@ -429,7 +429,7 @@ class InstSeleccionadasController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($creditos as $index => $credito) {
@@ -441,7 +441,7 @@ class InstSeleccionadasController extends Controller
                     $pendiente = number_format((float)$pend, 2, '.', ',');
 
                     $sheet->row($index+2, [
-                        $credito->folio, 
+                        $credito->folio,
                         $credito->nombre. ' ' . $credito->apellidos,
                         $credito->proyecto,
                         $credito->etapa,
@@ -454,15 +454,15 @@ class InstSeleccionadasController extends Controller
                         '$ '.$pendiente,
                         $credito->fecha_termino_ventas,
                         $credito->pagare,
-                        
 
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:M' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -480,18 +480,19 @@ class InstSeleccionadasController extends Controller
             ->leftJoin('expedientes','expedientes.id','=','contratos.id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
             ->select('contratos.id', 'lotes.credito_puente',
+                    'contratos.status_devolucion',
                     'creditos.fraccionamiento as proyecto',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                    'personal.nombre','personal.apellidos', 
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                    'personal.nombre','personal.apellidos',
                     'expedientes.fecha_firma_esc',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
             )
             ->where('contratos.saldo','<',0)//Saldo a favor
             ->where('inst_seleccionadas.elegido', '=', 1);//Financiamiento elegido
-        
+
             if($buscar != ''){
                 switch($criterio){
                     case 'creditos.id':{//Busqueda por folio
@@ -520,6 +521,10 @@ class InstSeleccionadasController extends Controller
             $creditos= $creditos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
+        if($request->b_status != ''){//Busqueda por empresa constructora
+            $creditos= $creditos->where('contratos.status_devolucion','=',$request->b_status);
+        }
+
         $creditos = $creditos->where('contratos.status','!=',0)//Diferente a cancelado
                             ->orderBy('expedientes.fecha_firma_esc','asc')
                             ->orderBy('inst_seleccionadas.cobrado','asc')
@@ -530,10 +535,10 @@ class InstSeleccionadasController extends Controller
 
     //Función que retorna los registros de contratos con saldo a favor
     public function indexDevolucion (Request $request){
-        //Llamada a la función privada que retorna la query principal 
+        //Llamada a la función privada que retorna la query principal
         $creditos = $this->getDevoluciones($request);
         $creditos = $creditos->paginate(10);
-        
+
         return[
                 'pagination' => [
                 'total'         => $creditos->total(),
@@ -545,19 +550,19 @@ class InstSeleccionadasController extends Controller
             ],
             'creditos' => $creditos
         ];
-        
+
     }
 
     //Función que retorna los registros de contratos con saldo a favor en excel.
     public function excelDevolucion (Request $request){
-        //Llamada a la función privada que retorna la query principal 
+        //Llamada a la función privada que retorna la query principal
         $creditos = $this->getDevoluciones($request);
         $creditos = $creditos->get();
-        
+
         //Creación y retorno de los registros obtenidos en excel.
         return Excel::create('Pendientes por excedente', function($excel) use ($creditos){
             $excel->sheet('pendientes', function($sheet) use ($creditos){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto','Etapa', 'Manzana',
                     '# Lote', 'Pendiente a devolver'
@@ -582,7 +587,7 @@ class InstSeleccionadasController extends Controller
                     'G' => '$#,##0.00',
                 ));
 
-                
+
                 $cont=1;
 
                 foreach($creditos as $index => $credito) {
@@ -591,22 +596,22 @@ class InstSeleccionadasController extends Controller
                     $credito->saldo = $credito->saldo*-1;
 
                     $sheet->row($index+2, [
-                        $credito->id, 
+                        $credito->id,
                         $credito->nombre_cliente,
                         $credito->proyecto,
                         $credito->etapa,
                         $credito->manzana,
                         $credito->num_lote,
                         $credito->saldo,
-                        
 
-                    ]);	
+
+                    ]);
                 }
                 $num='A1:G' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 
@@ -631,7 +636,7 @@ class InstSeleccionadasController extends Controller
             if($contrato->saldo < 0 && $contrato->saldo > -0.001)
                 $contrato->saldo = 0;
             $contrato->save();
-            //Se genera un registro en la tabla gastos administrativos 
+            //Se genera un registro en la tabla gastos administrativos
             $gastos = new Gasto_admin();
             $gastos->contrato_id = $request->id;
             $gastos->concepto = "Devolución por excedente";
@@ -642,7 +647,7 @@ class InstSeleccionadasController extends Controller
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
-        }       
+        }
     }
 
     //Función para finalizar el cobro de un financiamiento.
@@ -715,7 +720,7 @@ class InstSeleccionadasController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                
+
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
@@ -755,7 +760,7 @@ class InstSeleccionadasController extends Controller
         //Llamada a la función privada que retorna la query necesaria
         $devoluciones = $this->getHistDev($request);
         $devoluciones = $devoluciones->orderBy('id', 'desc')->paginate(8);
-        
+
         return [
             'pagination' => [
                 'total'         => $devoluciones->total(),
@@ -776,7 +781,7 @@ class InstSeleccionadasController extends Controller
         //Creación y retorno de los resultados en excel
         return Excel::create('devoluciones', function($excel) use ($devoluciones){
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
-                
+
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Devuelto', 'Fecha cancelación', 'Fecha devolución',
@@ -802,7 +807,7 @@ class InstSeleccionadasController extends Controller
                     $cells->setAlignment('center');
                 });
 
-                
+
                 $cont=1;
 
                 foreach($devoluciones as $index => $devolucion) {
@@ -815,7 +820,7 @@ class InstSeleccionadasController extends Controller
                     $devolucion->fecha_status = $fecha2->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $devolucion->id, 
+                        $devolucion->id,
                         $devolucion->nombre. ' ' . $devolucion->apellidos,
                         $devolucion->proyecto,
                         $devolucion->etapa,
@@ -827,13 +832,13 @@ class InstSeleccionadasController extends Controller
                         $devolucion->cheque,
                         $devolucion->cuenta,
 
-                    ]);	
+                    ]);
                 }
                 $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
-        
+
         )->download('xls');
     }
 }
