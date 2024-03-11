@@ -604,7 +604,7 @@
             <dias-festivos></dias-festivos>
         </template>
         <template v-if="menu==306">
-            <vacaciones></vacaciones>
+            <vacaciones user-id="{{  Auth::user()->id }}" user-name="{{  Auth::user()->usuario }}"></vacaciones>
         </template>
     @endif
 @endsection

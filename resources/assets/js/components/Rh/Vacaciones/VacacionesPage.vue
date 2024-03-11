@@ -16,6 +16,7 @@
                             type="button"
                             class="btn btn-success btn-sm"
                             @click="nuevaSolicitud()"
+                            v-if="perfil.dias_disponibles > 0"
                         >
                             <i class="icon-plus"></i>&nbsp;Crear solicitud
                         </button>
@@ -77,6 +78,7 @@
                                     style="padding-bottom: 0px;"
                                 >
                                     <TableComponent
+                                        v-if="datosVacaciones.length > 0"
                                         :cabecera="[
                                             'Año',
                                             'Total dias',
@@ -157,13 +159,13 @@
                                 <input
                                     type="date"
                                     v-model="busqueda.fechaIni"
-                                    @keyup.enter="getData(1)"
+                                    @keyup.enter="getData()"
                                     class="form-control col-md-4 col-sm-12"
                                 />
                                 <input
                                     type="date"
                                     v-model="busqueda.fechaFin"
-                                    @keyup.enter="getData(1)"
+                                    @keyup.enter="getData()"
                                     class="form-control col-md-4 col-sm-12"
                                 />
                             </div>
@@ -205,15 +207,16 @@
                                                 <TableComponent
                                                     :cabecera="[
                                                         'Año',
-                                                        'Total dias',
-                                                        'Dias disfrutados',
-                                                        'Saldo',
-                                                        'Estatus'
+                                                        'Fecha inicial',
+                                                        'Fecha de regreso',
+                                                        'Dias tomados',
+                                                        'Estatus',
+                                                        'Nota'
                                                     ]"
                                                 >
                                                     <template v-slot:tbody>
                                                         <tr
-                                                            v-for="vacacion in datosVacaciones"
+                                                            v-for="vacacion in histVacaciones.data"
                                                             :key="vacacion.id"
                                                         >
                                                             <td class="td2">
@@ -223,7 +226,12 @@
                                                             </td>
                                                             <td class="td2">
                                                                 {{
-                                                                    vacacion.total_dias
+                                                                    vacacion.f_ini
+                                                                }}
+                                                            </td>
+                                                            <td class="td2">
+                                                                {{
+                                                                    vacacion.f_fin
                                                                 }}
                                                             </td>
                                                             <td class="td2">
@@ -232,17 +240,15 @@
                                                                 }}
                                                             </td>
                                                             <td class="td2">
-                                                                {{
-                                                                    vacacion.saldo
-                                                                }}
-                                                            </td>
-                                                            <td class="td2">
                                                                 <span
                                                                     :class="
                                                                         vacacion.status ==
-                                                                        'activo'
-                                                                            ? 'badge badge-success'
-                                                                            : 'badgebadge-danger'
+                                                                        'pendiente'
+                                                                            ? 'badge badge-warning'
+                                                                            : vacacion.status ==
+                                                                              'rechazado'
+                                                                            ? 'badgebadge-danger'
+                                                                            : 'badgebadge-success'
                                                                     "
                                                                 >
                                                                     {{
@@ -250,9 +256,27 @@
                                                                     }}
                                                                 </span>
                                                             </td>
+                                                            <td>
+                                                                {{
+                                                                    vacacion.nota
+                                                                }}
+                                                            </td>
                                                         </tr>
                                                     </template>
                                                 </TableComponent>
+                                                <NavComponent
+                                                    :current="
+                                                        histVacaciones.current_page
+                                                            ? histVacaciones.current_page
+                                                            : 1
+                                                    "
+                                                    :last="
+                                                        histVacaciones.last_page
+                                                            ? histVacaciones.last_page
+                                                            : 1
+                                                    "
+                                                    @changePage="getHistorial"
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -275,6 +299,7 @@
 import LoadingComponentVue from "../../Componentes/LoadingComponent.vue";
 import ModalComponent from "../../Componentes/ModalComponent.vue";
 import TableComponent from "../../Componentes/TableComponent.vue";
+import NavComponent from '../../Componentes/NavComponent.vue';
 import vSelect from "vue-select";
 
 export default {
@@ -282,10 +307,12 @@ export default {
         LoadingComponentVue,
         ModalComponent,
         TableComponent,
+        NavComponent,
         vSelect
     },
     props: {
-        userId: { type: String }
+        userId: { type: String },
+        userName: { type: String },
     },
     data() {
         return {
@@ -296,6 +323,7 @@ export default {
                 user_id: this.userId
             },
             datosVacaciones: [],
+            histVacaciones: {},
             arrayUser: [],
             perfil: {
                 nombre: "",
@@ -313,15 +341,27 @@ export default {
     },
     computed: {},
     methods: {
-        getData(page) {
+        getHistorial(page){
+            let me = this;
+
+            const url = `/hist-vacaciones?page=${page}&user_id=${me.busqueda.user_id}`
+            axios
+                .get(url)
+                .then(function(response) {
+                    const respuesta = response.data;
+                    me.histVacaciones = respuesta;
+                })
+                .catch(function(error) {
+                    me.histVacaciones = {};
+                });
+        },
+        getData() {
             let me = this;
             me.datosVacaciones = [];
             me.loading = true;
 
             const url =
-                "/vacaciones?page=" +
-                page +
-                "&fechaIni=" +
+                "/vacaciones?fechaIni=" +
                 me.busqueda.fechaIni +
                 "&fechaFin=" +
                 me.busqueda.fechaFin +
@@ -333,17 +373,30 @@ export default {
                 .then(function(response) {
                     const respuesta = response.data;
                     me.datosVacaciones = respuesta;
+                    if(me.datosVacaciones.length == 0)
                     me.perfil = {
-                        nombre: `${me.datosVacaciones[0].nombre} ${
-                            me.datosVacaciones[0].apellidos
-                        }`,
-                        foto: me.datosVacaciones[0].foto_user,
-                        dias_disponibles: me.datosVacaciones[0].saldo
-                    };
+                        nombre: "",
+                        foto: "",
+                        dias_disponibles: 0
+                    }
+                    else
+                        me.perfil = {
+                            nombre: `${me.datosVacaciones[0].nombre} ${
+                                me.datosVacaciones[0].apellidos
+                            }`,
+                            foto: me.datosVacaciones[0].foto_user,
+                            dias_disponibles: me.datosVacaciones[0].saldo
+                        }
+                    me.getHistorial(1)
                     me.loading = false;
                 })
                 .catch(function(error) {
-                    me.datosVacaciones = {};
+                    me.datosVacaciones = [];
+                    me.perfil = {
+                        nombre: "",
+                        foto: "",
+                        dias_disponibles: 0
+                    }
                     me.loading = false;
                 });
         },
@@ -351,7 +404,7 @@ export default {
             let me = this;
             //me.loading = true;
             me.busqueda.user_id = usuario.id;
-            me.getData(1);
+            me.getData();
         },
         selectUsers(search, loading) {
             let me = this;
@@ -477,7 +530,7 @@ export default {
                                 "Movimiento eliminado correctamente.",
                                 "success"
                             );
-                            me.getData(1);
+                            me.getData();
                         })
                         .catch(function(error) {
                             console.log(error);
@@ -487,7 +540,7 @@ export default {
         }
     },
     mounted() {
-        this.getData(1);
+        this.getData();
     }
 };
 </script>
