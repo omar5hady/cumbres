@@ -484,6 +484,7 @@ class InstSeleccionadasController extends Controller
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos',
+                    'personal.telefono', 'personal.celular', 'personal.email',
                     'expedientes.fecha_firma_esc',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',

@@ -67,6 +67,8 @@
                                             <option value="">Estatus</option>
                                             <option value="Pendiente">Pendiente</option>
                                             <option value="Solicitado">Solicitado</option>
+                                            <option value="Dictaminado">Dictaminado</option>
+                                            <option value="Fondeo Parcial">Fondeo parcial</option>
                                             <option value="Fondeado">Fondeado</option>
                                         </select>
                                     </div>
@@ -112,10 +114,16 @@
                                         <tr v-for="contrato in arrayContratos.data" :key="contrato.id" title="Doble click">
                                             <td class="td2">
                                                 <button v-if="contrato.status_devolucion == 'Pendiente'"
-                                                    class="btn btn-primary" @click="cambiarStatus(contrato.id, 'Solicitado')">Solicitar
+                                                    class="btn btn-primary" @click="cambiarStatus(contrato, 'Solicitado')">Solicitar
                                                 </button>
                                                 <button v-if="contrato.status_devolucion == 'Solicitado'"
-                                                    class="btn btn-primary" @click="cambiarStatus(contrato.id, 'Fondeado')">Fondear
+                                                    class="btn btn-primary" @click="cambiarStatus(contrato, 'Dictaminar')">Dictaminar
+                                                </button>
+                                                <button v-if="contrato.status_devolucion == 'Dictaminado'"
+                                                    class="btn btn-primary" @click="cambiarStatus(contrato, 'Fondeo Parcial')">Fondeo parcial
+                                                </button>
+                                                <button v-if="contrato.status_devolucion == 'Dictaminado' || contrato.status_devolucion == 'Fondeo Parcial'"
+                                                    class="btn btn-success" @click="cambiarStatus(contrato, 'Fondeado')">Fondeo completo
                                                 </button>
                                             </td>
                                             <td class="td2">
@@ -137,7 +145,7 @@
                                             <td class="td2" v-text="'$'+$root.formatNumber(contrato.saldo*(-1))"></td>
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right"
-                                                            @click="abrirModal('observaciones',contrato)">Observaciones</button>
+                                                            @click="abrirModal('observaciones', contrato)">Observaciones</button>
                                             </td>
                                         </tr>
                                     </template>
@@ -213,13 +221,23 @@
                 @closeModal="cerrarModal()"
             >
                 <template v-slot:body>
+                    <RowModal clsRow1="col-md-4" label1="Celular" label2="Telefono" clsRow2="col-md-3">
+                        <input type="text" disabled class="form-control" v-model="datos.celular">
+                        <template v-slot:input2>
+                            <input type="text" disabled class="form-control" v-model="datos.telefono">
+                        </template>
+                    </RowModal>
+
+                    <RowModal clsRow1="col-md-6" label1="Email">
+                        <input type="text" disabled class="form-control" v-model="datos.email">
+                    </RowModal>
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                         <div class="col-md-6">
                                 <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
                         </div>
                         <div class="col-md-2">
-                            <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                            <button type="button"  class="btn btn-primary" @click="agregarComentario(observacion)">Guardar</button>
                         </div>
                     </div>
 
@@ -241,6 +259,67 @@
                             </tr>
                         </tbody>
                     </table>
+                </template>
+            </ModalComponent>
+
+            <ModalComponent
+                v-if="modal == 3"
+                :titulo="tituloModal"
+                @closeModal="cerrarModal()"
+            >
+                <template v-slot:body>
+                    <RowModal clsRow1="col-md-6" label1="Cantidad a Devolver:">
+                        <h5 class="form-control">
+                            {{ $root.formatNumber(datos.devolver) }}
+                        </h5>
+                    </RowModal>
+
+                    <RowModal
+                        clsRow1="col-md-4"
+                        label1="Monto en efectivo:"
+                        label2=""
+                        clsRow2="col-md-3"
+                    >
+                        <input
+                            type="text"
+                            pattern="\d*"
+                            @keypress="$root.isNumber($event)"
+                            v-model="datos.cant_efectivo"
+                            @change="verificarEfectivo"
+                            class="form-control"
+                            placeholder="Monto"
+                        />
+                        <template v-slot:input2>
+                            <h6>{{ $root.formatNumber(datos.cant_efectivo) }}</h6>
+                        </template>
+                    </RowModal>
+                    <RowModal
+                        clsRow1="col-md-4"
+                        label1="Monto en cheque:"
+                        label2=""
+                        clsRow2="col-md-3"
+                    >
+                        <input
+                            type="text"
+                            pattern="\d*"
+                            @keypress="$root.isNumber($event)"
+                            @change="verificarCheque"
+                            v-model="datos.cant_cheque"
+                            class="form-control"
+                            placeholder="Monto"
+                        />
+                        <template v-slot:input2>
+                            <h6>{{ $root.formatNumber(datos.cant_cheque) }}</h6>
+                        </template>
+                    </RowModal>
+                </template>
+                <template v-slot:buttons-footer>
+                    <button
+                        class="btn btn-primary"
+                        @click="dictaminar()"
+                    >
+                        Dictaminar
+                    </button>
                 </template>
             </ModalComponent>
      </main>
@@ -295,10 +374,26 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                 b_status: '',
                 listado : 1,
                 empresas:[],
-                datos: {}
+                datos: {
+                    cant_cheque: 0,
+                    cant_efectivo: 0
+                }
             }
         },
         methods : {
+            verificarEfectivo() {
+                if (this.datos.cant_cheque == "" || this.datos.cant_cheque <= 0)
+                    this.datos.cant_cheque = 0;
+                let saldo = this.datos.devolver - this.datos.cant_cheque;
+                if (this.datos.cant_efectivo > saldo)
+                    this.datos.cant_efectivo = saldo;
+            },
+            verificarCheque() {
+                if (this.datos.cant_efectivo == "" || this.datos.cant_efectivo <= 0)
+                    this.datos.cant_efectivo = 0;
+                let saldo = this.datos.devolver - this.datos.cant_efectivo;
+                if (this.datos.cant_cheque > saldo) this.datos.cant_cheque = saldo;
+            },
             /**Metodo para mostrar los registros */
             listarContratos(page){
                 let me = this;
@@ -340,8 +435,29 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                 });
             },
 
+            async dictaminar() {
+                await this.cambiarStatus(this.datos, "Dictaminado");
+                if (parseFloat(this.datos.cant_cheque) > 0) {
+                    const observacion = `Se dictamina solicitud por un monto en cheque de: ${
+                        this.datos.cant_cheque
+                    }`;
+                    await this.agregarComentario(observacion);
+                }
+                if (parseFloat(this.datos.cant_efectivo) > 0) {
+                    const observacion = `Se dictamina solicitud por un monto en efectivo de: ${
+                        this.datos.cant_efectivo
+                    }`;
+                    await this.agregarComentario(observacion);
+                }
+                this.cerrarModal();
+            },
+
             cambiarStatus(id, status){
                 let me = this;
+                if (status == "Dictaminar") {
+                    this.abrirModal("dictaminar", contrato);
+                    return;
+                }
                 axios.put('/devoluciones/cambiarStatus',{
                     'status':status,
                     'id' : id
@@ -364,14 +480,14 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                 });
             },
 
-            agregarComentario(){
+            agregarComentario(observacion){
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/devoluciones/storeObservacionCredit',{
-                    'id': this.id,
-                    'observacion': this.observacion
+                    'id': this.datos.id,
+                    'observacion': observacion
                 }).then(function (response){
-                    me.listarObservacion(me.id);
+                    me.listarObservacion(me.datos.id);
                     me.observacion = '';
                     //me.cerrarModal3(); //al guardar el registro se cierra el modal
 
@@ -493,11 +609,24 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                         break;
                     }
 
+                    case "dictaminar": {
+                        this.datos.id = data["id"];
+                        this.datos.devolver = data["devolver"];
+                        this.datos.cant_efectivo = 0;
+                        this.datos.cant_cheque = 0;
+                        this.modal = 3;
+                        this.tituloModal = "Dictaminar Solicitud";
+                        break;
+                    }
+
                     case 'observaciones':{
                         this.modal = 2;
                         this.tituloModal='Observaciones';
                         this.observacion='';
-                        this.datos.id=data['id'];
+                        this.datos.id = data['id'];
+                        this.datos.email = data['email'];
+                        this.datos.telefono = data['telefono'];
+                        this.datos.celular = data['celular'];
                         this.listarObservacion(this.datos.id);
                         break;
                     }

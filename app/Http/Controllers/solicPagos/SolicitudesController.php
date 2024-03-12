@@ -515,6 +515,8 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+
         }
         $solic->save();
 
@@ -792,6 +794,8 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+
         }
         if($request->cuenta_pago != ''){
             $solic->cuenta_pago = $request->cuenta_pago;
@@ -808,6 +812,8 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
+            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+
         }
         $solic->save();
     }
