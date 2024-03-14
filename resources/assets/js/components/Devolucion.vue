@@ -70,7 +70,7 @@
                                         criterio == 'lotes.fraccionamiento_id'
                                     "
                                     v-model="buscar"
-                                    @keyup.enter="listarContratos(1)"
+                                    @keyup.enter="listarContratos(1), listarDevoluciones(1)"
                                     @change="selectEtapa(buscar)"
                                 >
                                     <option value="">Seleccione</option>
@@ -89,7 +89,7 @@
                                         criterio != 'lotes.fraccionamiento_id'
                                     "
                                     v-model="buscar"
-                                    @keyup.enter="listarContratos(1)"
+                                    @keyup.enter="listarContratos(1), listarDevoluciones(1)"
                                     placeholder="Texto a Buscar"
                                 />
                             </div>
@@ -100,7 +100,7 @@
                                         criterio == 'lotes.fraccionamiento_id'
                                     "
                                     v-model="b_etapa"
-                                    @keyup.enter="listarContratos(1)"
+                                    @keyup.enter="listarContratos(1), listarDevoluciones(1)"
                                     @change="selectManzanas(buscar, b_etapa)"
                                 >
                                     <option value="">Etapa</option>
@@ -624,6 +624,9 @@
                         v-model="datos.email"
                     />
                 </RowModal>
+                <RowModal label1="Vendedor:" clsRow1="col-md-4">
+                    <input type="text" class="form-control" v-model="datos.vendedor" disabled/>
+                </RowModal>
                 <div class="form-group row">
                     <label class="col-md-3 form-control-label" for="text-input"
                         >Observacion</label
@@ -1091,6 +1094,7 @@ export default {
                     this.datos.email = data["email"];
                     this.datos.telefono = data["telefono"];
                     this.datos.celular = data["celular"];
+                    this.datos.vendedor = data['nombre_vendedor'];
                     this.listarObservacion(this.datos.id);
                     break;
                 }

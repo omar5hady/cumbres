@@ -479,6 +479,8 @@ class InstSeleccionadasController extends Controller
             ->join('lotes','lotes.id','=','creditos.lote_id')
             ->leftJoin('expedientes','expedientes.id','=','contratos.id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->select('contratos.id', 'lotes.credito_puente',
                     'contratos.status_devolucion',
                     'creditos.fraccionamiento as proyecto',
@@ -486,6 +488,7 @@ class InstSeleccionadasController extends Controller
                     'personal.nombre','personal.apellidos',
                     'personal.telefono', 'personal.celular', 'personal.email',
                     'expedientes.fecha_firma_esc',
+                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion',

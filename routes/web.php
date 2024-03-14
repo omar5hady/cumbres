@@ -1355,6 +1355,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// Rutas Modulo Vacaciones
         Route::resource('/dias-festivos', Rh\DiasFestivosController::class);
+        Route::get('/searchDiasFestivos', 'Rh\DiasFestivosController@searchDiasFestivos');
         Route::resource('/vacaciones', Rh\VacacionesController::class);
         Route::resource('/hist-vacaciones', Rh\HistVacacionesController::class);
 

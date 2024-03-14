@@ -140,7 +140,7 @@ class CobrosController extends Controller
             if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
-                    //Mail::to($correo)->send(new NotificationReceived($msj,$ruta));
+                    Mail::to($correo)->send(new NotificationReceived($msj,$ruta));
                 }
 
         DB::commit();
@@ -286,7 +286,7 @@ class CobrosController extends Controller
             if(sizeof($personal))
                 foreach ($personal as $personas) {
                     $correo = $personas->email;
-                    //Mail::to($correo)->send(new NotificationReceived($msj,$ruta));
+                    Mail::to($correo)->send(new NotificationReceived($msj,$ruta));
                 }
     }
 

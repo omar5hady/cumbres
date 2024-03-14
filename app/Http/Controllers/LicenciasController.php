@@ -36,8 +36,8 @@ class LicenciasController extends Controller
         //Query
         $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
-                ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
+                ->leftJoin('personal', 'lotes.arquitecto_id', '=', 'personal.id')
+                ->leftJoin('personal as p', 'licencias.perito_dro', '=', 'p.id')
                 ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                 ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
                 ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')

@@ -497,6 +497,7 @@ class SolicitudesController extends Controller
 
     public function changeVbGerente(Request $request, $id){
         $solic = SpSolicitud::findOrFail($request->id);
+        $solicitante = Personal::findOrFail($solic->solicitante_id);
         if($request->estado != 0){
             $solic->vb_gerente = $request->estado;
             if($solic->vb_gerente == 1){
@@ -515,7 +516,7 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
-            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+            Mail::to($solicitante->email)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
 
         }
         $solic->save();
@@ -781,6 +782,7 @@ class SolicitudesController extends Controller
 
     public function changeVbTesoreria(Request $request){
         $solic = SpSolicitud::findOrFail($request->id);
+        $solicitante = Personal::findOrFail($solic->solicitante_id);
         if($request->estado == 1){
             $solic->vb_tesoreria = $request->estado;
             $this->createObs($solic->id, "Solicitud revisada");
@@ -794,7 +796,7 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
-            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+            Mail::to($solicitante->email)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
 
         }
         if($request->cuenta_pago != ''){
@@ -804,6 +806,7 @@ class SolicitudesController extends Controller
     }
     public function changeVbDireccion(Request $request){
         $solic = SpSolicitud::findOrFail($request->id);
+        $solicitante = Personal::findOrFail($solic->solicitante_id);
         if($request->estado == 1){
             $solic->vb_direccion = $request->estado;
             $this->createObs($solic->id, "Solicitud revisada para autorización de dirección");
@@ -812,7 +815,7 @@ class SolicitudesController extends Controller
         else{
             $solic->rechazado = 1;
             $this->createObs($solic->id, "Solicitud rechazada: ".$request->motivo);
-            Mail::to($solic->solicitante_id)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
+            Mail::to($solicitante->email)->send(new NotificationReceived('Se ha rechazado una de tus solicitudes.'));
 
         }
         $solic->save();

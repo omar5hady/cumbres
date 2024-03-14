@@ -12,11 +12,9 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Vacaciones
                     <div class="button-header">
-                        <button
-                            type="button"
-                            class="btn btn-success btn-sm"
+                        <button type="button" class="btn btn-success btn-sm"
                             @click="nuevaSolicitud()"
-                            v-if="perfil.dias_disponibles > 0"
+                            v-if="perfil.dias_disponibles > 0 || userName=='marce.gaytan'"
                         >
                             <i class="icon-plus"></i>&nbsp;Crear solicitud
                         </button>
@@ -35,11 +33,9 @@
                                 <!---->
                                 <div class="card-body">
                                     <div class="author">
-                                        <img
-                                            :src="`/img/avatars/${perfil.foto}`"
+                                        <img :src="`/img/avatars/${perfil.foto}`"
                                             onerror="this.src='/img/avatars/default-image.gif'"
-                                            class="avatar border-white"
-                                        />
+                                            class="avatar border-white"/>
                                         <h4 class="title">
                                             <font
                                                 style="vertical-align: inherit;"
@@ -73,20 +69,16 @@
                                     </h5>
                                     <!---->
                                 </div>
-                                <div
-                                    class="card-body"
-                                    style="padding-bottom: 0px;"
+                                <div class="card-body" style="padding-bottom: 0px;"
                                 >
-                                    <TableComponent
-                                        v-if="datosVacaciones.length > 0"
+                                    <TableComponent v-if="datosVacaciones.length > 0"
                                         :cabecera="[
                                             'Año',
                                             'Total dias',
                                             'Dias disfrutados',
                                             'Saldo',
                                             'Estatus'
-                                        ]"
-                                    >
+                                        ]">
                                         <template v-slot:tbody>
                                             <tr
                                                 v-for="vacacion in datosVacaciones"
@@ -105,17 +97,11 @@
                                                     {{ vacacion.saldo }}
                                                 </td>
                                                 <td class="td2">
-                                                    <span
-                                                        :class="
-                                                            vacacion.status ==
-                                                            'activo'
+                                                    <span :class="vacacion.status == 'activo'
                                                                 ? 'badge badge-success'
-                                                                : 'badgebadge-danger'
-                                                        "
+                                                                : 'badgebadge-danger'"
                                                     >
-                                                        {{
-                                                            vacacion.status.toUpperCase()
-                                                        }}
+                                                        {{ vacacion.status.toUpperCase() }}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -129,20 +115,16 @@
                         <!-- Buscador por nombre (Solo para RH) -->
                         <div class="col-md-8">
                             <div class="form-group row">
-                                <input
-                                    type="text"
+                                <input type="text"
                                     class="form-control col-md-3 col-sm-12"
                                     disabled
-                                    placeholder="Colaborador: "
-                                />
-                                <v-select
-                                    :on-search="selectUsers"
+                                    placeholder="Colaborador: "/>
+                                <v-select :on-search="selectUsers"
                                     class="form-control col-md-6 col-sm-12"
                                     label="nombre_comp"
                                     :options="arrayUser"
                                     placeholder="Buscar Usuario..."
-                                    :onChange="searchByUser"
-                                >
+                                    :onChange="searchByUser">
                                 </v-select>
                             </div>
                         </div>
@@ -200,10 +182,7 @@
                                 >
                                     <div class="col-sm-6 col-lg-12">
                                         <div class="card" style="border: none;">
-                                            <div
-                                                class="card-body"
-                                                style="padding-bottom: 15px;"
-                                            >
+                                            <div class="card-body" style="padding-bottom: 15px;">
                                                 <TableComponent
                                                     :cabecera="[
                                                         'Año',
@@ -215,66 +194,42 @@
                                                     ]"
                                                 >
                                                     <template v-slot:tbody>
-                                                        <tr
-                                                            v-for="vacacion in histVacaciones.data"
-                                                            :key="vacacion.id"
-                                                        >
+                                                        <tr v-for="vacacion in histVacaciones.data" :key="vacacion.id">
                                                             <td class="td2">
-                                                                {{
-                                                                    vacacion.anio
-                                                                }}
+                                                                {{ vacacion.anio }}
                                                             </td>
                                                             <td class="td2">
-                                                                {{
-                                                                    vacacion.f_ini
-                                                                }}
+                                                                {{ vacacion.f_ini }}
                                                             </td>
                                                             <td class="td2">
-                                                                {{
-                                                                    vacacion.f_fin
-                                                                }}
+                                                                {{ vacacion.f_fin }}
                                                             </td>
                                                             <td class="td2">
-                                                                {{
-                                                                    vacacion.dias_tomados
-                                                                }}
+                                                                {{ vacacion.dias_tomados }}
                                                             </td>
                                                             <td class="td2">
-                                                                <span
-                                                                    :class="
-                                                                        vacacion.status ==
-                                                                        'pendiente'
+                                                                <span :class="vacacion.status == 'pendiente'
                                                                             ? 'badge badge-warning'
                                                                             : vacacion.status ==
                                                                               'rechazado'
                                                                             ? 'badgebadge-danger'
-                                                                            : 'badgebadge-success'
-                                                                    "
-                                                                >
-                                                                    {{
-                                                                        vacacion.status.toUpperCase()
-                                                                    }}
+                                                                            : 'badgebadge-success'">
+                                                                    {{ vacacion.status.toUpperCase() }}
                                                                 </span>
                                                             </td>
                                                             <td>
-                                                                {{
-                                                                    vacacion.nota
-                                                                }}
+                                                                {{ vacacion.nota }}
                                                             </td>
                                                         </tr>
                                                     </template>
                                                 </TableComponent>
                                                 <NavComponent
-                                                    :current="
-                                                        histVacaciones.current_page
+                                                    :current="histVacaciones.current_page
                                                             ? histVacaciones.current_page
-                                                            : 1
-                                                    "
-                                                    :last="
-                                                        histVacaciones.last_page
+                                                            : 1"
+                                                    :last="histVacaciones.last_page
                                                             ? histVacaciones.last_page
-                                                            : 1
-                                                    "
+                                                            : 1"
                                                     @changePage="getHistorial"
                                                 />
                                             </div>
@@ -285,9 +240,17 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
+
+        <ModalSolicitud v-if="modal.mostrar == 1" :titulo="modal.titulo"
+            :accion="modal.accion"
+            :data="datos"
+            @close="closeModal"
+        ></ModalSolicitud>
     </main>
 </template>
 
@@ -300,6 +263,7 @@ import LoadingComponentVue from "../../Componentes/LoadingComponent.vue";
 import ModalComponent from "../../Componentes/ModalComponent.vue";
 import TableComponent from "../../Componentes/TableComponent.vue";
 import NavComponent from '../../Componentes/NavComponent.vue';
+import ModalSolicitud from './ModalSolicitud.vue'
 import vSelect from "vue-select";
 
 export default {
@@ -308,7 +272,8 @@ export default {
         ModalComponent,
         TableComponent,
         NavComponent,
-        vSelect
+        vSelect,
+        ModalSolicitud
     },
     props: {
         userId: { type: String },
@@ -331,12 +296,21 @@ export default {
                 dias_disponibles: 0
             },
             loading: false,
-            vista: 2,
             modal: {
                 mostrar: 0,
                 titulo: "",
                 accion: "nuevo"
-            }
+            },
+            datos:{
+                f_ini: '',
+                f_fin: '',
+                dias_tomados: 0,
+                nota: '',
+                status: 'pendiente',
+                vacation_id: '',
+                dias_disponibles: 0
+            },
+            dias_festivos: []
         };
     },
     computed: {},
@@ -427,117 +401,35 @@ export default {
         },
         nuevaSolicitud() {
             this.modal.mostrar = 1;
-            this.modal.titulo = `Nuevo movimiento para: ${
-                this.busqueda.nombre
+            this.modal.titulo = `Nuevo solicitud de vacaciones: ${
+                this.perfil.nombre
             }`;
             this.modal.accion = "nuevo";
-            this.datosPago = {};
+            this.datos = {
+                f_ini: '',
+                f_fin: '',
+                dias_tomados: 0,
+                nota: '',
+                status: 'pendiente',
+                vacation_id: this.datosVacaciones[0].id,
+                dias_disponibles: this.perfil.dias_disponibles
+            }
         },
 
         closeModal() {
             this.modal.mostrar = 0;
             this.modal.titulo = "";
-            this.datosPago = {};
+            this.datos = {
+                f_ini: '',
+                f_fin: '',
+                dias_tomados: 0,
+                nota: '',
+                status: 'pendiente',
+                vacation_id: '',
+                dias_disponibles: 0
+            };
             this.getData();
         },
-        save() {
-            let me = this;
-            let fondo_id = "";
-            if (me.datosVacaciones) {
-                fondo_id = me.datosVacaciones.id;
-            }
-
-            axios
-                .post("/fondo-pension", {
-                    fondo_id: fondo_id,
-                    monto: me.datosPago.monto,
-                    tipo_movimiento: me.datosPago.tipo_movimiento,
-                    fecha_movimiento: me.datosPago.fecha_movimiento,
-                    concepto: me.datosPago.concepto,
-                    user_id: me.busqueda.user_id
-                })
-                .then(function(response) {
-                    me.closeModal();
-
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-
-                    toast({
-                        type: "success",
-                        title: "Movimiento guardado correctamente."
-                    });
-                })
-                .catch(function(error) {
-                    console.log(error);
-                    me.closeModal();
-                });
-        },
-        update() {
-            let me = this;
-
-            axios
-                .put(`/fondo-pension/${me.datosPago.id}`, {
-                    fondo_id: me.datosPago.fondo_id,
-                    monto: me.datosPago.monto,
-                    fecha_movimiento: me.datosPago.fecha_movimiento,
-                    concepto: me.datosPago.concepto,
-                    id: me.datosPago.id
-                })
-                .then(function(response) {
-                    me.closeModal();
-
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-
-                    toast({
-                        type: "success",
-                        title: "Movimiento actualizado correctamente."
-                    });
-                })
-                .catch(function(error) {
-                    console.log(error);
-                    me.closeModal();
-                });
-        },
-        deletePago(pago) {
-            swal({
-                title: "¿Estas seguro de eliminar este movimiento?",
-                text: "Esta acción no se puede revertir!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                cancelButtonText: "Cancelar",
-                confirmButtonText: "Si, eliminar!"
-            }).then(result => {
-                if (result.value) {
-                    let me = this;
-                    axios
-                        .delete(`/fondo-pension/${pago.id}`, {
-                            params: { id: pago.id, fondo_id: pago.fondo_id }
-                        })
-                        .then(function(response) {
-                            swal(
-                                "Borrado!",
-                                "Movimiento eliminado correctamente.",
-                                "success"
-                            );
-                            me.getData();
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
-                }
-            });
-        }
     },
     mounted() {
         this.getData();

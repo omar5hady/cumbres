@@ -9,7 +9,7 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Devoluciones por excedente &nbsp;
-                        <button class="btn btn-danger" v-if="listado == 1" @click="listado = 2 , listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Historial de devoluciones</button>
+                        <button class="btn btn-danger" v-if="listado == 1" @click="listado = 2 , listarDevoluciones(1)">Historial de devoluciones</button>
                         <button class="btn btn-warning" v-if="listado == 2" @click="listado = 1">Volver a las devoluciones</button>
                     </div>
 
@@ -35,16 +35,16 @@
                                         <option value="creditos.id"># Folio</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar"  @keyup.enter="listarContratos(1)" @change="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar"  @keyup.enter="listarContratos(1), listarDevoluciones(1)" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1), listarDevoluciones(1)" class="form-control" placeholder="Texto a buscar">
 
                                 </div>
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control" v-model="b_etapa"  @keyup.enter="listarContratos(1)" @change="selectManzanas(buscar,b_etapa)">
+                                    <select class="form-control" v-model="b_etapa"  @keyup.enter="listarContratos(1), listarDevoluciones(1)" @change="selectManzanas(buscar,b_etapa)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -90,7 +90,7 @@
                         <div class="form-group row" v-if="listado == 2">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarDevoluciones(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa=' + b_etapa_d +
                                             '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d+
                                             '&b_empresa='+b_empresa"
@@ -230,6 +230,9 @@
 
                     <RowModal clsRow1="col-md-6" label1="Email">
                         <input type="text" disabled class="form-control" v-model="datos.email">
+                    </RowModal>
+                    <RowModal label1="Vendedor:" clsRow1="col-md-4">
+                        <input type="text" class="form-control" v-model="datos.vendedor" disabled/>
                     </RowModal>
                     <div class="form-group row">
                         <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
@@ -452,7 +455,7 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                 this.cerrarModal();
             },
 
-            cambiarStatus(id, status){
+            cambiarStatus(contrato, status){
                 let me = this;
                 if (status == "Dictaminar") {
                     this.abrirModal("dictaminar", contrato);
@@ -460,20 +463,18 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                 }
                 axios.put('/devoluciones/cambiarStatus',{
                     'status':status,
-                    'id' : id
+                    'id' : contrato.id
                 }).then(function (response){
                 me.listarContratos(me.arrayContratos.current_page);
                 const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
                     });
-
                     toast({
-                    type: 'success',
-                    title: 'Cambios guardados'
+                        type: 'success',
+                        title: 'Cambios guardados'
                     })
                 }).catch(function (error){
                     console.log(error);
@@ -611,7 +612,7 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
 
                     case "dictaminar": {
                         this.datos.id = data["id"];
-                        this.datos.devolver = data["devolver"];
+                        this.datos.devolver = data['saldo'] * (-1);
                         this.datos.cant_efectivo = 0;
                         this.datos.cant_cheque = 0;
                         this.modal = 3;
@@ -627,6 +628,7 @@ import ModalDevolucionExcedente from './Saldos/components/ModalDevolucionExceden
                         this.datos.email = data['email'];
                         this.datos.telefono = data['telefono'];
                         this.datos.celular = data['celular'];
+                        this.datos.vendedor = data['nombre_vendedor'];
                         this.listarObservacion(this.datos.id);
                         break;
                     }
