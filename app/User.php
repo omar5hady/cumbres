@@ -132,6 +132,7 @@ class User extends Authenticatable
         'prestamos_personales',
         'fondo_ahorro',
         'fondo_pension',
+        'vacaciones',
 
         //Oficina
         'inventarios',

@@ -308,9 +308,9 @@ export default {
                 nota: '',
                 status: 'pendiente',
                 vacation_id: '',
-                dias_disponibles: 0
+                dias_disponibles: 0,
+                dias_festivos: 0,
             },
-            dias_festivos: []
         };
     },
     computed: {},
@@ -412,7 +412,8 @@ export default {
                 nota: '',
                 status: 'pendiente',
                 vacation_id: this.datosVacaciones[0].id,
-                dias_disponibles: this.perfil.dias_disponibles
+                dias_disponibles: this.perfil.dias_disponibles,
+                dias_festivos: 0,
             }
         },
 

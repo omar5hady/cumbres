@@ -18,10 +18,14 @@ class CreateHistVacationsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->date('f_ini');
             $table->date('f_fin');
-            $table->float('dias_tomados',8,2);
             $table->string('status')->default('pendiente');
             $table->string('nota')->nullable();
             $table->integer('vacation_id');
+            $table->float('dias_tomados',8,2)->default(0);
+            $table->float('dias_elegidos',8,2)->default(0);
+            $table->float('dias_disponibles',8,2)->default(0);
+            $table->float('dias_festivos',8,2)->default(0);
+            $table->float('saldo',8,2)->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

@@ -17,6 +17,8 @@ class CreateMedioDiasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('hist_id');
             $table->string('fecha');
+            $table->integer('medio_dia')->default(0);
+            $table->integer('horaio')->default(0);
             $table->timestamps();
 
             $table->foreign('hist_id')->references('id')->on('hist_vacations');

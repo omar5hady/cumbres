@@ -41,9 +41,9 @@ class DiasFestivosController extends Controller
         $dia->delete();
     }
 
-    public function searchDias(Request $request){
-        return DiaFestivo::select('fecha')
-            ->whereBetween('fecha', [$rquest->f_ini, $request->f_fin])
+    public function searchDiasFestivos(Request $request){
+        return DiaFestivo::select('fecha', 'medio_dia')
+            ->whereBetween('fecha', [$request->f_ini, $request->f_fin])
             ->get();
     }
 }
