@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vacation;
 use Auth;
+use App\User;
+use App\Personal;
 use Carbon\Carbon;
 
 class VacacionesController extends Controller
@@ -24,5 +26,21 @@ class VacacionesController extends Controller
             ->get();
 
         return $data;
+    }
+
+    public function getJefes(Request $request){
+        $usuario = Personal::select('departamento_id')->where('id','=', Auth::user()->id)->get();
+
+        if(sizeof($usuario)){
+            $jefes = User::join('personal','personal.id','=','users.id')
+            ->select('users.id','personal.nombre', 'personal.apellidos')
+                ->where('users.vacaciones','=',1)
+                ->where('personal.departamento_id','=',$usuario[0]->departamento_id)
+                ->orWhereIn('users.usuario',['ing_david', 'alejandro.pe'])
+                ->orderBy('personal.nombre', 'asc')
+                ->get();
+
+            return $jefes;
+        }
     }
 }

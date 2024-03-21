@@ -854,7 +854,7 @@ class LoteController extends Controller
         $buscar = $request->buscar;
         $buscar1 = $request->buscar1;
         $buscar2 = $request->buscar2;
-        $lote_manzana = Lote::select ('lotes.num_lote','lotes.id')
+        $lote_manzana = Lote::select ('lotes.num_lote','lotes.id', 'lotes.sublote')
                              ->where('lotes.fraccionamiento_id','=', $buscar)
                              ->where('lotes.etapa_id','=', $buscar1)
                              ->where('lotes.manzana','=', $buscar2);

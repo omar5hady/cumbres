@@ -22,6 +22,8 @@ class PromocionController extends Controller
         $criterio = $request->criterio;
         $current = Carbon::today()->format('ymd');
 
+        $lotes_promocion = [];
+
         $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','promociones.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
@@ -135,6 +137,11 @@ class PromocionController extends Controller
         $promocion = '';
         $descripcionPromo = '';
         $descuentoPromo = 0;
+        $descuentoUbic = 0;
+        $descuentoTerreno = 0;
+        $descuentoCant = 0;
+
+
 
         $promo = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
                 ->select('promociones.*')

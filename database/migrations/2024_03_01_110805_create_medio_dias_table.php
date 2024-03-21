@@ -16,7 +16,7 @@ class CreateMedioDiasTable extends Migration
         Schema::create('medio_dias', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('hist_id');
-            $table->string('fecha');
+            $table->date('fecha');
             $table->integer('medio_dia')->default(0);
             $table->integer('horaio')->default(0);
             $table->timestamps();

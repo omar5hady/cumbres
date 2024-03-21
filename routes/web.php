@@ -1357,6 +1357,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/dias-festivos', Rh\DiasFestivosController::class);
         Route::get('/searchDiasFestivos', 'Rh\DiasFestivosController@searchDiasFestivos');
         Route::resource('/vacaciones', Rh\VacacionesController::class);
+        Route::get('/getJefes', 'Rh\VacacionesController@getJefes');
         Route::resource('/hist-vacaciones', Rh\HistVacacionesController::class);
 
         ////////////////////// Rutas Control presupuestal

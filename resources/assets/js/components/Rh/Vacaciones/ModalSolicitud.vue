@@ -8,6 +8,16 @@
                 <h5 style="text-align: center;"> Dias Disponibles: <strong>{{ datos.dias_disponibles }}</strong></h5>
             </RowModal>
             <hr>
+
+            <RowModal label1="Autorizado por:" clsRow1="col-md-8">
+                <select class="form-control" v-model="datos.jefe_id">
+                    <option value="">Seleccione...</option>
+                    <option v-for="jefe in jefes" :key="jefe.id"
+                        :value="jefe.id">{{ jefe.nombre }} {{ jefe.apellidos }}
+                    </option>
+                </select>
+            </RowModal>
+
             <RowModal clsRow1="col-md-4" label1="F. Inicio: " clsRow2="col-md-4" label2="F. Regreso">
                 <input type="date" class="form-control" v-model="datos.f_ini" @change="calcularDias">
                 <template v-slot:input2>
@@ -74,7 +84,7 @@
 
         </template>
         <template v-slot:buttons-footer>
-            <Button v-if="arrayMediosDias.length > 0 && datos.saldo >= 0"
+            <Button v-if="arrayMediosDias.length > 0 && datos.saldo >= 0 && datos.jefe_id != ''"
                 @click="save()" icon="icon-check">Enviar Solicitud</Button>
         </template>
     </ModalComponent>
@@ -127,6 +137,7 @@ export default {
     },
     data() {
         return {
+            proceso: false,
             datos: {
                 f_ini: '',
                 f_fin: '',
@@ -137,13 +148,29 @@ export default {
                 dias_disponibles: 0,
                 dias_festivos: 0,
                 dias_tomados: 0,
-                saldo: 0
+                saldo: 0,
+                jefe_id: ''
             },
             dias_festivos: [],
             arrayMediosDias: [],
+            jefes: []
         }
     },
     methods: {
+        getJefes(){
+            let me = this;
+
+            const url = `/getJefes`
+            axios
+                .get(url)
+                .then(function(response) {
+                    const respuesta = response.data;
+                    me.jefes = respuesta;
+                })
+                .catch(function(error) {
+                    me.jefes = [];
+                });
+        },
         desactivarDia(index){
             this.arrayMediosDias[index].medio_dia = 2;
             this.arrayMediosDias[index].horario = '0';
@@ -192,6 +219,65 @@ export default {
                 });
         },
 
+        save(){
+            let me = this;
+
+            if(me.proceso) return;
+
+            me.proceso = true;
+            Swal({
+                title: '¿Enviar la solicitud?',
+                animation: false,
+                customClass: 'animated bounceInDown',
+                text: "La solicitud sera enviada para su aprobación.",
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+
+                confirmButtonText: 'Si, enviar!'
+            }).then((result) => {
+                if (result.value) {
+                    axios.post('/hist-vacaciones',{
+                        'datos_dias': me.arrayMediosDias,
+
+                        'f_ini': me.datos.f_ini,
+                        'f_fin': me.datos.f_fin,
+                        'nota': me.datos.nota,
+                        'vacation_id': me.datos.vacation_id,
+                        'dias_tomados': me.datos.dias_tomados,
+                        'dias_elegidos': me.datos.dias_elegidos,
+                        'dias_disponibles': me.datos.dias_disponibles,
+                        'dias_festivos': me.datos.dias_festivos,
+                        'saldo': me.datos.saldo,
+                        'jefe_id': me.datos.jefe_id,
+                    }).then(function (response){
+                        me.$emit('close')
+                        me.proceso = false;
+
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        toast({
+                            type: 'success',
+                            title: 'Movimiento guardado correctamente.'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                        me.proceso = false;
+                    });
+                }
+            })
+
+
+
+        },
+
         calcularDias(){
             let me = this;
             me.arrayMediosDias = [];
@@ -236,6 +322,7 @@ export default {
     },
     mounted() {
         this.datos = { ...this.datos, ...this.data }
+        this.getJefes()
     },
 
 }

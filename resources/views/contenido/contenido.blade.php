@@ -606,7 +606,6 @@
         <template v-if="menu==306">
             <vacaciones user-id="{{  Auth::user()->id }}"
                 user-name="{{  Auth::user()->usuario }}"
-                jefe-Inmediato="{{  Auth::user()->vacaciones }}"
             ></vacaciones>
         </template>
     @endif

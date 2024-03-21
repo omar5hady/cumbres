@@ -196,7 +196,9 @@
                         <template v-slot:input2>
                             <select class="form-control" name = 'lotes_promo[]' multiple size = 6 v-model="lotes_promo">
                                 <option value="0">Seleccione</option>
-                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id">
+                                    {{  lotes.num_lote }} {{ lotes.sublote ? lotes.sublote : '' }}
+                                </option>
                             </select>
                         </template>
                     </RowModal>
@@ -221,7 +223,9 @@
                                         </button>
                                     </td>
                                     <td v-text="lotePromocion.manzana" ></td>
-                                    <td v-text="lotePromocion.lote" ></td>
+                                    <td>
+                                        {{ lotePromocion.lote }} {{ lotePromocion.sublote ? lotePromocion.sublote : '' }}
+                                    </td>
                                 </tr>
                             </template>
                         </TableComponent>

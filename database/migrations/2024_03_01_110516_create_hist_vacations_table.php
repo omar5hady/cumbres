@@ -26,6 +26,7 @@ class CreateHistVacationsTable extends Migration
             $table->float('dias_disponibles',8,2)->default(0);
             $table->float('dias_festivos',8,2)->default(0);
             $table->float('saldo',8,2)->default(0);
+            $table->integer('jefe_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

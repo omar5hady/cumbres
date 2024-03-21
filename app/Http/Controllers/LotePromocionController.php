@@ -18,15 +18,16 @@ class LotePromocionController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $promocion_id = $request->promocion_id;
-                
+
             $lotes_promocion = Lote_promocion::join('lotes','lotes_promocion.lote_id','=','lotes.id')
             ->join('promociones','lotes_promocion.promocion_id','=','promociones.id')
             ->select('lotes.num_lote as lote','promociones.nombre as promocion', 'lotes.manzana as manzana',
+                'lotes.sublote',
                     'lotes_promocion.id','lotes_promocion.lote_id','lotes_promocion.promocion_id')
             ->where('lotes_promocion.promocion_id', '=', $promocion_id)
             ->orderBy('lotes.manzana', 'asc')
             ->orderBy('lotes.num_lote', 'asc')->paginate(8);
-            
+
         return [
             'pagination' => [
                 'total'         => $lotes_promocion->total(),
