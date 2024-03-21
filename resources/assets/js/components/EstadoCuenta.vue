@@ -12,7 +12,7 @@
                          <!--   Boton descargar excel    -->
                         <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 +
                             '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio +
-                            '&credito=' + b_credito +'&b_empresa='+b_empresa">
+                            '&credito=' + b_credito +'&b_empresa='+b_empresa + '&b_enganche=' + b_enganche">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                         </a>
                         <!---->
@@ -83,6 +83,15 @@
                                             <option value="3">Firmado</option>
                                     </select>
                                 </div>
+
+                                <div class="input-group">
+                                    <input type="text" disabled class="form-control col-md-4" placeholder="Pendiente de Enganche">
+                                    <select class="form-control col-md-4" v-model="b_enganche">
+                                        <option value="">No</option>
+                                        <option value="1">Si</option>
+                                    </select>
+                                </div>
+
                                 <div class="input-group">
                                     <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
@@ -381,8 +390,6 @@
                                             v-model="datosFiscales.clabe_fisc" class="form-control" placeholder="Clabe">
                                         </div>
                                     </div>
-
-
                                 </template>
 
                             </div>
@@ -471,6 +478,7 @@
                 b_status: 3,
                 b_credito:'',
                 b_empresa:'',
+                b_enganche: '',
                 empresas:[],
             }
         },
@@ -513,7 +521,7 @@
                 let me = this;
                 var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana +
                     '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito
-                    + '&b_direccion=' + this.b_direccion+'&b_empresa='+this.b_empresa;
+                    + '&b_direccion=' + this.b_direccion+'&b_empresa='+this.b_empresa + '&b_enganche=' + this.b_enganche;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;

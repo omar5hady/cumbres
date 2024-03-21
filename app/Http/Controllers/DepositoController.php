@@ -869,6 +869,19 @@ class DepositoController extends Controller
         $pdf = \PDF::loadview('pdf.reciboDePagos',['depositos' => $depositos]);
         return $pdf->stream('recibo_de_pago.pdf');
     }
+
+    private function searchContratosConEnganche(){
+        $contratos = Deposito::join('pagos_contratos','pagos_contratos.id','=','depositos.pago_id')
+            ->join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->select('contratos.id')
+            ->where('expedientes.fecha_firma_esc', '=', NULL)
+            ->whereIn('contratos.status', [1,3])
+            ->distinct()
+            ->get();
+
+        return $contratos;
+    }
     // Función privada que obtiene los contratos para el estado de cuenta.
     private function getContratosEdoCuenta(Request $request){
         $buscar = $request->buscar;
@@ -879,6 +892,11 @@ class DepositoController extends Controller
         $b_status = $request->b_status;
         $credito = $request->credito;
         $b_direccion = $request->b_direccion;
+
+        $b_enganche = $request->b_enganche;
+
+        if($b_enganche != '')
+            $contratosConEnganche = $this->searchContratosConEnganche();
 
         // Query
         $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
@@ -947,6 +965,11 @@ class DepositoController extends Controller
 
             );
         $contratos = $contratos->where('i.elegido', '=', 1);
+
+        if($b_enganche != ''){
+            $contratos = $contratos->whereNotIn('contratos.id',$contratosConEnganche)
+                ->where('expedientes.fecha_firma_esc', '=', NULL);
+        }
         // Estatus del contrato
         if($b_status != '')
             $contratos = $contratos
