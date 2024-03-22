@@ -185,6 +185,7 @@
                                             <div class="card-body" style="padding-bottom: 15px;">
                                                 <TableComponent
                                                     :cabecera="[
+                                                        '',
                                                         'Año',
                                                         'Fecha inicial',
                                                         'Fecha de regreso',
@@ -195,6 +196,13 @@
                                                 >
                                                     <template v-slot:tbody>
                                                         <tr v-for="vacacion in histVacaciones.data" :key="vacacion.id">
+                                                            <td>
+                                                                <button class="btn btn-primary" title="Ver Detalle"
+                                                                    @click="verDetalle(vacacion)"
+                                                                >
+                                                                    <span><i class="icon-eye"></i></span>
+                                                                </button>
+                                                            </td>
                                                             <td class="td2">
                                                                 {{ vacacion.anio }}
                                                             </td>
@@ -417,6 +425,15 @@ export default {
                 dias_festivos: 0,
                 jefe_id: '',
             }
+        },
+
+        verDetalle(solicitud) {
+            this.modal.mostrar = 1;
+            this.modal.titulo = `Solicitud de: ${
+                this.perfil.nombre
+            }`;
+            this.modal.accion = "ver";
+            this.datos = solicitud;
         },
 
         closeModal() {

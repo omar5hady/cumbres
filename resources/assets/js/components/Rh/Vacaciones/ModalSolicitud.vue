@@ -10,7 +10,7 @@
             <hr>
 
             <RowModal label1="Autorizado por:" clsRow1="col-md-8">
-                <select class="form-control" v-model="datos.jefe_id">
+                <select class="form-control" v-model="datos.jefe_id" :disabled="accion === 'ver'">
                     <option value="">Seleccione...</option>
                     <option v-for="jefe in jefes" :key="jefe.id"
                         :value="jefe.id">{{ jefe.nombre }} {{ jefe.apellidos }}
@@ -19,9 +19,9 @@
             </RowModal>
 
             <RowModal clsRow1="col-md-4" label1="F. Inicio: " clsRow2="col-md-4" label2="F. Regreso">
-                <input type="date" class="form-control" v-model="datos.f_ini" @change="calcularDias">
+                <input type="date" class="form-control" v-model="datos.f_ini" @change="calcularDias" :disabled="accion === 'ver'">
                 <template v-slot:input2>
-                    <input type="date" class="form-control" v-model="datos.f_fin" @change="calcularDias">
+                    <input type="date" class="form-control" v-model="datos.f_fin" @change="calcularDias" :disabled="accion === 'ver'">
                 </template>
             </RowModal>
 
@@ -32,11 +32,11 @@
                     <template v-slot:tbody>
                         <tr v-for="(dia, index) in arrayMediosDias" :key="dia.fecha">
                             <td class="td2">
-                                <button class="btn btn-sm btn-success" v-if="dia.medio_dia != 2"
+                                <button class="btn btn-sm btn-success" v-if="dia.medio_dia != 2" :disabled="accion === 'ver'"
                                     title="Activo" @click="desactivarDia(index)">
                                     <span><i class="fa fa-power-off"></i></span>
                                 </button>
-                                <button class="btn btn-sm btn-danger" v-else
+                                <button class="btn btn-sm btn-danger" v-else :disabled="accion === 'ver'"
                                     title="Activo" @click="dia.medio_dia = 0">
                                     <span><i class="fa fa-power-off"></i></span>
                                 </button>
@@ -48,14 +48,14 @@
 
                             </td>
                             <td class="td2">
-                                <input :disabled="dia.medio_dia == 2" class="form-control" type="radio" v-model="dia.medio_dia" :value="0" :name="dia.fecha" :id="`${dia.fecha}1`">
+                                <input :disabled="dia.medio_dia == 2 || accion == 'ver'" class="form-control" type="radio" v-model="dia.medio_dia" :value="0" :name="dia.fecha" :id="`${dia.fecha}1`">
                             </td>
                             <td class="td2">
                                 <input v-if="this.moment(dia.fecha).format('dddd') != 'Saturday'"
-                                    :disabled="dia.medio_dia == 2" class="form-control" type="radio" v-model="dia.medio_dia" :value="1" :name="dia.fecha" :id="`${dia.fecha}2`">
+                                    :disabled="dia.medio_dia == 2 || accion == 'ver'" class="form-control" type="radio" v-model="dia.medio_dia" :value="1" :name="dia.fecha" :id="`${dia.fecha}2`">
                             </td>
                             <td class="td2">
-                                <select v-if="dia.medio_dia == 1" class="form-control" v-model="dia.horario">
+                                <select v-if="dia.medio_dia == 1" class="form-control" v-model="dia.horario" :disabled="accion === 'ver'">
                                     <option value="0">9:00am a 1:00pm</option>
                                     <option value="1">2:00pm a 5:00pm</option>
                                 </select>
@@ -78,13 +78,13 @@
                 </RowModal>
                 <hr>
                 <RowModal clsRow1="col-md-6" label1="Notas:">
-                    <textarea class="form-control" v-model="datos.nota"></textarea>
+                    <textarea :disabled="accion == 'ver'" class="form-control" v-model="datos.nota"></textarea>
                 </RowModal>
             </template>
 
         </template>
         <template v-slot:buttons-footer>
-            <Button v-if="arrayMediosDias.length > 0 && datos.saldo >= 0 && datos.jefe_id != ''"
+            <Button v-if="arrayMediosDias.length > 0 && datos.saldo >= 0 && datos.jefe_id != '' && accion == 'nuevo'"
                 @click="save()" icon="icon-check">Enviar Solicitud</Button>
         </template>
     </ModalComponent>
@@ -319,10 +319,27 @@ export default {
             }
         },
 
+        getDetalleDias(){
+            let me = this;
+            me.arrayMediosDias = []
+            const url = `vacation/getDetalleDias?id=${me.datos.id}`
+            axios
+                .get(url)
+                .then(function(response) {
+                    const respuesta = response.data;
+                    me.arrayMediosDias = respuesta;
+                })
+                .catch(function(error) {
+                    me.arrayMediosDias = [];
+                });
+        }
+
     },
     mounted() {
         this.datos = { ...this.datos, ...this.data }
         this.getJefes()
+        if(this.accion == 'ver')
+            this.getDetalleDias();
     },
 
 }

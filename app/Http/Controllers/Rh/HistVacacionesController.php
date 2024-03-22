@@ -22,7 +22,7 @@ class HistVacacionesController extends Controller
             else
                 $data = $data->where('hist_vacations.user_id', '=', Auth::user()->id);
             $data = $data->orderBy('hist_vacations.status', 'asc')
-            ->orderBy('vacations.anio', 'desc')
+            ->orderBy('hist_vacations.f_ini', 'desc')
             ->paginate(10);
         return $data;
     }
@@ -43,6 +43,11 @@ class HistVacacionesController extends Controller
         $vacation->saldo = $request->saldo;
         $vacation->dias_tomados += $request->dias_tomados;
         $vacation->save();
+    }
+
+    public function getDetalleDias(Request $request){
+        $dias = MedioDia::where('hist_id','=',$request->id)->get();
+        return $dias;
     }
 
     public function store(Request $request){
