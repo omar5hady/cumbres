@@ -1359,6 +1359,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/vacaciones', Rh\VacacionesController::class);
         Route::get('/getJefes', 'Rh\VacacionesController@getJefes');
         Route::resource('/hist-vacaciones', Rh\HistVacacionesController::class);
+        Route::resource('/obs-vacaciones', Rh\ObsVacationController::class);
         Route::get('/vacation/getDetalleDias', 'Rh\HistVacacionesController@getDetalleDias');
 
         ////////////////////// Rutas Control presupuestal

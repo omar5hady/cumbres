@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rh;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Vacation;
+use App\HistVacation;
 use Auth;
 use App\User;
 use App\Personal;
@@ -13,6 +14,13 @@ use Carbon\Carbon;
 class VacacionesController extends Controller
 {
     public function index(Request $request){
+        $hist = HistVacation::where('status','=','pendiente');
+        if($request->user_id != '')
+        $hist = $hist->where('hist_vacations.user_id', '=', $request->user_id);
+        else
+            $hist = $hist->where('hist_vacations.user_id', '=', Auth::user()->id);
+        $hist = $hist->count();
+
         $data = Vacation::join('users as u', 'u.id', '=', 'vacations.user_id')
             ->join('personal as p', 'p.id', '=', 'u.id')
             ->select('vacations.*', 'u.foto_user', 'p.nombre', 'p.apellidos');
@@ -25,7 +33,10 @@ class VacacionesController extends Controller
             ->take(5)
             ->get();
 
-        return $data;
+        return [
+            'datos' => $data,
+            'countPendiente' =>$hist
+        ];
     }
 
     public function getJefes(Request $request){

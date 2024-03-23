@@ -14,7 +14,7 @@
                     <div class="button-header">
                         <button type="button" class="btn btn-success btn-sm"
                             @click="nuevaSolicitud()"
-                            v-if="perfil.dias_disponibles > 0 || userName=='marce.gaytan'"
+                            v-if="(perfil.dias_disponibles > 0 && countPendientes == 0) || userName=='marce.gaytan'"
                         >
                             <i class="icon-plus"></i>&nbsp;Crear solicitud
                         </button>
@@ -191,7 +191,8 @@
                                                         'Fecha de regreso',
                                                         'Dias tomados',
                                                         'Estatus',
-                                                        'Nota'
+                                                        'Nota',
+                                                        'Obs'
                                                     ]"
                                                 >
                                                     <template v-slot:tbody>
@@ -220,13 +221,18 @@
                                                                             ? 'badge badge-warning'
                                                                             : vacacion.status ==
                                                                               'rechazado'
-                                                                            ? 'badgebadge-danger'
-                                                                            : 'badgebadge-success'">
+                                                                            ? 'badge badge-danger'
+                                                                            : 'badge badge-success'">
                                                                     {{ vacacion.status.toUpperCase() }}
                                                                 </span>
                                                             </td>
                                                             <td>
                                                                 {{ vacacion.nota }}
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-dark" title="Ver Observaciones" @click="verObs(vacacion.id)">
+                                                                    <span><i class="icon-eye"></i></span>
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     </template>
@@ -259,6 +265,42 @@
             :data="datos"
             @close="closeModal"
         ></ModalSolicitud>
+
+        <ModalComponent v-if="modal.mostrar == 2"
+            :titulo="modal.titulo"
+            @closeModal="closeModal"
+        >
+            <template v-slot:body>
+                <RowModal label1="Observación" id1="observacion" clsRow1="col-md-6"
+                    label2="" clsRow2="col-md-2"
+                >
+                    <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                    <template v-slot:input2>
+                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                    </template>
+                </RowModal>
+
+                <RowModal label1="" clsRow1="col-md-12">
+                    <table class="table table-bordered table-striped table-sm" >
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Observacion</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="observacion in arrayObs" :key="observacion.id">
+
+                                <td v-text="observacion.usuario" ></td>
+                                <td v-text="observacion.observacion" ></td>
+                                <td v-text="observacion.created_at"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </RowModal>
+            </template>
+        </ModalComponent>
     </main>
 </template>
 
@@ -269,6 +311,7 @@
 <script>
 import LoadingComponentVue from "../../Componentes/LoadingComponent.vue";
 import ModalComponent from "../../Componentes/ModalComponent.vue";
+import RowModal from '../../Componentes/ComponentesModal/RowModalComponent';
 import TableComponent from "../../Componentes/TableComponent.vue";
 import NavComponent from '../../Componentes/NavComponent.vue';
 import ModalSolicitud from './ModalSolicitud.vue'
@@ -281,7 +324,8 @@ export default {
         TableComponent,
         NavComponent,
         vSelect,
-        ModalSolicitud
+        ModalSolicitud,
+        RowModal
     },
     props: {
         userId: { type: String },
@@ -295,7 +339,11 @@ export default {
                 status: "",
                 user_id: this.userId
             },
+            countPendientes: 0,
             datosVacaciones: [],
+            arrayObs: [],
+            observacion: '',
+            id: '',
             histVacaciones: {},
             arrayUser: [],
             perfil: {
@@ -304,6 +352,7 @@ export default {
                 dias_disponibles: 0
             },
             loading: false,
+            proceso: false,
             modal: {
                 mostrar: 0,
                 titulo: "",
@@ -338,6 +387,50 @@ export default {
                     me.histVacaciones = {};
                 });
         },
+        getObs(id){
+            let me = this;
+
+            const url = `/obs-vacaciones?id=${id}`
+            axios
+                .get(url)
+                .then(function(response) {
+                    const respuesta = response;
+                    me.arrayObs = respuesta.data;
+                })
+                .catch(function(error) {
+                    me.arrayObs = [];
+                });
+        },
+        agregarComentario(){
+            if(this.proceso==true){
+                return;
+            }
+            this.proceso=true;
+            let me = this;
+            //Con axios se llama el metodo store de DepartamentoController
+            axios.post('/obs-vacaciones',{
+                'id': this.id,
+                'observacion': this.observacion
+            }).then(function (response){
+                me.proceso=false;
+                me.getObs(me.id);
+                me.observacion = '';
+
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                })
+            }).catch(function (error){
+                console.log(error);
+            });
+        },
         getData() {
             let me = this;
             me.datosVacaciones = [];
@@ -355,7 +448,8 @@ export default {
                 .get(url)
                 .then(function(response) {
                     const respuesta = response.data;
-                    me.datosVacaciones = respuesta;
+                    me.datosVacaciones = respuesta.datos;
+                    me.countPendientes = respuesta.countPendiente;
                     if(me.datosVacaciones.length == 0)
                     me.perfil = {
                         nombre: "",
@@ -426,7 +520,12 @@ export default {
                 jefe_id: '',
             }
         },
-
+        verObs(id){
+            this.id = id;
+            this.modal.mostrar = 2;
+            this.modal.titulo = `Observaciones de la solictud`;
+            this.getObs(id)
+        },
         verDetalle(solicitud) {
             this.modal.mostrar = 1;
             this.modal.titulo = `Solicitud de: ${

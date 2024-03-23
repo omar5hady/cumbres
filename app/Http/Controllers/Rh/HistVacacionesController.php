@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rh;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Rh\ObsVacationController;
 use App\HistVacation;
 use App\MedioDia;
 use App\Vacation;
@@ -21,8 +22,9 @@ class HistVacacionesController extends Controller
                 $data = $data->where('hist_vacations.user_id', '=', $request->user_id);
             else
                 $data = $data->where('hist_vacations.user_id', '=', Auth::user()->id);
-            $data = $data->orderBy('hist_vacations.status', 'asc')
-            ->orderBy('hist_vacations.f_ini', 'desc')
+            $data = $data->orderBy('hist_vacations.id', 'desc')
+            ->orderBy('hist_vacations.status', 'asc')
+
             ->paginate(10);
         return $data;
     }
@@ -74,6 +76,9 @@ class HistVacacionesController extends Controller
 
             $this->insertDays($datos_dias, $id);
             $this->actualizarVacations($request);
+
+            $obsController = new ObsVacationController();
+            $obsController->saveObservation($id, 'Solicitud creada');
 
             DB::commit();
         } catch (Exception $e){
