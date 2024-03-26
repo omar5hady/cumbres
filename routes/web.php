@@ -1361,6 +1361,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::resource('/hist-vacaciones', Rh\HistVacacionesController::class);
         Route::resource('/obs-vacaciones', Rh\ObsVacationController::class);
         Route::get('/vacation/getDetalleDias', 'Rh\HistVacacionesController@getDetalleDias');
+        Route::put('/vacation/revisarRH', 'Rh\HistVacacionesController@revisarRH');
+        Route::put('/vacation/autorizarSolicitud', 'Rh\HistVacacionesController@autorizarSolicitud');
+        Route::put('/vacation/rechazarSolicitud', 'Rh\HistVacacionesController@rechazarSolicitud');
 
         ////////////////////// Rutas Control presupuestal
         Route::resource('/terrenos-compra', controlPresupuestal\TerrenosCompraController::class);

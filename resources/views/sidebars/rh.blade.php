@@ -28,8 +28,12 @@
         </li>
         @endif
         @if(Auth::user()->rol_id == 1)
+            <li @click="menu=307" class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-check" aria-hidden="true">
+                </i>Admin. Vacaciones </a>
+            </li>
             <li @click="menu=306" class="nav-item">
-                <a class="nav-link" href="#"><i class="fa fa-money" aria-hidden="true">
+                <a class="nav-link" href="#"><i class="fa fa-calendar" aria-hidden="true">
                 </i>Vacaciones </a>
             </li>
         @endif

@@ -376,7 +376,7 @@ export default {
         getHistorial(page){
             let me = this;
 
-            const url = `/hist-vacaciones?page=${page}&user_id=${me.busqueda.user_id}`
+            const url = `/hist-vacaciones?page=${page}&fechaIni=${me.busqueda.fechaIni}&fechaFin=${me.busqueda.fechaFin}&user_id=${me.busqueda.user_id}`
             axios
                 .get(url)
                 .then(function(response) {
@@ -437,11 +437,7 @@ export default {
             me.loading = true;
 
             const url =
-                "/vacaciones?fechaIni=" +
-                me.busqueda.fechaIni +
-                "&fechaFin=" +
-                me.busqueda.fechaFin +
-                "&user_id=" +
+                "/vacaciones?user_id=" +
                 me.busqueda.user_id;
 
             axios

@@ -608,5 +608,8 @@
                 user-name="{{  Auth::user()->usuario }}"
             ></vacaciones>
         </template>
+        <template v-if="menu==307">
+            <hist-vacaciones user-name="{{  Auth::user()->usuario }}"></hist-vacaciones>
+        </template>
     @endif
 @endsection

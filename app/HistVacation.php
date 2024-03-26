@@ -8,7 +8,9 @@ class HistVacation extends Model
 {
     protected $table = 'hist_vacations';
     protected $fillable = [
-        'id', 'user_id', 'f_ini', 'f_fin', 'dias_tomados', 'status', 'nota'
+        'id', 'user_id', 'f_ini', 'f_fin',
+        'f_jefe', 'f_rh', 'dias_tomados',
+        'status', 'nota'
     ];
 
     public function User()

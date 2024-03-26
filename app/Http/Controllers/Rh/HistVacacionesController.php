@@ -9,6 +9,7 @@ use App\HistVacation;
 use App\MedioDia;
 use App\Vacation;
 use Auth;
+use Carbon\Carbon;
 use DB;
 
 class HistVacacionesController extends Controller
@@ -17,16 +18,66 @@ class HistVacacionesController extends Controller
         $data = HistVacation::join('users as u', 'u.id', '=', 'hist_vacations.user_id')
             ->join('personal as p', 'p.id', '=', 'u.id')
             ->join('vacations','vacations.id','=','hist_vacations.vacation_id')
-            ->select('hist_vacations.*', 'vacations.anio');
-            if($request->user_id != '')
-                $data = $data->where('hist_vacations.user_id', '=', $request->user_id);
-            else
-                $data = $data->where('hist_vacations.user_id', '=', Auth::user()->id);
+            ->select('hist_vacations.*', 'vacations.anio', 'p.nombre', 'p.apellidos');
+            if($request->admin == ''){
+                if($request->user_id != '')
+                    $data = $data->where('hist_vacations.user_id', '=', $request->user_id);
+                else
+                    $data = $data->where('hist_vacations.user_id', '=', Auth::user()->id);
+            }
+
+            else{
+                $usuario = Auth::user()->usuario;
+                $gerente = $this->checkGerente($usuario);
+                $admin = 0;
+                if( $usuario == 'marce.gaytan' || $usuario == 'shady')
+                    $admin = 1;
+
+                if($admin == 0){
+                    if($gerente > 0)
+                        $data = $data->where('p.departamento_id','=',$gerente);
+                    else
+                        $data = $data->where('hist_vacations.jefe_id','=', Auth::user()->id);
+                }
+
+                if($request->nombre != '')
+                    $data = $data->where(DB::raw("CONCAT(p.nombre,' ',p.apellidos)"), 'like', '%'. $request->nombre . '%');
+            }
+            if($request->fechaIni != '' && $request->fechaFin){
+                $data = $data->where('hist_vacations.f_ini','>=',$request->fechaIni)
+                            ->where('hist_vacations.f_fin','<=',$request->fechaFin);
+            }
+            if($request->status != '')
+                $data = $data->where('hist_vacations.status', '=', $request->status);
+
             $data = $data->orderBy('hist_vacations.id', 'desc')
             ->orderBy('hist_vacations.status', 'asc')
 
             ->paginate(10);
         return $data;
+    }
+
+    private function checkGerente($usuario){
+
+        $gerente = 0;
+        if( $usuario == 'eli_hdz' ) //Comercializacion 9
+            $gerente = 9;
+        if($usuario == 'sajid.m' ) //Postventa 4
+            $gerente = 4;
+        if($usuario == 'bd_raul' ) //Proyectos 3
+            $gerente = 3;
+        if($usuario == 'lucy.hdz' )//Presupuestos 5
+            $gerente = 5;
+        if($usuario == 'cp.martin' )//Administracion 7
+            $gerente = 7;
+        if($usuario == 'ing_david' )//Direccion 1
+            $gerente = 1;
+        if($usuario == 'meza.marco60' )//Contabilidad 6
+            $gerente = 6;
+        if($usuario == 'guadalupe.ff' )// Obra 2
+            $gerente = 2;
+
+        return $gerente;
     }
 
     private function insertDays($dias, $id){
@@ -84,5 +135,41 @@ class HistVacacionesController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }
+    }
+
+    public function revisarRH(Request $request){
+        $id = $request->id;
+        $solicitud = HistVacation::findOrFail($id);
+        $solicitud->f_rh = Carbon::now();
+        $solicitud->save();
+
+        $obsController = new ObsVacationController();
+        $obsController->saveObservation($id, 'Solicitud revisada');
+    }
+
+    public function autorizarSolicitud(Request $request){
+        $id = $request->id;
+        $solicitud = HistVacation::findOrFail($id);
+        $solicitud->status = 'aprobado';
+        $solicitud->f_jefe = Carbon::now();
+        $solicitud->save();
+
+        $obsController = new ObsVacationController();
+        $obsController->saveObservation($id, 'Solicitud aprobada');
+    }
+
+    public function rechazarSolicitud(Request $request){
+        $id = $request->id;
+        $solicitud = HistVacation::findOrFail($id);
+        $solicitud->status = 'rechazado';
+
+        $vacation = Vacation::findOrFail($solicitud->vacation_id);
+        $vacation->saldo = $solicitud->dias_disponibles;
+        $vacation->dias_tomados -= $solicitud->dias_tomados;
+        $vacation->save();
+        $solicitud->save();
+
+        $obsController = new ObsVacationController();
+        $obsController->saveObservation($id, 'Solicitud rechazada');
     }
 }
